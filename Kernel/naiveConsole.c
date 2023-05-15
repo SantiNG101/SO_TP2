@@ -3,6 +3,14 @@
 
 extern uint32_t dVideo(uint8_t * puntero, char * str);
 extern int getCurrentTime(void);
+extern uint64_t   getCurrentRAX();
+extern uint64_t   getCurrentRBX();
+extern uint64_t   getCurrentRCX();
+extern uint64_t   getCurrentRDX();
+extern uint64_t   getCurrentRBP();
+extern uint64_t   getCurrentRSP();
+extern uint64_t   getCurrentRDI();
+extern uint64_t   getCurrentRSI();
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 static char buffer[64] = { '0' };
@@ -102,36 +110,36 @@ int putChar(int c){
         switch(c){
             case '\n':
                 handleEnter();
-                return 0;
+                break;
             case '\b':
                 handleBackSpace();
-                return 0;
+                break;
             case '\t':
                 handleTab();
-                return 0;
+                break;
             case '\0':
-                return 0;
-            case 27:            //caso del esc
-                return 0;
+                break;
+            case 27:            //caso del esc retorna su numero ascii
+                break;
             default:
                 ncPrintChar(c);
-                return 0;
+                break;
         }
+        return c;
 }
 
 //Putchar verison string
 int puts(const char * string){
     int i;
-    int flag = 0;
+    int flag;
     for (i = 0; string[i] != 0; i++) {
         flag = putChar(string[i]);
-
-        if(flag != 0){
-            return flag;
+        if(flag < 0){
+            return -1;
         }
     }
 
-    return flag;
+    return i;
 }
 
 //Printf
@@ -143,7 +151,7 @@ int printf(const char * format, ...){
             format++;
             switch (*format++) {
                 case 'd': {
-                    int int_arg = va_arg(args, int);
+                    int64_t int_arg = va_arg(args, int64_t);
                     ncPrintDec(int_arg);
                     break;
                 }
@@ -158,7 +166,7 @@ int printf(const char * format, ...){
                     break;
                 }
                 case 'x': {
-                    int hex_arg = va_arg(args, int);
+                    uint64_t hex_arg = va_arg(args, uint64_t);
                     ncPrintHex(hex_arg);
                     break;
                 }
@@ -197,7 +205,11 @@ void handleEnter(){
     ncNewline();
 }
 
-
-
+// Show register status
+void showRegisterStatus(){
+    printf("RAX: %x\tRBX: %x\nRCX: %x\tRDX: %x\nRSP: %x\tRBP: %x\nRSI: %x\tRDI: %x\n",
+           getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
+           getCurrentRSI(),getCurrentRDI());
+}
 
 

@@ -31,4 +31,7 @@ void handleDOWNArrow();
 //Video driver
 void writeMsg( char * str);
 //
+
+//Show register stats
+void showRegisterStatus();
 #endif

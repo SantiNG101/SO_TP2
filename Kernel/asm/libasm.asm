@@ -2,6 +2,14 @@ GLOBAL cpuVendor
 GLOBAL dVideo
 GLOBAL clock
 GLOBAL read_port
+GLOBAL getCurrentRAX
+GLOBAL getCurrentRBX
+GLOBAL getCurrentRCX
+GLOBAL getCurrentRDX
+GLOBAL getCurrentRBP
+GLOBAL getCurrentRSP
+GLOBAL getCurrentRDI
+GLOBAL getCurrentRSI
 
 section .text
 ;Hay que pasar a parte de ah y al para escribir los bytes con x color
@@ -91,3 +99,27 @@ read_port:
 	pop rbp
 	ret
 
+getCurrentRAX:
+	mov rax, [rsp]
+	ret
+getCurrentRBX:
+	mov rax, [rbx]
+	ret
+getCurrentRCX:
+	mov rax, [rcx]
+	ret
+getCurrentRDX:
+	mov rax, [rdx]
+	ret
+getCurrentRBP:
+	mov rax, [rbp]
+	ret
+getCurrentRSP:
+	mov rax, [rsp]
+	ret
+getCurrentRDI:
+	mov rax, [rdi]
+	ret
+getCurrentRSI:
+	mov rax, [rsi]
+	ret
