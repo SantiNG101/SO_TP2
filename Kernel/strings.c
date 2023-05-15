@@ -1,0 +1,82 @@
+//
+// Created by ptorl on 5/15/2023.
+//
+
+#include "include/strings.h"
+int strcmp(const char* str1, const char* str2) {
+    int i = 0;
+    while (str1[i] == str2[i] && str1[i] != '\0' && str2[i] != '\0') {
+        i++;
+    }
+    return (int)(str1[i] - str2[i]);        //retorna la diferencia entre los ultimos 2 ascii
+}
+
+int strncmp(const char *str1, const char * str2, size_t n){
+    size_t i = 0;
+    while (str1[i] == str2[i] && str1[i] != '\0' && str2[i] != '\0' && i < ((int)n)-1){
+            i++;
+    }
+
+    return (int)(str1[i] - str2[i]);
+}
+
+size_t strlen(const char * str){
+    size_t len = 0;
+    while(str[len] != '\0'){
+        len++;
+    }
+    return len;
+}
+
+char * strcpy(const char * src, char * dest){
+    if(src == NULL || dest == NULL){
+        return NULL;
+    }
+
+    char *temp = dest;
+    while ((*dest++ = *src++) != '\0')
+        ;
+    return temp;
+}
+
+char * strcat(const char *src, char * dest){
+    if(dest == NULL || src == NULL){
+        return NULL;
+    }
+    size_t dest_len = strlen(dest);
+
+    int i = 0;
+    while(src[i] != '\0'){
+        dest[dest_len++] = src[i++];
+    }
+        dest[dest_len] = '\0';
+        return dest;
+}
+
+char * strtok(char * str, const char * delim){
+    static char * last_ptr = NULL;
+
+    //si el str es distinto de nulo = > le estoy pasando un nuevo string para tokenizar
+    if(str != NULL){
+        last_ptr = str;
+    }
+
+    if(last_ptr == NULL || *last_ptr == '\0'){
+        return NULL;
+    }
+
+    char * token = last_ptr;
+
+    while(*last_ptr != '\0'){
+        int i;
+        for(i = 0; delim[i] != '\0'; i++){
+            if (*last_ptr == delim[i]) {
+                *last_ptr = '\0';
+                last_ptr++;
+                return token;
+            }
+        }
+        last_ptr++;
+    }
+    return token;
+}

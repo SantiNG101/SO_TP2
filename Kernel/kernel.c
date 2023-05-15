@@ -1,5 +1,3 @@
-#include <stdint.h>
-#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
@@ -119,18 +117,9 @@ int main()
         ncPrint("Insert character");
         ncNewline();
 
+        char s[100] = "hola que onda reyes magos,bue";
+        char t[50];
 
-        //Como no se puede hacer malloc, se tienen que pasar arrays con size definido o hacer un super array
-        //formar un "stack"
-        char h[100];
-        char s[100];
-        int a;
-        char c;
-        int hex;
-        scanf("%s %s %d %x %c",h,s, &a,&hex, &c);
-
-        printf("%s\n%s\n%d\n%x\n%c\nque onda rey?", h,s,a,hex, c);
-        //putChar(c);
-      //  ncPrintHex(hex);
+        printf("%d",(int)strlen(s));
 	return 0;
 }

@@ -141,12 +141,13 @@ int isspace(int c){
 }
 
 /*
+ *
  * El delimitador de cada scanf va a ser el '\n' indicando que se termino la linea
  * Los espacios vacios (white space seran ignorados siempre y cuando no sea un string)
  * Caso 'c' ==> lee un char
  * Caso 'd' ==> Lee un int
  * Caso 's' ==> lee un str
- * Caso 'x' ==> lee un hexa -> lo pasa a
+ * Caso 'x' ==> lee un hexa -> lo pasa a dec
  *
  */
 
@@ -155,6 +156,10 @@ int scanf_int(int * value_ptr);
 int scanf_str(char *s_arg);
 
 int scanf_hex(int * hexToDec);
+
+/*
+ * Para que lo documente santi *-*
+ */
 
 int scanf(const char *format, ...) {
     va_list args;
@@ -271,6 +276,22 @@ int scanf_hex(int *hexToDec) {
     *hexToDec = result;
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
