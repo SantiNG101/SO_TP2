@@ -3,7 +3,7 @@
 //
 
 #include "include/keyboard_Handler.h"
-
+#include "include/strings.h"
 #define KEYBOARD_STATUS_PORT 0x64       //address status port
 #define KEYBOARD_DATA_PORT 0X60         //address data port
 #define KEYBOARD_UPPER_BREAK 0x80       //break code address to compare the high bytes
@@ -242,10 +242,7 @@ int scanf_str(char *s_arg){
     int i = 0;
     char * str = getString();
 
-    for(; str[i] != '\0'; i++){
-        s_arg[i] = str[i];
-    }
-    s_arg[i] = '\0';
+    strcpy(str,s_arg);
 
     return 0;
 }

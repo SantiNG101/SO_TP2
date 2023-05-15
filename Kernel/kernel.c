@@ -117,9 +117,8 @@ int main()
         ncPrint("Insert character");
         ncNewline();
 
-        char s[100] = "hola que onda reyes magos,bue";
-        char t[50];
-
-        printf("%d",(int)strlen(s));
+        char s[100];
+        scanf("%s",s);
+        printf("%s",s);
 	return 0;
 }

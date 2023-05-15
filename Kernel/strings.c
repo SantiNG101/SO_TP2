@@ -29,10 +29,6 @@ size_t strlen(const char * str){
 }
 
 char * strcpy(const char * src, char * dest){
-    if(src == NULL || dest == NULL){
-        return NULL;
-    }
-
     char *temp = dest;
     while ((*dest++ = *src++) != '\0')
         ;
@@ -40,9 +36,6 @@ char * strcpy(const char * src, char * dest){
 }
 
 char * strcat(const char *src, char * dest){
-    if(dest == NULL || src == NULL){
-        return NULL;
-    }
     size_t dest_len = strlen(dest);
 
     int i = 0;
