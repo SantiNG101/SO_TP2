@@ -239,9 +239,8 @@ int scanf_int(int * value_ptr){
 
 //Func aux que copia el str a un puntero
 int scanf_str(char *s_arg){
-    int i = 0;
-    char * str = getString();
 
+    char * str = getString();
     strcpy(str,s_arg);
 
     return 0;
