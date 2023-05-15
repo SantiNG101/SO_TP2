@@ -2,7 +2,7 @@
 // Created by ptorl on 5/10/2023.
 //
 
-#include "include/time.h"
+#include <time.h>
 #include <lib.h>
 
 #define SECONDS 0X00

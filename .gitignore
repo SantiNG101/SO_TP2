@@ -9,3 +9,14 @@
 
 #Object files
 *.o
+
+# Se ignoran todos los archivos creados por IntelliJ
+Kernel/.idea
+Kernel/include/.idea
+Kernel/.idea/.gitignore
+Kernel/.idea/Kernel.iml
+Kernel/.idea/modules.xml
+Kernel/.idea/vcs.xml
+Kernel/include/.idea/include.iml
+Kernel/include/.idea/modules.xml
+Kernel/include/.idea/workspace.xml
