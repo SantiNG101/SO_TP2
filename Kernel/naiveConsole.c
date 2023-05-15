@@ -1,5 +1,5 @@
 #include <naiveConsole.h>
-#include "include/time.h"
+#include <time.h>
 
 extern uint32_t dVideo(uint8_t * puntero, char * str);
 extern int getCurrentTime(void);
