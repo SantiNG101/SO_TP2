@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <idt/exceptions.h>
+#include <naiveConsole.h>
 
 /*
  * Mantener actualizado. El EXCEPTION_TYPE_SIZE debe estar SIEMPRE al final.
@@ -19,8 +20,12 @@ void exceptionDispatcher(uint8_t ex){
 
 void zeroDivisionException(){
     // TODO: COMPLETAR
-    // Debo fijarme que el registro de Division por 0 no esté activado.
-
+    // Muestro los registros que hicieron error.
+    showRegisterStatus();
+    // Limpio los registros que dieron error
+    cleanRegisterStatus();
+    // Imprimo el mensaje de error
+    
 }
 
 void invalidOperationException(){

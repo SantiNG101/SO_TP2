@@ -9,14 +9,14 @@
  */
 void irqDispatcher(uint8_t irqID);
 
-void _irq00Handler(void);
-void _irq01Handler(void);
-void _irq02Handler(void);
-void _irq03Handler(void);
-void _irq04Handler(void);
-void _irq05Handler(void);
+void _irq00Handler(void);   // timer tick
+void _irq01Handler(void);   // Keyboard
+void _irq02Handler(void);   // User
+void _irq03Handler(void);   // ... for future implementation
 
-void _exception0Handler(void);
+void _exception00Handler(void);  // Division by zero exception
+void _exception01Handler(void);  // Not an available function
+
 
 void _cli(void);
 

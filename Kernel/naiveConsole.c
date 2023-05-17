@@ -205,11 +205,15 @@ void handleEnter(){
     ncNewline();
 }
 
-// Show register status
+// Show register status 
 void showRegisterStatus(){
     printf("RAX: %x\tRBX: %x\nRCX: %x\tRDX: %x\nRSP: %x\tRBP: %x\nRSI: %x\tRDI: %x\n",
            getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
            getCurrentRSI(),getCurrentRDI());
+}
+// Clear all the registers
+void cleanRegisterStatus(){
+
 }
 
 
