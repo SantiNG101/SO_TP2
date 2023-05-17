@@ -1,9 +1,10 @@
 //
-// Created by ptorl on 5/12/2023.
+// keyboard_Handler.c
 //
 
-#include "include/keyboard_Handler.h"
-#include "include/strings.h"
+#include <keyboard_Handler.h>
+#include <strings.h>
+
 #define KEYBOARD_STATUS_PORT 0x64       //address status port
 #define KEYBOARD_DATA_PORT 0X60         //address data port
 #define KEYBOARD_UPPER_BREAK 0x80       //break code address to compare the high bytes
@@ -23,6 +24,16 @@
 #define ALT 0X38
 #define CTRL_BR 0x9D
 #define ALT_BR 0xB8
+
+/*
+ *  MACROS
+ */
+#define isdigit(c) (c >= '0' && c <= '9')
+#define isspace(c) (c == ' ')
+
+int scanf_int(int * value_ptr);
+int scanf_str(char *s_arg);
+int scanf_hex(int * hexToDec);
 
 const unsigned char kbdus[128] =
         {
@@ -58,7 +69,7 @@ static unsigned char isCtrl_Pressed = 0;
 static unsigned char caps_lock_on = 0;
 
 int getChar() {
-    int c = getC(KEYBOARD_STATUS_PORT,KEYBOARD_DATA_PORT);
+    int c = getC(KEYBOARD_STATUS_PORT, KEYBOARD_DATA_PORT);
     putChar(c);     //para que se pueda ver lo que el usuario inserto
     return c;
 }
@@ -115,7 +126,7 @@ int getC(uint64_t status_port, uint64_t data_port){
 
 char * getString(void) {
     int i = 0;
-    char *buff;
+    char * buff;
     char c;
     while ((c = getChar()) != '\n') {
         if (c != '\b') {
@@ -129,17 +140,6 @@ char * getString(void) {
     return buff;
 }
 
-int isdigit(int c){
-    if(c >= '0' && c <= '9'){
-        return 1;
-    }
-    return 0;
-}
-
-int isspace(int c){
-    return c == ' ';
-}
-
 /*
  *
  * El delimitador de cada scanf va a ser el '\n' indicando que se termino la linea
@@ -151,12 +151,7 @@ int isspace(int c){
  *
  */
 
-int scanf_int(int * value_ptr);
-
-int scanf_str(char *s_arg);
-
-int scanf_hex(int * hexToDec);
-
+ 
 /*
  * Para que lo documente santi *-*
  */
@@ -238,10 +233,10 @@ int scanf_int(int * value_ptr){
 }
 
 //Func aux que copia el str a un puntero
-int scanf_str(char *s_arg){
+int scanf_str(char * s_arg){
 
     char * str = getString();
-    strcpy(str,s_arg);
+    strcpy(str, s_arg);
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <idt/loader.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -75,6 +76,9 @@ void * initializeKernelBinary()
 	ncPrint("[Done]");
 	ncNewline();
 	ncNewline();
+
+	load_idt();
+	
 	return getStackBase();
 }
 

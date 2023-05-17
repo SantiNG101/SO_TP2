@@ -4,6 +4,7 @@
 
 #include <time.h>
 #include <lib.h>
+#include <naiveConsole.h>
 
 #define SECONDS 0X00
 #define MINUTES 0X02
@@ -13,6 +14,8 @@
 #define YEAR 0X09
 #define TIME_ZONE -3
 extern unsigned char clock(unsigned char mode);
+
+static uint64_t ticks = 0;
 
 /*
  * Primero se extrae la primera cifra multiplicando el valor del
@@ -79,4 +82,21 @@ void dateToStr(char * dest){
     dest[7] = y %10 + '0';
 }
 
+
+void tick(){
+    ticks++;
+    ncPrint("tick ");
+}
+
+int getTicks(){
+    return ticks;
+}
+
+int getEllapsedMilliseconds(){
+    return ticks * _MS_BETWEEN_TICKS_;
+}
+
+int getEllapsedSeconds(){
+    return getEllapsedMilliseconds() / 1000;
+}
 
