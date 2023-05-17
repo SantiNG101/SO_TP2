@@ -145,9 +145,9 @@ char * getString(void) {
  * El delimitador de cada scanf va a ser el '\n' indicando que se termino la linea
  * Los espacios vacios (white space seran ignorados siempre y cuando no sea un string)
  * Caso 'c' ==> lee un char
- * Caso 'd' ==> Lee un int
+ * Caso 'd' ==> Lee un int de hasta 64 bit
  * Caso 's' ==> lee un str
- * Caso 'x' ==> lee un hexa -> lo pasa a dec
+ * Caso 'x' ==> lee un hexa de hasta-> lo pasa a dec
  *
  */
 
@@ -166,34 +166,35 @@ int scanf(const char *format, ...) {
             format++;
             switch(*format++){
                 case 'd': {
-                    int *int_arg = va_arg(args,int *);
+                    int64_t *int_arg = va_arg(args,int64_t *);
                     if (scanf_int(int_arg) == -1) {
                         *int_arg = '\0';
                         flag_error = 1;
                         printf("Format error\n");
                     }
-                }
                     break;
+                }
                 case 'x': {
-                    int *hex_arg = va_arg(args,int *);
+                    uint64_t *hex_arg = va_arg(args,uint64_t *);
                     if (scanf_hex(hex_arg) == -1) {
                         *hex_arg = '\0';
                         flag_error = 1;
                         printf("Format error\n");
                     }
-                }
                     break;
+                }
                 case 's': {
-                    char *s_arg = va_arg(args,char *);
+                    char *s_arg = va_arg(args,
+                    char *);
                     scanf_str(s_arg);
-                }
                     break;
+                }
                 case 'c': {
                     char *c_arg = va_arg(args,char *);
                     *c_arg = getChar();
                     putChar('\n');
-                }
                     break;
+                }
                 default:
                     break;
             }
@@ -206,8 +207,8 @@ int scanf(const char *format, ...) {
 }
 
 //Func aux que procesa un String a Entero
-int scanf_int(int * value_ptr){
-    int value = 0;
+int scanf_int(int64_t * value_ptr){
+    int64_t value = 0;
     char c;
     int sign = 1;
 
@@ -242,8 +243,8 @@ int scanf_str(char * s_arg){
 }
 
 //Func aux que procesa un String (hex con fmt 0x o 0X) a entero
-int scanf_hex(int *hexToDec) {
-    int result = 0;
+int scanf_hex(uint64_t *hexToDec) {
+    uint64_t result = 0;
     char * hexStr = getString();
 
     //Verifico que entre en formato de hexa 0x // 0X

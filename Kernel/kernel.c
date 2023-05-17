@@ -107,22 +107,9 @@ int main()
     writeMsg("Arqui");
     ncClear();
 
-
-    char * time;
-    char * date;
-        timeToStr(time);
-        ncPrint(time);
-        ncNewline();
-        dateToStr(date);
-        ncPrint(date);
-        ncNewline();
-        ncClear();
-
         ncPrint("Insert character");
         ncNewline();
 
-        char s[100];
-        scanf("%s",s);
-        printf("%s",s);
+        showRegisterStatus();
 	return 0;
 }
