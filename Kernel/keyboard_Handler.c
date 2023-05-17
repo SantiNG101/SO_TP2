@@ -31,10 +31,6 @@
 #define isdigit(c) (c >= '0' && c <= '9')
 #define isspace(c) (c == ' ')
 
-int scanf_int(int * value_ptr);
-int scanf_str(char *s_arg);
-int scanf_hex(int * hexToDec);
-
 const unsigned char kbdus[128] =
         {
                 0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -67,6 +63,10 @@ static unsigned char isShift_Pressed = 0;  //lo uso para ver si el shift esta ac
 static unsigned char isAlt_Pressed = 0;
 static unsigned char isCtrl_Pressed = 0;
 static unsigned char caps_lock_on = 0;
+
+int scanf_int(int64_t * value_ptr);
+int scanf_str(char * s_arg);
+int scanf_hex(uint64_t * hexToDec);
 
 int getChar() {
     int c = getC(KEYBOARD_STATUS_PORT, KEYBOARD_DATA_PORT);
