@@ -77,7 +77,6 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 
-	load_idt();
 	
 	return getStackBase();
 }
@@ -110,6 +109,14 @@ int main()
         ncPrint("Insert character");
         ncNewline();
 
-        showRegisterStatus();
+
+        char t[50];
+    scanf("%s",t);
+        char * tok = strtok(t,"-.");
+        while(tok != NULL){
+            printf("%s\n",tok);
+            tok = strtok(NULL,"-.");
+        }
+
 	return 0;
 }
