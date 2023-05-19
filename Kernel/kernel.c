@@ -107,9 +107,13 @@ int main()
     writeMsg("Arqui");
     ncClear();
 
-        ncPrint("Insert character");
-        ncNewline();
+    ncPrint("Insert character");
+    ncNewline();
 
-        showRegisterStatus();
+
+	while(1);
+	
+    showRegisterStatus();
+
 	return 0;
 }

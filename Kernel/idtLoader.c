@@ -25,13 +25,12 @@ static void setup_IDT_entry(uint8_t, uint64_t, IRQ_T);
 void load_idt(){
     // Comienzo a agregar los IDTR
     /* INTERRUPCIONES */
-    setup_IDT_entry(0x20, &_irq00Handler, HARDWAR_I);          // Seteo el timerTick en el 20h
-
-    // setup_IDT_entry(0x21, &_irq01Handler);          // Seteo el keyboardHandler en el 21h
+    setup_IDT_entry(0x20, &_irq00Handler, HARDWAR_I);           // Seteo el timerTick en el 20h
+    setup_IDT_entry(0x21, &_irq01Handler, HARDWAR_I);           // Seteo el keyboardHandler en el 21h
 
     /* Cargo las excepciones */
     
-    picMasterMask(0xFE);
+    picMasterMask(0xFC);
     picSlaveMask(0xFF);
 
     _sti();

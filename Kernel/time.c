@@ -85,7 +85,6 @@ void dateToStr(char * dest){
 
 void tick(){
     ticks++;
-    ncPrint("tick ");
 }
 
 int getTicks(){

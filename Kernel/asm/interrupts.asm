@@ -32,6 +32,7 @@ GLOBAL haltcpu
 GLOBAL _hlt
 
 GLOBAL _irq00Handler        ;   TIMER TICK
+GLOBAL _irq01Handler        ;   KEYBOARD
 
 GLOBAL _exception00Handler  ;   Division by Zero Exception
 
@@ -140,6 +141,9 @@ picSlaveMask:
 
 _irq00Handler:
     irqHandlerMaster 0          ; TIMER TICK
+
+_irq01Handler:
+    irqHandlerMaster 1          ; KEYBOARD
 
 ; ------  ENDS  IRQ ------ ;
 
