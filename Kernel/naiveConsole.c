@@ -211,9 +211,6 @@ void showRegisterStatus(){
            getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
            getCurrentRSI(),getCurrentRDI());
 }
-// Clear all the registers
-void cleanRegisterStatus(){
 
-}
 
 

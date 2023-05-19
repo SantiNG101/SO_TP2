@@ -228,3 +228,21 @@ exit
 cd root
 make all
 exit
+cd root
+cd Toolchain/
+make all
+cd ..
+make all
+exit
+cd root
+make all
+cd Toolchain/
+cd make all
+make all
+cd ..
+make all clear
+clear
+exit
+cd root
+make all clear
+exit

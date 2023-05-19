@@ -38,6 +38,7 @@ GLOBAL _irq03Handler        ;
 
 GLOBAL _exception00Handler  ;   Division by Zero Exception
 GLOBAL _exception01Handler  ;   Not an available function
+GLOBAL _exception02Handler  ;   Default exception
 
 ; ------ ENDS GLB SECTION ------ ;
 
@@ -145,10 +146,10 @@ _irq00Handler:
     irqHandlerMaster 0          ; TIMER TICK
 
 _irq01Handler:
-    irqHandlerMaster 1          ; READ
+    irqHandlerMaster 1          ; KEYBOARD
 
 _irq02Handler:
-    irqHandlerMaster 2          ; WRITE
+    irqHandlerMaster 2          ; USER
 
 _irq03Handler:
     irqHandlerMaster 3          ;
@@ -163,6 +164,9 @@ _exception00Handler
 
 _exception01Handler
     exceptionHandlerMaster 1    ; Not an available function
+
+_exception02Handler
+    exceptionHandlerMaster 2    ; Default exception
 
 ; ------  ENDS  EXCPETIONS ------ ; 
 
