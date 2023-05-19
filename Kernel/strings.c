@@ -5,13 +5,20 @@
 
 #include <strings.h>
 
-int strcmp(const char * str1, const char * str2) {
-    while(*str1 && *str2 && *(str1++) == *(str2++));
-    return (int)(*str1 - *str2);        //retorna la diferencia entre los ultimos 2 ascii
+int strcmp(const char* str1, const char* str2) {
+    while (*str1 && (*str1 == *str2)) {
+        str1++;
+        str2++;
+    }
+
+    return (int)(*str1 - *str2);
 }
 
 int strncmp(const char *str1, const char * str2, size_t n){
-    while(n-- && *str1 && *str2 && *(str1++) == *(str2++));
+    while(n-- && *str1 && *str2 && *str1 == *str2){
+        str1++;
+        str2++;
+    }
     return (int)(*str1 - *str2);
 }
 
@@ -20,7 +27,6 @@ size_t strlen(const char * str){
     while(str[len]) len++;
     return len;
 }
-
 
 char * strcpy(const char * src, char * dest){
     char * temp = dest;
