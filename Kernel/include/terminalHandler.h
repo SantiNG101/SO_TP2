@@ -1,16 +1,24 @@
+//
+// Created by ptorl on 5/17/2023.
+//
+
 #ifndef TPEARQUI_TERMINALHANDLER_H
 #define TPEARQUI_TERMINALHANDLER_H
 
-#define IN_LINE_BUFFER 79   //descuenta el $ indicando que espera que se pase un comando
-#define MAX_LINE_ARGS 6
 #define TRUE 1
 #define FALSE 0
-
+//HashCodes (obtained from hashing in range)
+#define H_HELP 35
+#define H_EXIT 28
+#define H_TIME 5
+#define H_CLEAR 7
+//
+#include <stdint.h>
 //Las unicas 2 funciones visibles
 
 //Arranca el bash
 int terminalStart();
-
+int64_t hashInRange(const char* str, uint64_t start, uint64_t end);
 /*
  * Formato de comandos aceptados por la terminal:
  *
