@@ -1,15 +1,14 @@
 //
 // keyboard_Handler.h
 //
-#ifndef KERNEL_KEYBOARD_HANDLER_H
-#define KERNEL_KEYBOARD_HANDLER_H
+#ifndef KERNEL_KEYBOARD_H
+#define KERNEL_KEYBOARD_H
 #include <naiveConsole.h>
 
 /*
  *  MACROS
  */
-#define isdigit(c) (c >= '0' && c <= '9')
-#define isspace(c) (c == ' ')
+
 
 //Read port to get the scanned key
 extern unsigned char read_port(unsigned char mode);
@@ -28,4 +27,4 @@ int getC(uint64_t status_port, uint64_t data_port);
 
 void keyboardHandler();
 
-#endif //KERNEL_KEYBOARD_HANDLER_H
+#endif //KERNEL_KEYBOARD_H

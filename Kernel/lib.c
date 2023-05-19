@@ -94,13 +94,13 @@ void* myMalloc(size_t size) {
 
                 BlockHeader* new_block = (BlockHeader*)((char*)curr_block + sizeof(BlockHeader) + size);    //puntero al nuevo bloque va a estar en la posicion curr_block + el size del struct + lo que quiero reservar de memoria
 
-                    //new_block reduce su size en size y sizeof(BlockHeader), esta libre, y su next es el next del current block
+                //new_block reduce su size en size y sizeof(BlockHeader), esta libre, y su next es el next del current block
                 new_block->size = curr_block->size - size - sizeof(BlockHeader);
                 new_block->is_free = 1;
                 new_block->next = curr_block->next;
 
 
-                    //current block toma el size pedido, se reserva y el siguiente es el new block
+                //current block toma el size pedido, se reserva y el siguiente es el new block
                 curr_block->size = size;
                 curr_block->is_free = 0;
                 curr_block->next = new_block;
@@ -113,7 +113,7 @@ void* myMalloc(size_t size) {
             // Retorno un puntero a esta seccion del bloque
             return (void*)((char*)curr_block + sizeof(BlockHeader));
         }
-            //si no hay espacio sigo al siguiente
+        //si no hay espacio sigo al siguiente
         curr_block = curr_block->next;
     }
 

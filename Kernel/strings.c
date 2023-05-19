@@ -57,7 +57,6 @@ char * strtok(char * str, const char * delim){
     }
 
     char * token = last_ptr;
-    const int delim_n = strlen(delim);
 
     while(*last_ptr != '\0'){
         int i;

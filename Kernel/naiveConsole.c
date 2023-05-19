@@ -177,8 +177,8 @@ int printf(const char * format, ...){
             putChar(*format++);
         }
     }
-    return 0;
     va_end(args);
+    return 0;
 }
 //section video driver
 void writeMsg(char * str){

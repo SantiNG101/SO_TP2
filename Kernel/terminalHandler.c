@@ -1,7 +1,3 @@
-//
-// Created by ptorl on 5/17/2023.
-//
-
 #include "include/terminalHandler.h"
 #include "include/keyboard.h"
 #include "include/strings.h"
@@ -13,13 +9,13 @@
 const char * currentFuncs[] = {"time","clear","date","help","exit"};
 
 const char * currentDescriptions[] = {0,0,0,0,0,"Shows the current time in GMT-3",0,0,0,"clears screen and resets position",
-                               0,0,0,0,0,0,0,0,0,
-                               0,0,"Displays current date.",0,0,0,0,0,0,
-                               "Exits the bash",0,0,0,0,0,0,
-                               "Provides different types of help depending on the amount of args passed.\nNo args mean display of current functions.\n1 Arg means getting description of a particular function",
-                               0,
-                               0,0,0,0,0,0,0,0,0,
-                               0,0,0,0,0};
+                                      0,0,0,0,0,0,0,0,0,
+                                      0,0,"Displays current date.",0,0,0,0,0,0,
+                                      "Exits the bash",0,0,0,0,0,0,
+                                      "Provides different types of help depending on the amount of args passed.\nNo args mean display of current functions.\n1 Arg means getting description of a particular function",
+                                      0,
+                                      0,0,0,0,0,0,0,0,0,
+                                      0,0,0,0,0};
 
 void help(char * token);
 void showTime();
@@ -49,7 +45,7 @@ int terminalStart(){
         } else if(!strcmp("date",token)){
             showDate();
         }else {
-                printf("Command not found.\n"); //Cambiar por excepcion despues
+            printf("Command not found.\n"); //Cambiar por excepcion despues
         }
 
         printf("\n");
@@ -65,7 +61,7 @@ void help(char * token){
     if(token == NULL){
         printf("Current functions are:\n");
         for(int i = 0; i < CURRENT_FUNC_COUNT; i++)
-                printf("%s\n", currentFuncs[i]);
+            printf("%s\n", currentFuncs[i]);
 
     } else {
         if(currentDescriptions[hashInRange(token,0,50)] != NULL) {

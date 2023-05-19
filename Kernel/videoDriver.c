@@ -2,7 +2,7 @@
 // Created by ptorl on 5/12/2023.
 //
 #include <videoDriver.h>
-#include <stdint.h>
+
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -35,7 +35,7 @@ struct vbe_mode_info_structure {
 	uint8_t reserved_mask;
 	uint8_t reserved_position;
 	uint8_t direct_color_attributes;
- 
+
 	uint32_t framebuffer;		// physical address of the linear frame buffer; write here to draw to the screen
 	uint32_t off_screen_mem_off;
 	uint16_t off_screen_mem_size;	// size of memory in the framebuffer but not being displayed on the screen
@@ -53,3 +53,4 @@ void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y){
     videoPtr[offset] = g;
     videoPtr[offset] = r;
 }
+
