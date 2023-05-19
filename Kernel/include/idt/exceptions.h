@@ -19,6 +19,6 @@ void invalidOperationException();
  * Excepcion default, para cuando aún no se ha programado la excepcion.
  * Por ejemplo: En este caso, la excepcion 230 no existe, por lo que dará una notKnownException.
  */
-void notKnownException();
+void defaultException();
 
 #endif

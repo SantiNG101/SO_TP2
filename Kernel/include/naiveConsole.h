@@ -2,6 +2,7 @@
 #define NAIVE_CONSOLE_H
 #include <stdint.h>
 #include <stdarg.h>
+#include <lib.h>
 
 //Screen painting functions
 int puts(const char * string);

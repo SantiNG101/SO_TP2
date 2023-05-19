@@ -10,6 +10,7 @@ GLOBAL getCurrentRBP
 GLOBAL getCurrentRSP
 GLOBAL getCurrentRDI
 GLOBAL getCurrentRSI
+GLOBAL cleanActualRegisters
 
 section .text
 ;Hay que pasar a parte de ah y al para escribir los bytes con x color
@@ -122,4 +123,21 @@ getCurrentRDI:
 	ret
 getCurrentRSI:
 	mov rax, [rsi]
+	ret
+
+cleanActualRegisters:		; limpiamos todos los registros
+	mov rax, 0
+	mov rbx, 0
+	mov rcx, 0
+	mov rdx, 0
+	mov rsi, 0
+	mov rdi, 0
+	mov r8, 0
+	mov r9, 0
+	mov r10, 0
+	mov r11, 0
+	mov r12, 0
+	mov r13, 0
+	mov r14, 0
+	mov r15, 0
 	ret

@@ -2,19 +2,23 @@
 // Created by ptorl on 5/15/2023.
 //
 
-/** TODOLIST:
-*       - Comentar el código
-*       - Hacer documentación
-*/
+
 #include <strings.h>
 
-int strcmp(const char * str1, const char * str2) {
-    while(*str1 && *str2 && *(str1++) == *(str2++));
-    return (int)(*str1 - *str2);        //retorna la diferencia entre los ultimos 2 ascii
+int strcmp(const char* str1, const char* str2) {
+    while (*str1 && (*str1 == *str2)) {
+        str1++;
+        str2++;
+    }
+
+    return (int)(*str1 - *str2);
 }
 
 int strncmp(const char *str1, const char * str2, size_t n){
-    while(n-- && *str1 && *str2 && *(str1++) == *(str2++));
+    while(n-- && *str1 && *str2 && *str1 == *str2){
+        str1++;
+        str2++;
+    }
     return (int)(*str1 - *str2);
 }
 
@@ -23,7 +27,6 @@ size_t strlen(const char * str){
     while(str[len]) len++;
     return len;
 }
-
 
 char * strcpy(const char * src, char * dest){
     char * temp = dest;
@@ -49,20 +52,24 @@ char * strtok(char * str, const char * delim){
         last_ptr = str;
     }
 
-    if(*last_ptr == '\0'){
+    if(last_ptr == NULL || *last_ptr == '\0'){
         return NULL;
     }
 
     char * token = last_ptr;
     const int delim_n = strlen(delim);
 
-    while(*last_ptr){
-        if(strncmp(last_ptr, delim, delim_n) == 0){
-            *last_ptr++ = '\0';
-            return token; 
-        } 
+    while(*last_ptr != '\0'){
+        int i;
+        for(i = 0; delim[i] != '\0'; i++){
+            if (*last_ptr == delim[i]) {
+                *last_ptr = '\0';
+                last_ptr++;
+                return token;
+            }
+        }
         last_ptr++;
     }
-
     return token;
 }
+
