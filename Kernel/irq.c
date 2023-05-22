@@ -3,10 +3,12 @@
 #include <keyboard.h>
 #include <idt/irq.h>
 
-/* LISTA DE INTERRUPCIONES */
-typedef enum { TICK_IRQ = 0, KEYBOARD_IRQ, USER_IRQ, IRQ_SIZE } IRQ_T;
+#include <syscall.h>
 
-void (* irq [IRQ_SIZE])(void) = { tick, keyboardHandler, user };
+/* LISTA DE INTERRUPCIONES */
+typedef enum { TICK_IRQ = 0, KEYBOARD_IRQ, IRQ_SIZE } IRQ_T;
+
+void (* irq [IRQ_SIZE])(void) = { tick, keyboardHandler };
 
 /* SI TODAVÍA NO EXISTE LA INTERRUPCIÓN NO HAGO NADA. */
 void irqDispatcher(uint8_t irqID){
@@ -15,6 +17,3 @@ void irqDispatcher(uint8_t irqID){
 
     irq[irqID]();
 }
-
-
-

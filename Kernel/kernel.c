@@ -17,6 +17,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
+extern void kernelASM();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -77,6 +78,7 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 
+	load_idt();
 	
 	return getStackBase();
 }
@@ -109,7 +111,7 @@ int main()
     ncPrint("Insert character");
     ncNewline();
 
-
+	kernelASM();
 	while(1);
 	
     showRegisterStatus();

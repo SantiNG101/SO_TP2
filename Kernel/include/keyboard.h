@@ -11,11 +11,13 @@
 #define isdigit(c) (c >= '0' && c <= '9')
 #define isspace(c) (c == ' ')
 
+
+
 //Read port to get the scanned key
 extern unsigned char read_port(unsigned char mode);
 
-//getCharFunction
-int getChar(void);
+// //getCharFunction
+// int getChar(void);
 
 //scanf function
 int scanf(const char * format, ...);
@@ -24,7 +26,7 @@ int scanf(const char * format, ...);
 char * getString(void);
 
 //getC Function
-int getC(uint64_t status_port, uint64_t data_port);
+char getChar();
 
 void keyboardHandler();
 

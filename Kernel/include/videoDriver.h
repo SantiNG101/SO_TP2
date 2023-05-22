@@ -4,5 +4,8 @@
 
 #ifndef KERNEL_VIDEODRIVER_H
 #define KERNEL_VIDEODRIVER_H
-void putPixel(unit8_t r, unit8_t g, unit8_t b, unit32_t x, uint32_t y)
+#include <stdint.h>
+
+void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y);
+
 #endif //KERNEL_VIDEODRIVER_H

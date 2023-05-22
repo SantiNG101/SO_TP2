@@ -33,7 +33,7 @@ GLOBAL _hlt
 
 GLOBAL _irq00Handler        ;   TIMER TICK
 GLOBAL _irq01Handler        ;   KEYBOARD
-GLOBAL _irq02Handler        ;   USER
+GLOBAL _irq02Handler        ;   SYSCALL
 GLOBAL _irq03Handler        ;   
 
 GLOBAL _exception00Handler  ;   Division by Zero Exception
@@ -44,6 +44,7 @@ GLOBAL _exception02Handler  ;   Default exception
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN syscallDispatcher
 
 section .text
 
@@ -148,8 +149,21 @@ _irq00Handler:
 _irq01Handler:
     irqHandlerMaster 1          ; KEYBOARD
 
-_irq02Handler:
-    irqHandlerMaster 2          ; USER
+_irq02Handler:                  ; SYSCALL
+    push rbp
+    mov rbp, rsp
+
+    pushState
+
+    mov rdi, rsp
+    call syscallDispatcher
+    
+    popState
+
+    mov rsp, rbp
+    pop rbp
+    iretq
+
 
 _irq03Handler:
     irqHandlerMaster 3          ;
