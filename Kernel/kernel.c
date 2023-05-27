@@ -81,38 +81,9 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-int main()
-{
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
+#include <videoDriver.h>
 
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-
-	ncPrint("[Finished]");
-    ncNewline();
-    writeMsg("Hola rey, bienvenido");
-    writeMsg("Arqui");
-    ncClear();
-
-    ncPrint("Insert character");
-    ncNewline();
-
-
-	while(1);
-	
-    showRegisterStatus();
-
+int main(){
+	putPixel( RED, 0, 0 );
 	return 0;
 }
