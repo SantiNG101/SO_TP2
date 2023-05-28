@@ -1,3 +1,4 @@
+
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
@@ -84,6 +85,9 @@ void * initializeKernelBinary()
 #include <videoDriver.h>
 
 int main(){
-	putPixel( RED, 0, 0 );
+	vd_Initialize();
+	draw_char(0,0,'Z',WHITE,BLACK );
+	draw_char(8,0,' ',WHITE,BLACK );
+	draw_string( 1016,0,"hola",GRAY,BLACK );
 	return 0;
 }
