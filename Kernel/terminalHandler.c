@@ -26,7 +26,7 @@ void showTime();
 void showDate();
 
 static unsigned char keepGoing = TRUE;
-
+/*
 int terminalStart(){
     char* ptr = (char*)myMalloc(sizeof(char)*79);
 
@@ -59,6 +59,8 @@ int terminalStart(){
     myFree(ptr);
     return 0;
 }
+
+*/
 
 void help(char * token){
     token = strtok(NULL," ");
