@@ -3,6 +3,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
+#include <screen.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -82,12 +83,21 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-#include <videoDriver.h>
+
 
 int main(){
-	vd_Initialize();
+	screen_Initialize();
+	/*
 	draw_char(0,0,'Z',WHITE,BLACK );
 	draw_char(8,0,' ',WHITE,BLACK );
 	draw_string( 1016,0,"hola",GRAY,BLACK );
+	*/
+	putCharScreen('1');
+	// 6144 cantidad de caracteres que caben en pantalla con los tamaños establecidos
+	for(int i=0; i <  6145; i++){
+		putCharScreen('A');
+	}
+	// clearScreen();
+	
 	return 0;
 }

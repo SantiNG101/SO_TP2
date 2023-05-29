@@ -4,6 +4,9 @@
 #define KERNEL_VIDEODRIVER_H
 
 #include <stdint.h>
+#include <font.h>
+
+// asignacion de hexa a palabras
 
 #define BLACK 0x000000
 #define BLUE 0x0000AA
@@ -21,6 +24,10 @@
 #define LIGHT_PURPLE 0xFF55FF
 #define YELLOW	0xFFFF55
 #define WHITE 0xFFFFFF
+
+// definicion de colores default
+#define COLOR_LETTER_DEFAULT WHITE
+#define COLOR_BACKGROUND_DEFAULT BLACK
 
 
 // inicializa el driver de pantalla

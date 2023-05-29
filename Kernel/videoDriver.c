@@ -1,7 +1,7 @@
 
 #include <videoDriver.h>
 #include <stdint.h>
-#include <font.h> 
+ 
 
 // realiza el chequeo de fuera de bordes retorna 1 si esta fuera, 0 si no.
 int failBordersCheck( uint32_t x, uint32_t y );
@@ -50,12 +50,13 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 uint16_t horizontalPixelCount;
 uint16_t verticalPixelCount;
-//uint64_t numberOfColorBytes = 3;
+uint64_t numberOfColorBytes;
 
 
 void vd_Initialize(){
 	horizontalPixelCount = VBE_mode_info->width;
 	verticalPixelCount = VBE_mode_info->height;
+	numberOfColorBytes = VBE_mode_info->bpp/8;
 }
 
 /*
@@ -69,7 +70,7 @@ void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y) {
 */
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
 	uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
-    uint32_t offset = VBE_mode_info->pitch*y + x*3;
+    uint32_t offset = VBE_mode_info->pitch*y + x*numberOfColorBytes;
 	screen[offset] = hexColor & 0xFF;
 	screen[offset+1] = (hexColor >> 8) & 0xFF;
 	screen[offset+2] = (hexColor >> 16) &  0xFF;
@@ -77,11 +78,20 @@ void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
 
 
 // necesario para cuando se haga la subida de pantalla
+// pasa el pixel y todo su color de un sector de pantalla a otro
 void copyPixel( uint32_t xfrom, uint32_t yfrom, uint32_t xto, uint32_t yto ){
 	
+	uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
+	// creo el offset de form
+	uint32_t offsetFrom = VBE_mode_info->pitch*yfrom + xfrom*numberOfColorBytes;
+	// creo el offset de to
+	uint32_t offsetTo = VBE_mode_info->pitch*yto + xto*numberOfColorBytes;
+	// paso uno al otro
+	screen[offsetTo] = screen[offsetFrom];
+	screen[offsetTo+1] = screen[offsetFrom+1];
+	screen[offsetTo+2] = screen[offsetFrom+2];
 }
 
- 
 // chequear esta funcion pues el string se puede cortar en pantalla
 void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
 				 uint32_t backgroundColor) {
