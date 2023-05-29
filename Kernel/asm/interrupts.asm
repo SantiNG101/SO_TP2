@@ -92,7 +92,6 @@ section .text
     mov rdi, %1                 ; Paso el parametro
     call irqDispatcher          ; Ejecuto la interrupción correspondiente con irqDispatcher
 
-    
     mov al, 20h                 ; Signal PIC EOI (End of Interrupt)
     out 20h, al
 
@@ -101,12 +100,21 @@ section .text
 %endmacro
 
 %macro exceptionHandlerMaster 1
-    pushState
+    push rbp
+    mov rbp, rsp                ; Armo el stackFrame
+
+    pushState                   ;
 
     mov rdi, %1                 ; Paso el parametro
+    mov rsi, [rbp + 8]
     call exceptionDispatcher    ; Ejecuto la excepción correspondiente
 
+    mov [rbp + 8], rax          ; Cambio el RIP
+    test al, al                 ; Limpio los flags acorde a la excepcion
     popState
+
+    mov rsp, rbp                ; Desarmo el stackFrame
+    pop rbp
     iretq
 %endmacro
 
@@ -177,7 +185,7 @@ _exception00Handler
     exceptionHandlerMaster 0    ; Division by Zero Exception
 
 _exception01Handler
-    exceptionHandlerMaster 1    ; Not an available function
+    exceptionHandlerMaster 1    ; Not valid OpCode
 
 _exception02Handler
     exceptionHandlerMaster 2    ; Default exception
