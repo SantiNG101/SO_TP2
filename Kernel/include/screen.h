@@ -24,7 +24,6 @@ void backspace();
 void tab();
 // pasa a la linea de abajo
 void enter();
-
 // limpia la pantalla y la setea a color negro
 void clearScreen();
 

@@ -87,45 +87,6 @@ void * initializeKernelBinary()
 
 int main(){
 	screen_Initialize();
-	/*
-	draw_char(0,0,'Z',WHITE,BLACK );
-	draw_char(8,0,' ',WHITE,BLACK );
-	draw_string( 1016,0,"hola",GRAY,BLACK );
-	*/
-
-
-	//draw_char(8,0,' ',WHITE,BLACK );
-	putPixel(RED,0,0);
-	copyPixel(0,0,0,8);
-	/*
-	enter();
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('C');
-	backspace();
-	putCharScreen('P');
-	
-	enter();
-	putCharScreen('A');
-	tab();
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('A');
-	putCharScreen('C');
-	*/
-	/*
-	// 6144 cantidad de caracteres que caben en pantalla con los tamaños establecidos
-	for(int i=0; i <  6145; i++){
-		putCharScreen('A');
-	}
-	*/
-	// clearScreen();
 	
 	return 0;
 }

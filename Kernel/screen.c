@@ -87,18 +87,21 @@ void enter(){
 
 void scrollScreenUp(){
     // cada pixel lo copio en la de arriba
-    for ( int i= 0; i < screenHeight - CHAR_HEIGHT; i++ ){ // y (altura)
+    for ( int i= 0; i < screenHeight; i++ ){ // y (altura)
         for( int j=0; j < screenWidth ; j++ ){ // x (ancho)
             copyPixel( j,i,j,i-CHAR_HEIGHT ); // copio al de arriba
         }
     }
     // imprimo en la ult linea espacios
+    
     for ( int i= 0; i< screenWidth; i+=CHAR_WIDTH ){
         draw_char( i, screenHeight - CHAR_HEIGHT, ' ',
          COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT );
     }
+    
     current_cursor_pos_x = 0;
     current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
+    
 }
 
 void clearScreen(){
@@ -115,11 +118,11 @@ void clearScreen(){
 }
 
 void bordersCheck(){
-    if ( current_cursor_pos_x < screenWidth - CHAR_WIDTH +1 )
+    if ( current_cursor_pos_x <= screenWidth - CHAR_WIDTH )
         return;
 
     current_cursor_pos_x = 0;
-    if( current_cursor_pos_y < screenHeight - CHAR_HEIGHT +1){
+    if( current_cursor_pos_y <= screenHeight - 2*CHAR_HEIGHT){
             current_cursor_pos_y += CHAR_HEIGHT;
     }else
         scrollScreenUp();
