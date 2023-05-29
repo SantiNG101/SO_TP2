@@ -47,27 +47,11 @@ void syscallDispatcher(argumentsStruct args){
 
 void read(argumentsStruct args){
     // This might read from keyboard buffer, print it and return it into the r10 Register.
-    char * data = (char *) args->r10;
+    char*   data = (char *) args->r10;
     uint64_t len = (uint64_t) args->r9;
-
-    while(len - 1 && *data != '\n'){
-        if((*data = getChar()) != 0){
-            putChar(*data);
-            
-            if(*data == '\b' && data != args->r10){
-                data--;
-                len++;
-            } else {
-                data++;
-                len--;
-            }
-            // data++;
-            // len--;
-        }
-    }
-
-    *data = 0;
     
+    getString(data, len);
+
     ncNewline();
 }
 

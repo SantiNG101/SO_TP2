@@ -62,11 +62,7 @@ static char buffer[64] = { 0 };
 static char * currentBuff = buffer;
 
 void keyboardHandler(){
-    uint8_t data;
-    
-    while((data = read_port(KEYBOARD_STATUS_PORT) & 0x01) == 0);
-
-    data = read_port(KEYBOARD_DATA_PORT);
+    uint8_t data = read_port(KEYBOARD_DATA_PORT);
     
     if(isSpecial(data)){
         setState(keyboard[(data >> 4) & 0x07][data & 0x0F]);
@@ -77,27 +73,44 @@ void keyboardHandler(){
         return;
 
     uint8_t keyCode = keyboard[data >> 4][data & 0x0F];
-    if(getState(SHF)){
+    if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4][data & 0x0F];
-    }
 
-    putChar(keyCode);
     *currentBuff++ = keyCode;
+    return;
 }
 
-char getChar(){
+int getC(){
+    while((read_port(KEYBOARD_STATUS_PORT) & 0x01) == 0);
     keyboardHandler();
-    if(currentBuff == buffer)
-        return 0;
 
-    currentBuff--;
-    if(*currentBuff == 0){
-        currentBuff++;
-        return 0;
-    }
-
-    char toReturn = *currentBuff;
+    int c = *--currentBuff;
     *currentBuff = 0;
-    
-    return toReturn;
+
+    return c;
+}
+
+int getChar(){
+    int c;
+    while((c = getC()) == 0);
+
+    putChar(c);        
+    return c;
+}
+
+char * getString(char * buff, uint64_t len){
+    int c;
+    char * str = buff;
+    while(len - 1 && (c = getChar()) != '\n'){
+        switch(c){
+            case '\b':
+                *--str = 0;
+                len++;
+                break;
+            default:
+                *str++ = c;
+                len--;
+                break;
+        }
+    }
 }
