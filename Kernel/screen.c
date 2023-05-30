@@ -5,6 +5,7 @@
 // tamaño de pantalla
 // 1024 x 768
 
+void bordersCheck();
 
 uint64_t screenWidth;
 uint64_t screenHeight;
@@ -21,29 +22,17 @@ void screen_Initialize(){
 // tabla de caracteres especiales
 // tabla de relaciones con letras
 
-/*
-void printStrScreen( char* str ){
-    
-    int len = strlen(str);
-    //version con draw char
-    while(*str){
-        putCharScreen(*str);
-    }
-    if ( (current_cursor_pos_x + len) < screenWidth )
-        current_cursor_pos_x += len;
-    else{
-        len = current_cursor_pos_x + len - screenWidth;
-        if ( current_cursor_pos_y )
-        current_cursor_pos_y++;
-        
-        current_cursor_pos_x += len;
-    }
-}
-
 void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color ){
-
+    while(*str != '\0'){
+        putCharScreenFrmt(*str++,font_color,background_Color);
+    }
 }
-*/
+
+void printErrorStr( char* str ){
+    printStrScreenFrmt(str,RED, COLOR_BACKGROUND_DEFAULT);
+}
+
+
 void putCharScreen( char character ){
     bordersCheck();
     // imprimo el caracter en la pantalla

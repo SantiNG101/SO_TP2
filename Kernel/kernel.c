@@ -99,6 +99,6 @@ int main()
 
     screen_Initialize();
 	kernelASM();
-	terminalStart();
+    terminalStart();
 	return 0;
 }

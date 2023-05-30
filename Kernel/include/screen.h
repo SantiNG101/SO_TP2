@@ -7,11 +7,11 @@
 // inicializa los valores necesarios de la pantalla
 void screen_Initialize();
 // imprime un string a pantalla con los formatos default
-/*
-void printStrScreen( char* str );
+
+void printErrorStr( char* str );
 // imprime a pantalla con los formatos personalizados
-void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color );
-*/
+//void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color );
+
 // imprime un char a pantalla con el formato default
 void putCharScreen( char character );
 // imprime un char a pantalla con los formatos personalizados

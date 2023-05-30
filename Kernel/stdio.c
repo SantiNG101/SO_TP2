@@ -176,14 +176,12 @@ void uintToBase(uint64_t value, char * buffer, uint32_t base)
 {
     char *p = buffer;
     char *p1, *p2;
-    uint32_t digits = 0;
 
     //Calculate characters for each digit
     do
     {
         uint32_t remainder = value % base;
         *p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
-        digits++;
     }
     while (value /= base);
 
@@ -202,7 +200,7 @@ void uintToBase(uint64_t value, char * buffer, uint32_t base)
         p2--;
     }
 
-    return digits;
+    return;
 }
 
 //Printf
@@ -243,10 +241,15 @@ int printf(const char * format, ...){
                     break;
             }
         } else {
-            putChar(*format++);
+            if(*format == '\a'){ //beep
+             beep();
+             format++;
+            } else {
+                putChar(*format++);
+            }
         }
     }
-    return 0;
     va_end(args);
+    return 0;
 }
 //#########################################
