@@ -207,7 +207,7 @@ void handleEnter(){
 
 // Show register status 
 void showRegisterStatus(){
-    printf("RAX: %x\tRBX: %x\nRCX: %x\tRDX: %x\nRSP: %x\tRBP: %x\nRSI: %x\tRDI: %x\n",
+    printf("A: %x\tB: %x\tC:%x \tD: %x\nSP: %x\tBP: %x\tSI: %x\tDI: %x\n",
            getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
            getCurrentRSI(),getCurrentRDI());
 }

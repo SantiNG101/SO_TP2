@@ -84,40 +84,23 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+int divisionBy(int x, int y){
+	x = x/y;
+	return x;
+}
+
+
+
 int main()
 {
-	// ncPrint("[Kernel Main]");
-	// ncNewline();
-	// ncPrint("  Sample code module at 0x");
-	// ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	// ncNewline();
-	// ncPrint("  Calling the sample code module returned: ");
-	// ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	// ncNewline();
-	// ncNewline();
-
-	// ncPrint("  Sample data module at 0x");
-	// ncPrintHex((uint64_t)sampleDataModuleAddress);
-	// ncNewline();
-	// ncPrint("  Sample data module contents: ");
-	// ncPrint((char*)sampleDataModuleAddress);
-	// ncNewline();
-
-	// ncPrint("[Finished]");
-    // ncNewline();
-    // writeMsg("Hola rey, bienvenido");
-    // writeMsg("Arqui");
-    // ncClear();
-
-    // ncPrint("Insert character");
-    // ncNewline();
-
+    ncClear();
+	/* Prueba de sysread y syswrite */
 	// kernelASM();
-	// while(1);
-	
-    // showRegisterStatus();
+	kernelASM();
+	/* ERROR DIVISION POR 0 */
+	divisionBy(1,0);
+	divisionBy(2,0);
+	ncPrint("hola");
 	beep();
-
-
 	return 0;
 }

@@ -104,7 +104,9 @@ char * getString(char * buff, uint64_t len){
     while(len - 1 && (c = getChar()) != '\n'){
         switch(c){
             case '\b':
-                *--str = 0;
+                if(str != buff)
+                    *--str;
+                *str = 0;
                 len++;
                 break;
             default:

@@ -31,7 +31,9 @@ void load_idt(){
     setup_IDT_entry(0x80, &_irq02Handler, SYSCALL_I);           // Seteo la syscall.
 
     /* Cargo las excepciones */
-    
+    setup_IDT_entry(0x00, &_exception00Handler, EXCEPTI_I);     // Error al dividir
+    setup_IDT_entry(0x06, &_exception01Handler, EXCEPTI_I);     // Operación invalida.
+
     picMasterMask(0xFC);
     picSlaveMask(0xFF);
 

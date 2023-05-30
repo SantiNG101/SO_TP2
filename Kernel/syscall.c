@@ -31,8 +31,10 @@ void read(argumentsStruct args);
 
 void (* syscalls[]) (argumentsStruct args) = { write, read };
 
+#define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
+
 void syscallDispatcher(argumentsStruct args){
-    if(args->rdi > sizeof(syscalls) / sizeof(syscalls[0])){
+    if(args->rdi > sizeofArr(syscalls)){
         ncPrint("Que so? boludo?, anda pa' alla bobo");
         ncNewline();
         ncPrint("La syscall: ");
