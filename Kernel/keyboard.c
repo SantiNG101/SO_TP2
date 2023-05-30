@@ -2,7 +2,6 @@
 // keyboard.c
 //
 #include <keyboard.h>
-#include <strings.h>
 
 #define KEYBOARD_STATUS_PORT    0x64    //address status port
 #define KEYBOARD_DATA_PORT      0X60    //address data port
@@ -88,31 +87,4 @@ int getC(){
     *currentBuff = 0;
 
     return c;
-}
-
-int getChar(){
-    int c;
-    while((c = getC()) == 0);
-
-    putChar(c);        
-    return c;
-}
-
-char * getString(char * buff, uint64_t len){
-    int c;
-    char * str = buff;
-    while(len - 1 && (c = getChar()) != '\n'){
-        switch(c){
-            case '\b':
-                if(str != buff)
-                    *--str;
-                *str = 0;
-                len++;
-                break;
-            default:
-                *str++ = c;
-                len--;
-                break;
-        }
-    }
 }
