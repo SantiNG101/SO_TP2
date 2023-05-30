@@ -14,7 +14,6 @@ getChar:
     mov rdi, [placeholder]
     call putChar
     
-    mov rax, 0
     mov rax, [placeholder]
 
     leave

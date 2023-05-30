@@ -52,9 +52,9 @@ void read(argumentsStruct args){
     // This might read from keyboard buffer, print it and return it into the r10 Register.
     char*   data = (char *) args->r10;
     uint64_t len = (uint64_t) args->r9;
-    
-    char c = getC();
-    while(len && c != '\n'){
+    char    c;
+
+    while(len){
         while((c = getC()) == 0);
         *data++ = c;
         len--;
