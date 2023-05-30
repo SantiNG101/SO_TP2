@@ -1,17 +1,14 @@
 // tamaño de pantalla
 // 1024 x 768
 
-typedef struct
-{
+typedef struct{
     int x;
     int y;
     int posx;
     int posy;
-
 } Ball;
 
-typedef struct
-{
+typedef struct{
     int y;
     int length;
 } Bars;
@@ -28,6 +25,7 @@ typedef struct{
     Ball ball;
 } Game;
 
-/* Para la pelota hay que agregar un draw, updatePosition y detector de tocar la barra
- *  Mismo para las barras
- */
+/* TODO Para la pelota hay que agregar un draw, updatePosition y detector de tocar la barra
+    Mismo para las barras */
+
+
