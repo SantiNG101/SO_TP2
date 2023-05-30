@@ -15,7 +15,7 @@
     #define ACCS_USR    0x60                                   // Accedible por el usuario. (0x00 Kernel)
 
     typedef enum{ 
-                    SYSCALL_I = ( ACCS_P | ACCS_INT | ACCS_USR ),       // Para una syscall
+                    SYSCALL_I = ( ACCS_P | ACCS_INT | ACCS_USR),       // Para una syscall
                     HARDWAR_I = ( ACCS_P | ACCS_INT ),                   // Para una interrupción de hardware
                     EXCEPTI_I = ACCS_EXC
                 } IRQ_T;                  

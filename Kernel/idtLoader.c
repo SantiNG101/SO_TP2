@@ -5,12 +5,12 @@
 #pragma pack(push)      // Push de alineación actual
 #pragma pack(1)         // Alineamiento por 1 Byte.
 /***
---- DESCRIPTOR ---
+--- GATE DESCRIPTOR ---
 ***/
 typedef struct {
    uint16_t offset_l, selector;
    uint8_t  ist, attributes;            
-   uint16_t offset_m; 
+   uint16_t offset_m;
    uint32_t offset_h, zero;
 } DESCR_INT;
 
@@ -28,8 +28,12 @@ void load_idt(){
     setup_IDT_entry(0x20, &_irq00Handler, HARDWAR_I);           // Seteo el timerTick en el 20h
     setup_IDT_entry(0x21, &_irq01Handler, HARDWAR_I);           // Seteo el keyboardHandler en el 21h
 
+    setup_IDT_entry(0x80, &_irq02Handler, SYSCALL_I);           // Seteo la syscall.
+
     /* Cargo las excepciones */
-    
+    setup_IDT_entry(0x00, &_exception00Handler, EXCEPTI_I);     // Error al dividir
+    setup_IDT_entry(0x06, &_exception01Handler, EXCEPTI_I);     // Operación invalida.
+
     picMasterMask(0xFC);
     picSlaveMask(0xFF);
 
@@ -47,6 +51,7 @@ static void setup_IDT_entry(uint8_t index, uint64_t offset, IRQ_T type){
      * (HARDWAR_I, SYSCALL_I, EXCEPTI_I)
      */
     idt[index].attributes = type;                       
+    idt[index].ist = 0;
     idt[index].zero = 0;
 }
 

@@ -17,7 +17,7 @@ static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
-static const uint32_t height = 25 ;
+static const uint32_t height = 25;
 
 void ncPrintChar(char character)
 {
@@ -106,7 +106,7 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 // Show register status 
 void showRegisterStatus(){
-    printf("RAX: %x\tRBX: %x\nRCX: %x\tRDX: %x\nRSP: %x\tRBP: %x\nRSI: %x\tRDI: %x\n",
+    printf("A: %x\tB: %x\tC:%x \tD: %x\nSP: %x\tBP: %x\tSI: %x\tDI: %x\n",
            getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
            getCurrentRSI(),getCurrentRDI());
 }

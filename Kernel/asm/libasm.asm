@@ -78,11 +78,6 @@ cpuVendor:
 	pop rbp
 	ret
 
-
-
-
-
-
 read_port:
 	push rbp
 	mov rbp, rsp

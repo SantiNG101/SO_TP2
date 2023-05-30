@@ -1,12 +1,11 @@
-
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
 #include "include/terminalHandler.h"
-
-
 #include <screen.h>
+#include <speaker.h>
+#include <stdio.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -22,6 +21,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
+extern void kernelASM();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -82,11 +82,23 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 
-	
+	load_idt();
+
 	return getStackBase();
 }
 
-int main(){
-	screen_Initialize();
-    terminalStart();
+int divisionBy(int x, int y){
+	x = x/y;
+	return x;
+}
+
+
+
+int main()
+{
+
+    screen_Initialize();
+	kernelASM();
+	terminalStart();
+	return 0;
 }

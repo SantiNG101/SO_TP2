@@ -1,6 +1,6 @@
 
 #include <videoDriver.h>
-#include <stdint.h>
+
 
 
 // realiza el chequeo de fuera de bordes retorna 1 si esta fuera, 0 si no.
