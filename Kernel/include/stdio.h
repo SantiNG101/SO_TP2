@@ -17,11 +17,16 @@
 
 // calls to syscall Read.
 extern char getChar(void);
+extern char putChar(char c);
 
 // Uses getChar several times, until Carriage Return (CR) is pressed.
 char * getString(void);
 
 //scanf function
-int scanf(const char * format, ...);
+int scanf(const char * fmt, ...);
+
+//Screen painting functions
+int puts(const char * str);
+int printf(const char * fmt, ...);
 
 #endif

@@ -153,3 +153,57 @@ static int scanf_hex(uint64_t *hexToDec) {
     *hexToDec = result;
     return 0;
 }
+
+// Si usa putChar. Todo oka.
+int puts(const char * string){
+    int i;
+    int flag;
+    for (i = 0; string[i] != 0; i++) {
+        flag = putChar(string[i]);
+        if(flag < 0){
+            return -1;
+        }
+    }
+
+    return i;
+}
+
+//Printf
+// TODO: Corregir. No debería utilizar ni ncPrintDec ni ncPrintHex, a no ser que estos utilicen putChar para funcionar.
+int printf(const char * format, ...){
+    va_list args;
+    va_start(args, format);
+    while (*format != '\0') {
+        if (*format == '%') {
+            format++;
+            switch (*format++) {
+                case 'd': {
+                    int64_t int_arg = va_arg(args, int64_t);
+                    ncPrintDec(int_arg);
+                    break;
+                }
+                case 's': {
+                    char* s_arg = va_arg(args, char*);
+                    puts(s_arg);
+                    break;
+                }
+                case 'c': {
+                    char c_arg = va_arg(args, int);
+                    putChar(c_arg);
+                    break;
+                }
+                case 'x': {
+                    uint64_t hex_arg = va_arg(args, uint64_t);
+                    ncPrintHex(hex_arg);
+                    break;
+                }
+                default:
+                    break;
+            }
+        } else {
+            putChar(*format++);
+        }
+    }
+    return 0;
+    va_end(args);
+}

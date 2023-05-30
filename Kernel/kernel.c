@@ -3,6 +3,7 @@
 #include <naiveConsole.h>
 #include <idt/loader.h>
 #include <speaker.h>
+#include <stdio.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -95,20 +96,20 @@ int main()
 {
     ncClear();
 	/* Prueba de sysread y syswrite */
-	// kernelASM();
 	kernelASM();
 	/* ERROR DIVISION POR 0 */
 	divisionBy(1,0);
 	divisionBy(2,0);
-	ncPrint("hola");
+	puts("hola");
+
+	puts("Escriba algo: ");
+	char text[255];
+	scanf("%s", &text);
+
+	puts(text);
+	printf("\n%d/%d/%d\n", 10, 12, 2023);
 	beep();
 
-	ncPrint("Escriba algo: ");
-
-	int text;
-	scanf("%d", &text);
-
-	ncPrintDec(text);
-
+	puts("[ Ejecucion finalizada ]");
 	return 0;
 }

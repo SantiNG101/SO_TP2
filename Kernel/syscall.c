@@ -62,7 +62,26 @@ void read(argumentsStruct args){
 
 void write(argumentsStruct args){
     char * c = (char *) args->r10;
+    for(int i = 0; i < args->r9; i++){
+        switch(*c){
+            case '\n':
+                handleEnter();
+                break;
+            case '\b':
+                handleBackSpace();
+                break;
+            case '\t':
+                handleTab();
+                break;
+            case '\0':
+                break;
+            case 27:            //caso del esc retorna su numero ascii
+                break;
+            default:
+                ncPrintChar(*c);
+                break;
+        }
 
-    for(int i = 0; i < args->r9; i++)
-        putChar(*c++);
+        c++;
+    }
 }

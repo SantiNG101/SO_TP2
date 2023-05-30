@@ -4,11 +4,6 @@
 #include <stdarg.h>
 #include <lib.h>
 
-//Screen painting functions
-int puts(const char * string);
-int putChar(int c);
-int printf(const char * format, ...);
-
 void ncPrint(const char * string);
 void ncPrintChar(char character);
 void ncNewline();

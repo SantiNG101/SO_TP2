@@ -1,6 +1,5 @@
 GLOBAL getChar
-
-EXTERN putChar
+GLOBAL putChar
 
 section .text
 getChar:
@@ -10,7 +9,7 @@ getChar:
     mov rdi, 1
     mov r10, placeholder
     mov r9, 1
-    INT 80h
+    int 80h
 
     mov rdi, [placeholder]
     call putChar
@@ -18,6 +17,21 @@ getChar:
     mov rax, 0
     mov rax, [placeholder]
 
+    leave
+    ret
+
+putChar:
+    push rbp
+    mov rbp, rsp
+
+    mov [placeholder], rdi  ; Por rdi viene el caracter a imprimir.
+
+    mov r10, placeholder   
+    mov r9, 1               ; Imprimo solo el caracter.
+    mov rdi, 0              ; syswrite.
+    int 80h
+
+    mov rax, rdi            ; retorno el caracter impreso.
     leave
     ret
 
