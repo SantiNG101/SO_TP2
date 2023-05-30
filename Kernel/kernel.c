@@ -1,3 +1,4 @@
+
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
@@ -5,6 +6,7 @@
 #include "include/terminalHandler.h"
 
 
+#include <screen.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -84,37 +86,7 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-int main()
-{
-    ncClear();
-
-/*
-    char* ptr = (char*)myMalloc(sizeof(char)*20);
-    char * ptr2 = (char*) myMalloc(sizeof(char)*20);
-    char * ptr3 = (char*) myMalloc(sizeof(char)*20);
-    char * ptr4;
-    if (ptr != NULL) {
-        // Memory allocation succeeded
-        scanf("%s",ptr);
-        scanf("%s",ptr2);
-        scanf("%s",ptr3);
-        printf("Value stored in allocated memory: %s\n", ptr);
-        printf("Value stored in allocated memory: %s\n", ptr2);
-        myFree(ptr2);
-       ptr4 = (char*) myMalloc(sizeof(char)*20);
-       scanf("%s",ptr4);
-        printf("Value stored in allocated memory: %s\n", ptr2);
-        printf("Value stored in allocated memory: %s\n", ptr3);
-        // Free the allocated memory
-        myFree(ptr);
-        printf("Memory freed successfully\n");
-    } else {
-        // Memory allocation failed
-        printf("Memory allocation failed\n");
-    }
-*/
-
-   terminalStart();
-
-	return 0;
+int main(){
+	screen_Initialize();
+    terminalStart();
 }

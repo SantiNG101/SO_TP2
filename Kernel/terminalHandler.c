@@ -3,6 +3,7 @@
 #include "include/strings.h"
 #include "include/time.h"
 #include "include/lib.h"
+#include <screen.h>
 
 #define CURRENT_FUNC_COUNT 5
 
@@ -41,7 +42,7 @@ int terminalStart(){
         } else if(!strcmp("time",token)){
             showTime();
         } else if(!strcmp("clear",token)){
-            ncClear();
+            clearScreen();
         } else if(!strcmp("date",token)){
             showDate();
         }else {
@@ -55,6 +56,8 @@ int terminalStart(){
     myFree(ptr);
     return 0;
 }
+
+
 
 void help(char * token){
     token = strtok(NULL," ");
