@@ -87,6 +87,9 @@ void * initializeKernelBinary()
 
 int main(){
 	screen_Initialize();
-	
+    char * a = "hola que tal";
+    int b = 6594;
+    char c = 'c';
+	printf("%s\n%c\n%x",a,c,b);
 	return 0;
 }
