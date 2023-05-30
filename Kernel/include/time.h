@@ -6,6 +6,8 @@
 #define KERNEL_TIME_H
 #define _MS_BETWEEN_TICKS_ 55
 
+#include <stdint.h>
+
 unsigned  int seconds();
 unsigned int minutes();
 unsigned int hours();
@@ -20,5 +22,8 @@ void tick(void);
 int getTicks();
 int getElapsedMilliseconds();
 int getElapsedSeconds();
+
+/* ------ TIMER ------ */
+int wait(uint64_t ms);
 
 #endif //KERNEL_TIME_H
