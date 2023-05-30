@@ -2,6 +2,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
+#include <speaker.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -85,36 +86,38 @@ void * initializeKernelBinary()
 
 int main()
 {
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
+	// ncPrint("[Kernel Main]");
+	// ncNewline();
+	// ncPrint("  Sample code module at 0x");
+	// ncPrintHex((uint64_t)sampleCodeModuleAddress);
+	// ncNewline();
+	// ncPrint("  Calling the sample code module returned: ");
+	// ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+	// ncNewline();
+	// ncNewline();
 
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
+	// ncPrint("  Sample data module at 0x");
+	// ncPrintHex((uint64_t)sampleDataModuleAddress);
+	// ncNewline();
+	// ncPrint("  Sample data module contents: ");
+	// ncPrint((char*)sampleDataModuleAddress);
+	// ncNewline();
 
-	ncPrint("[Finished]");
-    ncNewline();
-    writeMsg("Hola rey, bienvenido");
-    writeMsg("Arqui");
-    ncClear();
+	// ncPrint("[Finished]");
+    // ncNewline();
+    // writeMsg("Hola rey, bienvenido");
+    // writeMsg("Arqui");
+    // ncClear();
 
-    ncPrint("Insert character");
-    ncNewline();
+    // ncPrint("Insert character");
+    // ncNewline();
 
-	kernelASM();
-	while(1);
+	// kernelASM();
+	// while(1);
 	
-    showRegisterStatus();
+    // showRegisterStatus();
+	beep();
+
 
 	return 0;
 }

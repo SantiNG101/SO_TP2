@@ -92,10 +92,17 @@ int getTicks(){
 }
 
 int getEllapsedMilliseconds(){
-    return ticks * _MS_BETWEEN_TICKS_;
+    return getTicks() * _MS_BETWEEN_TICKS_;
 }
 
 int getEllapsedSeconds(){
     return getEllapsedMilliseconds() / 1000;
 }
 
+int wait(uint64_t ms){
+    const int start = getEllapsedMilliseconds();
+    int end;
+    while((end = getEllapsedMilliseconds()) - start <= ms);
+
+    return 1;
+}
