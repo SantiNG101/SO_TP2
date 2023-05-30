@@ -20,3 +20,5 @@ Kernel/.idea/vcs.xml
 Kernel/include/.idea/include.iml
 Kernel/include/.idea/modules.xml
 Kernel/include/.idea/workspace.xml
+Kernel/.DS_Store
+.DS_Store
