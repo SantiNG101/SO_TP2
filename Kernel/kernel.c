@@ -102,5 +102,13 @@ int main()
 	divisionBy(2,0);
 	ncPrint("hola");
 	beep();
+
+	ncPrint("Escriba algo: ");
+
+	int text;
+	scanf("%d", &text);
+
+	ncPrintDec(text);
+
 	return 0;
 }

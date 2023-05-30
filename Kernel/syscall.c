@@ -52,9 +52,12 @@ void read(argumentsStruct args){
     char*   data = (char *) args->r10;
     uint64_t len = (uint64_t) args->r9;
     
-    getString(data, len);
-
-    ncNewline();
+    char c = getC();
+    while(len && c != '\n'){
+        while((c = getC()) == 0);
+        *data++ = c;
+        len--;
+    }
 }
 
 void write(argumentsStruct args){
