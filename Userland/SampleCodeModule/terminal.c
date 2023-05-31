@@ -1,4 +1,5 @@
 #include "terminal.h"
+#include <stdlib.h>
 
 
 #define CURRENT_FUNC_COUNT 5
@@ -38,7 +39,7 @@ int terminalStart(){
         } else if(!strcmp("time",token)){
             showTime();
         } else if(!strcmp("clear",token)){
-            clearScreen();
+            // clearScreen();
         } else if(!strcmp("date",token)){
             showDate();
         }else {
@@ -73,14 +74,14 @@ void help(char * token){
 
 void showTime(){
     char time[50];
-    timeToStr(time);
+    // timeToStr(time);
     printf("%s\n",time);
     return;
 }
 
 void showDate(){
     char date[50];
-    dateToStr(date);
+    // dateToStr(date);
     printf("%s\n",date);
     return;
 }

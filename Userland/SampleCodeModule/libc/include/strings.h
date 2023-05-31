@@ -5,9 +5,11 @@
 #ifndef KERNEL_STRINGS_H
 #define KERNEL_STRINGS_H
 
+#include <stddef.h>
+
 //section define
-#define NULL ((void*)0)
-typedef unsigned int size_t;
+// #define NULL ((void*)0)
+// typedef unsigned int size_t;
 // end section define
 
 /*

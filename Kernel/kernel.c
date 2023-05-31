@@ -105,7 +105,7 @@ int main()
     // terminalStart();
 
 	int data = ((EntryPoint) sampleCodeModuleAddress)();
-	printf("Exit Code %x", data);
+	printf("exit %x", data);
 
 	return 0;
 }
