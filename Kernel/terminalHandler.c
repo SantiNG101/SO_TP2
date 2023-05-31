@@ -8,7 +8,7 @@
 
 #define CURRENT_FUNC_COUNT 5
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
-const char * currentFuncs[] = {"time","clear","date","help","exit","69","mario","bell","darth"};
+const char * currentFuncs[] = {"time","clear","date","help","exit","69","mario","bell","darth","66"};
 
 const char * currentDescriptions[] = {0,0,0,0,0,"Shows the current time in GMT-3",0,0,0,"clears screen and resets position",
                                       0,0,0,0,0,0,0,0,0,
@@ -61,8 +61,12 @@ int terminalStart(){
                    "\"He became so powerful, the only thing he was afraid of was... losing his power. Which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew. Then his apprentice killed him in his sleep. It's ironic. He could save others from death, but not himself.\"\n"
                    "\"Is it possible to learn this power?\"\n"
                    "\"Not from a Jedi.\"");
-        }else if (!(strcmp("mario",token))){
+        }else if (!(strcmp("mario",token))) {
             marioTheme();
+        }else if(!strcmp("66",token)) {
+            imperialMarch();
+        }else if(!strcmp("tetris",token)) {
+            tetris();
         }else {
             printf("Command not found.\n"); //Cambiar por excepcion despues
         }
