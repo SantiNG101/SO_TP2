@@ -101,12 +101,12 @@ static int scanf_int(int64_t * value_ptr){
 
     while ((c = getChar()) != '\n') {
         if (c == '-') {
-            sign *= -1;
-            // if(sign != -1) {
-            //     sign = -1;
-            // } else {
-            //     return -1;
-            // }
+            //sign *= -1;
+            if(sign != -1) {
+                sign = -1;
+            } else {
+                return -1;
+            }
         } else if (isdigit(c)) {
             value = value * 10 + (c - '0');
         } else if (c == '\b') {
