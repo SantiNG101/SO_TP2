@@ -28,7 +28,7 @@ int terminalStart(){
     char* ptr = (char*)myMalloc(sizeof(char)*79);
 
     while(keepGoing){
-        //setTerminal();
+        setTerminal();
         printf("$ ");
 
         scanf("%s",ptr);
