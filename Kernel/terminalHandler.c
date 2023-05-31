@@ -3,11 +3,12 @@
 #include "include/strings.h"
 #include "include/time.h"
 #include "include/lib.h"
+#include <stdio.h>
 #include <screen.h>
 
 #define CURRENT_FUNC_COUNT 5
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
-const char * currentFuncs[] = {"time","clear","date","help","exit"};
+const char * currentFuncs[] = {"time","clear","date","help","exit","69","mario","bell","darth"};
 
 const char * currentDescriptions[] = {0,0,0,0,0,"Shows the current time in GMT-3",0,0,0,"clears screen and resets position",
                                       0,0,0,0,0,0,0,0,0,
@@ -44,11 +45,26 @@ int terminalStart(){
             showTime();
         } else if(!strcmp("clear",token)){
             clearScreen();
-        } else if(!strcmp("date",token)){
+        } else if(!strcmp("date",token)) {
             showDate();
+        }else if(!strcmp("69",token)) {
+            printf("nice");
+        }else if(!strcmp("bell",token)) {
+            printf("\a");
+        }else if(!strcmp("darth",token)) {
+            printf("\"Did you ever hear the tragedy of Darth Plagueis the Wise?\"\n"
+                   "\"No.\"\n"
+                   "\"I thought not. It's not a story the Jedi would tell you. It's a Sith legend. Darth Plagueis... was a Dark Lord of the Sith so powerful and so wise, he could use the Force to influence the midi-chlorians... to create... life. He had such a knowledge of the dark side, he could even keep the ones he cared about... from dying.\"\n"
+                   "\"He could actually... save people from death?\"\n"
+                   "\"The dark side of the Force is a pathway to many abilities... some consider to be unnatural.\"\n"
+                   "\"Wh– What happened to him?\"\n"
+                   "\"He became so powerful, the only thing he was afraid of was... losing his power. Which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew. Then his apprentice killed him in his sleep. It's ironic. He could save others from death, but not himself.\"\n"
+                   "\"Is it possible to learn this power?\"\n"
+                   "\"Not from a Jedi.\"");
+        }else if (!(strcmp("mario",token))){
+            marioTheme();
         }else {
             printf("Command not found.\n"); //Cambiar por excepcion despues
-            
         }
 
         printf("\n");
@@ -67,7 +83,6 @@ void help(char * token){
         printf("Current functions are:\n");
         for(int i = 0; i < SIZEOFARR(currentFuncs); i++){
             printf("%s\n", currentFuncs[i]);
-            //printStrScreenFrmt(currentFuncs[i], COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
         }
     } else {
         if(currentDescriptions[hashInRange(token,0,50)] != NULL) {

@@ -40,12 +40,9 @@ void printErrorStr( char* str ){
 }
 
 
+
 void putCharScreen( char character ){
-    bordersCheck();
-    // imprimo el caracter en la pantalla
-    draw_char( current_cursor_pos_x, current_cursor_pos_y, character,
-     COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT );
-    current_cursor_pos_x += CHAR_WIDTH;
+    putCharScreenFrmt(character,COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT);
 }
 
 void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background_Color ){
@@ -82,7 +79,7 @@ void enter(){
 }
 
 void scrollScreenUp(){
-    // cada pixel lo copio en la de arriba
+    // cada pixel lo copio en la de arriba TODO optimizar
     for ( int i= 0; i < screenHeight ; i++ ){ // y (altura)
         for( int j=0; j < screenWidth ; j++ ){ // x (ancho)
             copyPixel( j,i,j,i-CHAR_HEIGHT ); // copio al de arriba

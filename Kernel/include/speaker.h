@@ -8,5 +8,5 @@ void stopSound();
 
 // Make a simple beep, for a 50ms
 void beep(void);
-
+void marioTheme(void);
 #endif
