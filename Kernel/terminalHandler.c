@@ -56,6 +56,9 @@ int terminalStart(){
                 }
                 i++;
             }
+            if(i == SIZEOFARR(commands)){
+                printf("Comando no encontrado.\n");
+            }
         }
 
         printf("\n");
@@ -67,8 +70,16 @@ int terminalStart(){
 }
 
 void help(char * token){
+    char *aux = NULL;
+
     token = strtok(NULL," ");
-    if(token == NULL){
+
+    aux = strtok(NULL," ");
+
+    if(aux != NULL){
+        printf("help requires only one argument.\n");
+        return ;
+    } else if(token == NULL){
         printf("Current functions are:\n");
         for(int i = 0; i < SIZEOFARR(commands); i++){
             printf("%s\n", commands[i].name);
