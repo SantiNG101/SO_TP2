@@ -21,7 +21,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
-extern void kernelASM();
+extern void kernelASM(uint64_t addr);
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -96,8 +96,12 @@ int divisionBy(int x, int y){
 
 int main()
 {
+	// kernelASM(sampleCodeModuleAddress);
     screen_Initialize();
-	kernelASM();
+	// kernelASM();
+	// printf("\a");
+	// puts("\a");
+	// putChar('\a');
     terminalStart();
 	return 0;
 }

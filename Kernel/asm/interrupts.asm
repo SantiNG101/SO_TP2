@@ -161,11 +161,11 @@ _irq02Handler:                  ; SYSCALL
     push rbp
     mov rbp, rsp
 
-    pushState
-
+    sti                         ; Not proud of this, pero necesario si quiero que las syscall funcionen con interrupción de Hardware
+    
+    pushState                   ; Mejorar para que sea C friendly :)
     mov rdi, rsp
     call syscallDispatcher
-    
     popState
 
     mov rsp, rbp
