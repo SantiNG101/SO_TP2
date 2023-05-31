@@ -10,10 +10,14 @@
 
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
 
+extern void opCode();
+
 void showTime();
 void exit();
 void showDate();
 void help(char * token);
+void divZero();
+void opCode();
 
 typedef struct {
     char name[20];
@@ -29,7 +33,9 @@ const commandT commands[] = {{"time","Shows the current time in GMT-3",showTime}
                              {"66","Displays imperial march for starwars fans", imperialMarch},
                              {"mario","Displays mario bros theme song",marioTheme},
                              {"tetris","Displays tetris song",tetris},
-                             {"storm","Displays song of storms zelda",songOfStorms}};
+                             {"storm","Displays song of storms zelda",songOfStorms},
+                             {"div0","Shows how div 0 exception works",divZero},
+                             {"opCode","Shows how opCode exception works",opCode}};
 
 static unsigned char keepGoing = TRUE;
 
@@ -56,6 +62,9 @@ int terminalStart(){
                 }
                 i++;
             }
+            if(i == SIZEOFARR(commands)){
+                printf("Comando no encontrado.\n");
+            }
         }
 
         printf("\n");
@@ -67,12 +76,23 @@ int terminalStart(){
 }
 
 void help(char * token){
+    char *aux = NULL;
+
     token = strtok(NULL," ");
-    if(token == NULL){
+
+    aux = strtok(NULL," ");
+
+    if(aux != NULL){
+        printf("help requires only one argument.\n");
+        return ;
+    } else if(token == NULL){
         printf("Current functions are:\n");
         for(int i = 0; i < SIZEOFARR(commands); i++){
             printf("%s\n", commands[i].name);
         }
+        return;
+    }else if(!strcmp(token,"help")){
+        printf("Provides a list of functions or\nif an argument is passed\na brief description of the function passed as arg.\n");
         return;
     }
 
@@ -99,9 +119,16 @@ void showDate(){
     return;
 }
 
-
 void exit(){
     keepGoing = FALSE;
+}
+
+int divide(int x, int y){
+    return x/y;
+}
+
+void divZero(){
+    divide(0,0);
 }
 
 /*
