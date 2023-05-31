@@ -6,8 +6,24 @@
 #include <stdio.h>
 #include <screen.h>
 
-#define CURRENT_FUNC_COUNT 5
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
+
+/* TODO
+void time(void);
+void clear(void);
+void help(void);
+
+typedef struct {
+    char * name;
+    char * description;
+    void (*func)(void);
+} commandT;
+
+const commandT commands[] = {};
+
+ */
+
+
 const char * currentFuncs[] = {"time","clear","date","help","exit","69","mario","bell","darth","66"};
 
 const char * currentDescriptions[] = {0,0,0,0,0,"Shows the current time in GMT-3",0,0,0,"clears screen and resets position",
@@ -67,6 +83,8 @@ int terminalStart(){
             imperialMarch();
         }else if(!strcmp("tetris",token)) {
             tetris();
+        }else if(!strcmp("storm",token)){
+            songOfStorms();
         }else {
             printf("Command not found.\n"); //Cambiar por excepcion despues
         }

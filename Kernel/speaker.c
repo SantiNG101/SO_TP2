@@ -350,3 +350,35 @@ void tetris(){
     beepCustom(880, 1000);
     beepCustom(838, 2000);
 }
+
+void songOfStorms(void){
+    beepCustom(D4,200);
+    beepCustom(A4,200);
+    beepCustom(D5,200);
+    wait(300);
+    beepCustom(D4,200);
+    beepCustom(A4,200);
+    beepCustom(D5,200);
+    wait(300);
+    beepCustom(E5,200);
+    beepCustom(F5,200);
+    beepCustom(E5,200);
+    beepCustom(F5,200);
+    beepCustom(E5,200);
+    beepCustom(C5,200);
+    beepCustom(A4,200);
+    wait(50);
+    beepCustom(A4,200);
+    wait(300);
+    beepCustom(D4,200);
+    beepCustom(F4,200);
+    beepCustom(G4,300);
+    beepCustom(A4,200);
+    wait(50);
+    beepCustom(A4,200);
+    wait(300);
+    beepCustom(D4,200);
+    beepCustom(F4,200);
+    beepCustom(G4,200);
+    beepCustom(E4,300);
+}
