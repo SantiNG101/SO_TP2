@@ -10,10 +10,14 @@
 
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
 
+extern void opCode();
+
 void showTime();
 void exit();
 void showDate();
 void help(char * token);
+void divZero();
+void opCode();
 
 typedef struct {
     char name[20];
@@ -29,7 +33,9 @@ const commandT commands[] = {{"time","Shows the current time in GMT-3",showTime}
                              {"66","Displays imperial march for starwars fans", imperialMarch},
                              {"mario","Displays mario bros theme song",marioTheme},
                              {"tetris","Displays tetris song",tetris},
-                             {"storm","Displays song of storms zelda",songOfStorms}};
+                             {"storm","Displays song of storms zelda",songOfStorms},
+                             {"div0","Shows how div 0 exception works",divZero},
+                             {"opCode","Shows how opCode exception works",opCode}};
 
 static unsigned char keepGoing = TRUE;
 
@@ -115,6 +121,14 @@ void showDate(){
 
 void exit(){
     keepGoing = FALSE;
+}
+
+int divide(int x, int y){
+    return x/y;
+}
+
+void divZero(){
+    divide(0,0);
 }
 
 /*
