@@ -4,9 +4,7 @@
 #include <stdint.h>
 #include <strings.h>
 #include <stdarg.h>
-#include <screen.h>
-#include <lib.h>
-#include <speaker.h>
+
 /*
  * TODO: Documentar correctamente.
  */

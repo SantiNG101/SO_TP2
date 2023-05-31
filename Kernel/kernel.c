@@ -102,6 +102,10 @@ int main()
 	// printf("\a");
 	// puts("\a");
 	// putChar('\a');
-    terminalStart();
+    // terminalStart();
+
+	int data = ((EntryPoint) sampleCodeModuleAddress)();
+	printf("Exit Code %x", data);
+
 	return 0;
 }

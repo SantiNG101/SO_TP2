@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "include/stdio.h"
 
 // Llama solo a getChar() y debe funcionar. 
 char * getString(void){

@@ -1,9 +1,4 @@
-//
-// Created by ptorl on 5/15/2023.
-//
-
-
-#include <strings.h>
+#include "include/strings.h"
 
 int strcmp(const char* str1, const char* str2) {
     while (*str1 && (*str1 == *str2)) {
