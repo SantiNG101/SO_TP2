@@ -97,6 +97,17 @@ int divisionBy(int x, int y){
 int main()
 {
     screen_Initialize();
+	int i= 30;
+	/*
+	while(i){
+		putCharScreen('C');
+		enter();
+		putCharScreen('A');
+		enter();
+		i--;
+	}
+	*/
+	//beep();
 	kernelASM();
     terminalStart();
 	return 0;

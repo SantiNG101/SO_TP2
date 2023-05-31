@@ -6,7 +6,7 @@
 #include <screen.h>
 
 #define CURRENT_FUNC_COUNT 5
-
+#define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
 const char * currentFuncs[] = {"time","clear","date","help","exit"};
 
 const char * currentDescriptions[] = {0,0,0,0,0,"Shows the current time in GMT-3",0,0,0,"clears screen and resets position",
@@ -28,12 +28,13 @@ int terminalStart(){
     char* ptr = (char*)myMalloc(sizeof(char)*79);
 
     while(keepGoing){
+        //setTerminal();
         printf("$ ");
 
         scanf("%s",ptr);
         char *token = strtok(ptr," ");      //creo token con cmdline (modificable)
         // Process the command and execute actions accordingly
-
+        printf("\n");
         if(!strcmp("help",token)){
             help(token);
         } else if(!strcmp("exit",token)){
@@ -47,6 +48,7 @@ int terminalStart(){
             showDate();
         }else {
             printf("Command not found.\n"); //Cambiar por excepcion despues
+            
         }
 
         printf("\n");
@@ -63,9 +65,10 @@ void help(char * token){
     token = strtok(NULL," ");
     if(token == NULL){
         printf("Current functions are:\n");
-        for(int i = 0; i < CURRENT_FUNC_COUNT; i++)
+        for(int i = 0; i < SIZEOFARR(currentFuncs); i++){
             printf("%s\n", currentFuncs[i]);
-
+            //printStrScreenFrmt(currentFuncs[i], COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
+        }
     } else {
         if(currentDescriptions[hashInRange(token,0,50)] != NULL) {
             printf("%s\n", currentDescriptions[hashInRange(token,0,50)]);
