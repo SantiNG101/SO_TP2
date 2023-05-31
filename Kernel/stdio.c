@@ -213,10 +213,11 @@ int printf(const char * format, ...){
             switch (*format++) {
                 case 'd': {
                     int64_t int_arg = va_arg(args, int64_t);
-                    char * toPrint = (char *)myMalloc(sizeof(int64_t)*5);
+                                    // char * toPrint = (char *)myMalloc(sizeof(int64_t)*5);
+                    char toPrint[20] = {0};
                     uintToBase(int_arg, toPrint,10);
                     puts(toPrint);
-                    myFree(toPrint);
+                                    // myFree(toPrint);
                     break;
                 }
                 case 's': {
@@ -231,22 +232,18 @@ int printf(const char * format, ...){
                 }
                 case 'x': {
                     uint64_t hex_arg = va_arg(args, uint64_t);
-                    char * toPrint = (char *)myMalloc(sizeof(uint64_t)*5);
+                                // char * toPrint = (char *)myMalloc(sizeof(uint64_t)*5);
+                    char toPrint[16] = {0};
                     uintToBase(hex_arg, toPrint,16);
                     puts(toPrint);
-                    myFree(toPrint);
+                                // myFree(toPrint);
                     break;
                 }
                 default:
                     break;
             }
         } else {
-            if(*format == '\a'){ //beep
-             beep();
-             format++;
-            } else {
                 putChar(*format++);
-            }
         }
     }
     va_end(args);

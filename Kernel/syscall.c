@@ -68,6 +68,9 @@ void write(argumentsStruct args){
             case '\n':
                 enter();
                 break;
+            case '\a':
+                beep();
+                break;
             case '\b':
                 backspace();
                 break;
