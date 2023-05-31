@@ -74,6 +74,9 @@ void help(char * token){
             printf("%s\n", commands[i].name);
         }
         return;
+    }else if(!strcmp(token,"help")){
+        printf("Provides a list of functions or\nif an argument is passed\na brief description of the function passed as arg.\n");
+        return;
     }
 
         for( int i = 0; i < SIZEOFARR(commands); i++){
@@ -98,7 +101,6 @@ void showDate(){
     printf("%s\n",date);
     return;
 }
-
 
 void exit(){
     keepGoing = FALSE;
