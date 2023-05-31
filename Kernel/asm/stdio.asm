@@ -1,5 +1,7 @@
 GLOBAL getChar
 GLOBAL putChar
+GLOBAL setTerminal
+GLOBAL callWrongExpresionException
 
 section .text
 getChar:
@@ -27,7 +29,15 @@ putChar:
     mov rdi, 0              ; syswrite.
     int 80h
 
-    mov rax, rdi            ; retorno el caracter impreso.
+    mov rax, [placeholder]            ; retorno el caracter impreso.
+    leave
+    ret
+
+setTerminal:
+    push rbp
+    mov rbp, rsp
+    mov rdi, 2              ; modo terminal.
+    int 80h
     leave
     ret
 

@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <screen.h>
 
+
 /*
  *  Arguementos de una función de SYSCALL
  */
@@ -29,8 +30,9 @@ typedef struct {
 
 void write(argumentsStruct args);
 void read(argumentsStruct args);
+void modoTerminal(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read };
+void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -85,4 +87,8 @@ void write(argumentsStruct args){
 
         c++;
     }
+}
+
+void modoTerminal(argumentsStruct args){
+    setTerminalPrintingMode();
 }

@@ -8,5 +8,8 @@ void stopSound();
 
 // Make a simple beep, for a 50ms
 void beep(void);
+void marioTheme(void);
+void imperialMarch(void);
+void tetris(void);
 
 #endif
