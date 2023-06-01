@@ -19,7 +19,7 @@ typedef struct {
 
 const commandT commands[] = {
                              {"time","Shows the current time in GMT-3",showTime},
-                             {"clear","clears screen and resets position",clearScreen},
+                            //  {"clear","clears screen and resets position",clearScreen},
                              {"date","Displays current date.",showDate},
                              {"exit","Exits the bash",exit},
                             //  {"bell","Outputs a Beep", beep},
