@@ -2,8 +2,6 @@
 #include <videoDriver.h>
 #include <lib.h>
 
-
-
 // realiza el chequeo de fuera de bordes retorna 1 si esta fuera, 0 si no.
 int failBordersCheck( uint32_t x, uint32_t y );
 
@@ -104,9 +102,9 @@ void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
 
 
 // necesario para cuando se haga la subida de pantalla
-// pasa el pixel y tod su color de un sector de pantalla a otro
-void copyPixel( uint32_t xfrom, uint32_t yfrom, uint32_t xto, uint32_t yto ){
-
+// hace copia de memoria para cambiar el estado de los pixeles de la pantalla de lugar
+void modifyFrameBuffer( int mode){
+	/*
 	// creo el offset de form
 	uint32_t offsetFrom = VBE_mode_info->pitch*yfrom + xfrom*numberOfColorBytes;
 	// creo el offset de to
@@ -123,6 +121,14 @@ void copyPixel( uint32_t xfrom, uint32_t yfrom, uint32_t xto, uint32_t yto ){
 		screen[offsetTo+1] = screen[offsetFrom+1];
 	 	screen[offsetTo+2] = screen[offsetFrom+2];
 	}
+	*/
+	// hago mem copy de memoria
+	if (mode){
+		memset(VBE_mode_info->framebuffer,0,bufferlen);
+		return;
+	}
+	memcpy(VBE_mode_info->framebuffer,VBE_mode_info->framebuffer+ CHAR_HEIGHT*1024*3,
+	bufferlen - CHAR_HEIGHT*1024*3 );
 }
 	
 
@@ -186,3 +192,4 @@ uint16_t getHorizontalPixelCount(){
 uint16_t getVerticalPixelCount(){
 	return verticalPixelCount;
 }
+

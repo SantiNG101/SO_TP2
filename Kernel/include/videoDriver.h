@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <font.h>
 
+
 // asignacion de hexa a palabras
 
 #define BLACK 0x000000
@@ -34,8 +35,9 @@
 void vd_Initialize();
 //imprime un pixel en pantalla
 void putPixel(uint32_t hexColor, uint32_t x, uint32_t y);
-//copia un pixel de un sector de la pantalla a otro
-void copyPixel( uint32_t xfrom, uint32_t yfrom, uint32_t xto, uint32_t yto );
+// hace copia de memoria para cambiar el estado de los pixeles de la pantalla de lugar
+// mode establece si borra o no
+void modifyFrameBuffer( int mode);
 // dibuja un string en pantalla llamando al draw_char
 void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor, uint32_t backgroundColor);
 // dibuja un char en pantalla basandose en una font e imprimiendo con putpixel

@@ -81,13 +81,16 @@ void enter(){
 
 void scrollScreenUp(){
     // cada pixel lo copio en la de arriba TODO optimizar
+    /*
     for ( int i= 0; i < screenHeight - CHAR_HEIGHT ; i++ ){ // y (altura)
         for( int j=0; j < screenWidth ; j++ ){ // x (ancho)
             copyPixel( j,i+CHAR_HEIGHT,j,i ); // copio al de arriba
         }
     }
+    */
+    // hago mem copy para modificar el frame buffer y paso si borro info o no
+    modifyFrameBuffer(0);
     // imprimo en la ult linea espacios
-    
     for ( int i= 0; i< screenWidth; i+=CHAR_WIDTH ){
         draw_char( i, screenHeight - CHAR_HEIGHT, ' ',
          COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT );
@@ -99,13 +102,16 @@ void scrollScreenUp(){
 }
 
 void clearScreen(){
-
+    /*
     //imprimo en backgroundColor en toda la pantalla
     for ( int i= 0; i < screenHeight; i++ ){
         for( int j=0; j < screenWidth ; j++ ){
             putPixel( j,i,COLOR_BACKGROUND_DEFAULT );
         }
     }
+    */
+    // hago mem copy para modificar el frame buffer y paso si borro info o no
+    modifyFrameBuffer(1);
     // restauro el cursor al inicio
     current_cursor_pos_x = 0;
     current_cursor_pos_y = 0;
