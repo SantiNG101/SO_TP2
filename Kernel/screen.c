@@ -2,6 +2,7 @@
 
 #include <screen.h>
 #include <string.h>
+#include <time.h>
 // tamaño de pantalla
 // 1024 x 768
 
@@ -16,6 +17,13 @@ void screen_Initialize(){
     vd_Initialize();
     screenHeight = getVerticalPixelCount();
     screenWidth = getHorizontalPixelCount();
+}
+
+// setea el modo terminal para que imprima en la ultima linea
+void setTerminalPrintingMode(){
+    current_cursor_pos_x = 0;
+    current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
+    setDoubleBuffer(0);
 }
 
 
@@ -33,12 +41,9 @@ void printErrorStr( char* str ){
 }
 
 
+
 void putCharScreen( char character ){
-    bordersCheck();
-    // imprimo el caracter en la pantalla
-    draw_char( current_cursor_pos_x, current_cursor_pos_y, character,
-     COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT );
-    current_cursor_pos_x += CHAR_WIDTH;
+    putCharScreenFrmt(character,COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT);
 }
 
 void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background_Color ){
@@ -66,7 +71,7 @@ void tab(){
 }
 // pasa a la linea de abajo
 void enter(){
-    if ( current_cursor_pos_y <= screenHeight - 2*CHAR_HEIGHT ){
+    if ( current_cursor_pos_y <= screenHeight - 2*2*CHAR_HEIGHT ){
         current_cursor_pos_y += CHAR_HEIGHT;
     }else{
         scrollScreenUp();
@@ -75,10 +80,10 @@ void enter(){
 }
 
 void scrollScreenUp(){
-    // cada pixel lo copio en la de arriba
-    for ( int i= 0; i < screenHeight; i++ ){   // y (altura)
+    // cada pixel lo copio en la de arriba TODO optimizar
+    for ( int i= 0; i < screenHeight - CHAR_HEIGHT ; i++ ){ // y (altura)
         for( int j=0; j < screenWidth ; j++ ){ // x (ancho)
-            copyPixel(j,i,j,i - CHAR_HEIGHT);    // copio al de arriba
+            copyPixel( j,i+CHAR_HEIGHT,j,i ); // copio al de arriba
         }
     }
     // imprimo en la ult linea espacios
@@ -97,7 +102,7 @@ void clearScreen(){
 
     //imprimo en backgroundColor en toda la pantalla
     for ( int i= 0; i < screenHeight; i++ ){
-        for( int j=0; j < screenWidth; j++ ){
+        for( int j=0; j < screenWidth ; j++ ){
             putPixel( j,i,COLOR_BACKGROUND_DEFAULT );
         }
     }
@@ -113,8 +118,8 @@ void bordersCheck(){
     current_cursor_pos_x = 0;
     if( current_cursor_pos_y <= screenHeight - 2*CHAR_HEIGHT)
             current_cursor_pos_y += CHAR_HEIGHT;
-    else
+    }else{
         scrollScreenUp();
-
+    }
 }
   

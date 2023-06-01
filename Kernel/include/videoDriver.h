@@ -44,5 +44,9 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor, uint
 uint16_t getHorizontalPixelCount();
 // muestra la cantidad de pixeles que entran verticalmente
 uint16_t getVerticalPixelCount();
+// Actualiza la pantalla cuando se activa el doble buffer
+void updateScreen();
+// Seteo del estado del buffer, 1 activado 0 desactivado, default 0
+void setDoubleBuffer(int activated);
 
 #endif //KERNEL_VIDEODRIVER_H

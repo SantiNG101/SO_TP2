@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <idt/exceptions.h>
 #include <naiveConsole.h>
+#include <screen.h>
+#include <videoDriver.h>
+
 
 /*
  * Mantener actualizado. El EXCEPTION_TYPE_SIZE debe estar SIEMPRE al final.
@@ -54,8 +57,8 @@ void zeroDivisionException(uint64_t * rip){
 
 void invalidOperationException(uint64_t * rip){
     // TODO: COMPLETAR
-    ncPrint("Exception: Invalid OpCode");
-    ncNewline();
+    printStrScreenFrmt("Exception: Invalid OpCode", RED, COLOR_BACKGROUND_DEFAULT );
+    enter();
 
     cleanActualRegisters();     
     *rip += 1;                  // Paso a la siguiente instrucción.

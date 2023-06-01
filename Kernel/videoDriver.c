@@ -1,5 +1,6 @@
 
 #include <videoDriver.h>
+#include <lib.h>
 
 
 
@@ -50,13 +51,29 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 
 uint16_t horizontalPixelCount;
 uint16_t verticalPixelCount;
-uint64_t numberOfColorBytes;
-
+uint16_t numberOfColorBytes;
+uint64_t bufferlen = 1024*768*3;
+// genero un buffer con las dimensiones seteadas a mano
+// sirve para hacer la transicion mas suave principalmente en el pong
+static uint8_t  buffer[ 1024*768*3 ];
+int doubleBuffer = 0;
 
 void vd_Initialize(){
 	horizontalPixelCount = VBE_mode_info->width;
 	verticalPixelCount = VBE_mode_info->height;
 	numberOfColorBytes = VBE_mode_info->bpp/8;
+	if ( doubleBuffer != 0 )
+		memset(buffer, 0, bufferlen);
+}
+
+
+void updateScreen(){
+	if ( doubleBuffer != 0 )
+		memcpy(VBE_mode_info->framebuffer,buffer,bufferlen);
+}
+
+void setDoubleBuffer(int activated){
+	doubleBuffer = activated;
 }
 
 /*
@@ -69,11 +86,20 @@ void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y) {
 }
 */
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
-	uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
-    uint32_t offset = VBE_mode_info->pitch*y + x*numberOfColorBytes;
-	screen[offset] = hexColor & 0xFF;
-	screen[offset+1] = (hexColor >> 8) & 0xFF;
-	screen[offset+2] = (hexColor >> 16) &  0xFF;
+	// setei el offset en el punto pasado
+	uint32_t offset = VBE_mode_info->pitch*y + x*numberOfColorBytes;
+	// veo si esta activado el doble buffer 
+	if ( doubleBuffer ){
+		buffer[offset] = hexColor & 0xFF;
+		buffer[offset+1] = (hexColor >> 8) & 0xFF;
+		buffer[offset+2] = (hexColor >> 16) &  0xFF;
+		return;
+	}else{
+		uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
+		screen[offset] = hexColor & 0xFF;
+		screen[offset+1] = (hexColor >> 8) & 0xFF;
+		screen[offset+2] = (hexColor >> 16) &  0xFF;
+	}
 }
 
 
@@ -81,16 +107,24 @@ void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
 // pasa el pixel y tod su color de un sector de pantalla a otro
 void copyPixel( uint32_t xfrom, uint32_t yfrom, uint32_t xto, uint32_t yto ){
 
-	uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
 	// creo el offset de form
 	uint32_t offsetFrom = VBE_mode_info->pitch*yfrom + xfrom*numberOfColorBytes;
 	// creo el offset de to
 	uint32_t offsetTo = VBE_mode_info->pitch*yto + xto*numberOfColorBytes;
 	// paso uno al otro
-	screen[offsetTo] = screen[offsetFrom];
-	screen[offsetTo+1] = screen[offsetFrom+1];
-	screen[offsetTo+2] = screen[offsetFrom+2];
+	if ( doubleBuffer ){
+		buffer[offsetTo] = buffer[offsetFrom];
+		buffer[offsetTo+1] = buffer[offsetFrom+1];
+		buffer[offsetTo+2] = buffer[offsetFrom+2];
+		return;
+	}else{
+		uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
+		screen[offsetTo] = screen[offsetFrom];
+		screen[offsetTo+1] = screen[offsetFrom+1];
+	 	screen[offsetTo+2] = screen[offsetFrom+2];
+	}
 }
+	
 
 // chequear esta funcion pues el string se puede cortar en pantalla
 void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
@@ -122,8 +156,9 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 
 	for(int i = 0; i < CHAR_HEIGHT; i++){
 		for(int j = 0; j < CHAR_WIDTH; j++){
-			//veo si tengo que imprimir el pixel o no
-			pixIsPresent = (1 << (CHAR_WIDTH - 1 - j)) & font_char[i];
+			// Veo si tengo que imprimir el pixel o no, +2 para que imprima bien con el correcto decalaje de bits
+			// No utlizo los ultimos 2 bits porque no son del tamaño asignado
+			pixIsPresent = (1 << (CHAR_WIDTH + 2 - j)) & font_char[i];
 			if ( pixIsPresent )
 				putPixel( auxx, auxy, fontColor );
 			else

@@ -18,7 +18,6 @@
 
 //Arranca el bash
 int terminalStart();
-int64_t hashInRange(const char* str, uint64_t start, uint64_t end);
 /*
  * Formato de comandos aceptados por la terminal:
  *
