@@ -1,3 +1,4 @@
+#include <pong.h>
 // tamaño de pantalla
 // 1024 x 768
 #define SCREEN_WIDTH 768
