@@ -11,7 +11,8 @@ void screen_Initialize();
 void printErrorStr( char* str );
 // imprime a pantalla con los formatos personalizados
 //void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color );
-
+// setea el modo terminal para que imprima en la ultima linea
+void setTerminalPrintingMode();
 // imprime un char a pantalla con el formato default
 void putCharScreen( char character );
 // imprime un char a pantalla con los formatos personalizados
