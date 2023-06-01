@@ -13,6 +13,8 @@ typedef struct{
     //dirección de movimiento (velocidad) de la pelota
     int posx;
     int posy;
+
+    int radius;
 } Ball;
 
 typedef struct{
@@ -47,18 +49,18 @@ void checkAndHandleWallCollision(Ball *ball, Player *player1, Player *player2){
     ball->posy=-ball->posy;
 
     //reviso si la pelota colisionó en la parte de arriba o de abajo de la pantalla
-    if(ball->y <= 0 || ball->y >= SCREEN_HEIGHT-1){
+    if(ball->y -ball ->radius <= 0 || ball->y + ball->radius >= SCREEN_HEIGHT-1){
         ball->posy = -ball->posy;
     }
 
     //reviso de la pelota colisionó con el borde derecho o izquierdo de la pantalla
     //de ser así, suma puntaje
-    if (ball->x >= SCREEN_WIDTH-1){
+    if (ball->x + ball->radius >= SCREEN_WIDTH-1){
         //player1 suma un punto y se reinicia la posición y velocidad
         player1->score++;
         resetBall(ball);
     }
-    else if(ball->x <= 0){
+    else if(ball->x - ball->radius <= 0){
         //player2 suma un punto y se reinicia la posición y velocidad
         player2->score++;
         resetBall(ball);
@@ -66,7 +68,7 @@ void checkAndHandleWallCollision(Ball *ball, Player *player1, Player *player2){
 }
 
 int checkBarCollision(Ball ball, Bars bar){
-    if(ball.x <= bar.length && ball.x >= 0){
+    if(ball.x - ball.radius <= bar.length && ball.x + ball.radius >= 0){
         if(ball.y >= bar.y && ball.y <= bar.y + bar.length){
             return 1; //se detecta colision entre la pelota y la barra
         }
