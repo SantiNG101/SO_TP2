@@ -23,6 +23,7 @@ void screen_Initialize(){
 void setTerminalPrintingMode(){
     current_cursor_pos_x = 0;
     current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
+    setDoubleBuffer(0);
 }
 
 
@@ -100,7 +101,7 @@ void scrollScreenUp(){
 void clearScreen(){
 
     //imprimo en backgroundColor en toda la pantalla
-    for ( int i= 0; i < screenHeight +6; i++ ){
+    for ( int i= 0; i < screenHeight; i++ ){
         for( int j=0; j < screenWidth ; j++ ){
             putPixel( j,i,COLOR_BACKGROUND_DEFAULT );
         }

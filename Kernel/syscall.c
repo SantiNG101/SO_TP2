@@ -31,8 +31,10 @@ typedef struct {
 void write(argumentsStruct args);
 void read(argumentsStruct args);
 void modoTerminal(argumentsStruct args);
+void setterBuffer(argumentsStruct args);
+void screenUpdater(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal };
+void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setterBuffer, screenUpdater };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -91,4 +93,12 @@ void write(argumentsStruct args){
 
 void modoTerminal(argumentsStruct args){
     setTerminalPrintingMode();
+}
+
+void setterBuffer(argumentsStruct args){
+    setDoubleBuffer(args->r10);
+}
+
+void screenUpdater(argumentsStruct args){
+    updateScreen();
 }
