@@ -10,9 +10,6 @@ getChar:
     mov r10, placeholder
     mov r9, 1
     int 80h
-
-    mov rdi, [placeholder]
-    call putChar
     
     mov rax, [placeholder]
 

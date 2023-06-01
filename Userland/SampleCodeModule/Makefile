@@ -12,7 +12,10 @@ $(MODULE): $(SOURCES)
 stdlib:
 	cd libc; make all
 
-clean: 
+clean: stdclean
 	rm -rf *.o
+
+stdclean:
+	cd libc; make clean
 
 .PHONY: all clean print

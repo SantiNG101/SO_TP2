@@ -15,4 +15,4 @@ all: $(OBJECTS) $(OBJECTS_ASM)
 	$(ASM) $(ASMFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o asm/*.o
+	rm -rf *.o asm/*.o libc.a

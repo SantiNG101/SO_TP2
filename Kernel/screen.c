@@ -118,8 +118,7 @@ void bordersCheck(){
     current_cursor_pos_x = 0;
     if( current_cursor_pos_y <= screenHeight - 2*CHAR_HEIGHT)
             current_cursor_pos_y += CHAR_HEIGHT;
-    }else{
+    else
         scrollScreenUp();
-    }
 }
   
