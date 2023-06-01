@@ -1,43 +1,74 @@
+//
+// File: exceptions.c
+// Basado en la lista de excepciones de: https://wiki.osdev.org/Exceptions
+//
 #include <stdint.h>
 #include <idt/exceptions.h>
 #include <naiveConsole.h>
+#include <screen.h>
+#include <videoDriver.h>
+
 
 /*
  * Mantener actualizado. El EXCEPTION_TYPE_SIZE debe estar SIEMPRE al final.
  * Da, independientemente del contexto la cantidad de excepciones que hay.
  */
-typedef enum { ZERO_DIVISION = 0, INVALID_OPERATION, DEFAULTEXCEPTION,EXCEPTION_TYPE_SIZE } EXCEPTION_T;
+// typedef enum { ZERO_DIVISION = 0, INVALID_OPERATION, DEFAULTEXCEPTION,EXCEPTION_TYPE_SIZE } EXCEPTION_T;
 
 /* Arreglo de excepciones para que sea fácilmente mantenible. */
-static void (* exceptions[EXCEPTION_TYPE_SIZE])(void) = { zeroDivisionException, invalidOperationException, defaultException };
+static void (* exceptions[])(uint64_t * rip) = { zeroDivisionException, invalidOperationException, defaultException };
 
-void exceptionDispatcher(uint8_t ex){
-    if(ex >= EXCEPTION_TYPE_SIZE)
-        defaultException();
-    exceptions[ex]();
-}
+uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
+    if(ex >= sizeof(exceptions) / sizeof(exceptions[0]))
+        defaultException(&rip);
 
-void zeroDivisionException(){
-    // TODO: COMPLETAR
-    // Muestro los registros que hicieron error.
+    // A partir de ahora se pone el texto siempre en rojito.
+    // ncColor(0xFF0000);
+    ncPrint("Kernel Exception - Exception ");
+    ncPrintDec(ex);
+    ncPrint(" @ 0x");
+    ncPrintHex(rip);
+    ncNewline();
+
+    // Imprimo los registros.
     showRegisterStatus();
-    // Limpio los registros que dieron error
-    cleanActualRegisters();
-    // Imprimo el mensaje de error en rojo
+    ncNewline();
+    // Llamo la razón por la que hubo excepción.
     
+    exceptions[ex](&rip);
+
+    // Cambio el texto otra vez a la normalite.
+    // ncColor(normal);
+
+    return rip;
 }
 
-void invalidOperationException(){
-    // TODO: COMPLETAR
-    // Tira excepción si el argumento no es valido
-    // Imprimir en rojo que se introdujo una funcion no valida
-    // llamar para que se imprima las funciones disponibles (esto puede ser en la funcion de bash)
+void zeroDivisionException(uint64_t * rip){
+    ncPrint("Exception: Division by zero");
+    ncNewline();
+
+    // Debo hacer que continué la ejecución. Porque es un Fault Exception.
+    // Primero debo modificar los registros, que causaron el problema.
+    cleanActualRegisters();
+    // Luego, debo cambiar el RIP para que ejecute la siguiente linea.
+    *rip += 4;
+    return;
 }
 
-void defaultException(){
+void invalidOperationException(uint64_t * rip){
     // TODO: COMPLETAR
-    // Excepción por default. En caso de que algo male sal, entonces le decimos che flaco
-    showRegisterStatus();       // muestro registros que dieron el error
-    cleanActualRegisters();     // limpio los registros
-                                // imprimo el mensaje de que salto la excepcion en rojo
+    printStrScreenFrmt("Exception: Invalid OpCode", RED, COLOR_BACKGROUND_DEFAULT );
+    enter();
+
+    cleanActualRegisters();     
+    *rip += 1;                  // Paso a la siguiente instrucción.
+    return;
+}
+
+void defaultException(uint64_t * rip){
+    // // TODO: COMPLETAR
+    // // Excepción por default. En caso de que algo male sal, entonces le decimos che flaco
+    // showRegisterStatus();       // muestro registros que dieron el error
+    // cleanActualRegisters();     // limpio los registros
+    //                             // imprimo el mensaje de que salto la excepcion en rojo
 }

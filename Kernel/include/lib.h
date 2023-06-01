@@ -18,12 +18,4 @@ void cleanActualRegisters();
 void* myMalloc(size_t size);
 void myFree(void* address);
 
-
-//Seccion puts / printf
-int puts(const char * string);
-int putChar(int c);
-int printf(const char * format, ...);
-
-//Seccion gets / scanf
-
 #endif
