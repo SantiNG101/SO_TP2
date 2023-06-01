@@ -106,9 +106,9 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 // Show register status 
 void showRegisterStatus(){
-    printf("A: %x\tB: %x\tC:%x \tD: %x\nSP: %x\tBP: %x\tSI: %x\tDI: %x\n",
-           getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
-           getCurrentRSI(),getCurrentRDI());
+    // printf("A: %x\tB: %x\tC:%x \tD: %x\nSP: %x\tBP: %x\tSI: %x\tDI: %x\n",
+    //        getCurrentRAX(),getCurrentRBX(),getCurrentRCX(),getCurrentRDX(),getCurrentRSP(),getCurrentRBP(),
+    //        getCurrentRSI(),getCurrentRDI());
 }
 
 

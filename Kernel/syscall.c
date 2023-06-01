@@ -5,6 +5,7 @@
 #include <keyboard.h>
 #include <stdint.h>
 #include <screen.h>
+#include <speaker.h>
 
 
 /*

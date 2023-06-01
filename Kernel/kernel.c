@@ -2,7 +2,6 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
-#include "include/terminalHandler.h"
 #include <screen.h>
 #include <speaker.h>
 #include <stdio.h>
@@ -105,7 +104,7 @@ int main()
     // terminalStart();
 
 	int data = ((EntryPoint) sampleCodeModuleAddress)();
-	printf("exit %x", data);
+	// printf("exit %x", data);
 
 	return 0;
 }

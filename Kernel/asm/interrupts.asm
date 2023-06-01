@@ -181,13 +181,13 @@ _irq03Handler:
 
 ; ------ STARTS EXCPETIONS ------ ; 
 
-_exception00Handler
+_exception00Handler:
     exceptionHandlerMaster 0    ; Division by Zero Exception
 
-_exception01Handler
+_exception01Handler:
     exceptionHandlerMaster 1    ; Not valid OpCode
 
-_exception02Handler
+_exception02Handler:
     exceptionHandlerMaster 2    ; Default exception
 
 ; ------  ENDS  EXCPETIONS ------ ; 
