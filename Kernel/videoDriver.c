@@ -176,6 +176,36 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 	}
 }
 
+void draw_numberXL(uint32_t x, uint32_t y, char character, uint32_t fontColor,
+				 uint32_t backgroundColor){
+	if ( failBordersCheck(x, y)){
+		return;
+	}
+
+	uint32_t auxx = x, auxy = y;
+	char pixIsPresent = 0;
+
+	uint8_t* font_char = numberBitmap(character);
+
+	for(int i = 0; i < NUMBER_HEIGHT; i++){
+		for(int j = 0; j < NUMBER_WIDTH; j++){
+			// Veo si tengo que imprimir el pixel o no, +2 para que imprima bien con el correcto decalaje de bits
+			// No utlizo los ultimos 2 bits porque no son del tamaño asignado
+			pixIsPresent = (1 << (NUMBER_WIDTH -1 - j)) & font_char[i];
+			if ( pixIsPresent )
+				putPixel( auxx, auxy, fontColor );
+			else
+				putPixel( auxx, auxy, backgroundColor );
+				auxx++;
+		}
+		auxx = x;
+		auxy++;
+	}
+
+
+
+}
+
 
 int failBordersCheck( uint32_t x, uint32_t y ){
 	//chequeo los limites (es - o / comparando con la cantidad de espacio del char en los bordes)

@@ -50,7 +50,8 @@ uint16_t getVerticalPixelCount();
 void updateScreen();
 // Seteo del estado del buffer, 1 activado 0 desactivado, default 0
 void setDoubleBuffer(int activated);
-
+// imprime numeros mas grandes para el PONG especialmente
+void draw_numberXL(uint32_t x, uint32_t y, char character, uint32_t fontColor,uint32_t backgroundColor);
 // para el pong
 void draw_Line(int x1, int y1, int x2, int y2, uint32_t color);
 // dibuja un rectangulo relleno en pantalla
