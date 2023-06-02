@@ -2,7 +2,6 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
-#include "include/terminalHandler.h"
 #include <screen.h>
 #include <speaker.h>
 #include <stdio.h>
@@ -21,7 +20,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
-extern void kernelASM();
+extern void kernelASM(uint64_t addr);
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -96,26 +95,27 @@ int divisionBy(int x, int y){
 int main()
 {
     screen_Initialize();
-	/*
-	while(i){
-		putCharScreen('C');
-		enter();
-		putCharScreen('A');
-		enter();
-		i--;
-	}
-	*/
-    // kernelASM();
-	// draw_CircleFilled(100,100,7,RED);
-	setDoubleBuffer(1);
-	int i = 768/2;
-	int j = 768/2;
-	gameMode();
-	int p =1000;
-	while (p-- > 0)
-		updatePongScreen(i++,j--, 0, 0);
-   // printf("\a");
-    // terminalStart();
-
+// 	/*
+// 	while(i){
+// 		putCharScreen('C');
+// 		enter();
+// 		putCharScreen('A');
+// 		enter();
+// 		i--;
+// 	}
+// 	*/
+//     // kernelASM();
+// 	// draw_CircleFilled(100,100,7,RED);
+// 	setDoubleBuffer(1);
+// 	int i = 768/2;
+// 	int j = 768/2;
+// 	gameMode();
+// 	int p =1000;
+// 	while (p-- > 0)
+// 		updatePongScreen(i++,j--, 0, 0);
+//    // printf("\a");
+//     // terminalStart();
+	
+	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;
 }

@@ -161,15 +161,19 @@ _irq02Handler:                  ; SYSCALL
     push rbp
     mov rbp, rsp
 
-    pushState
-
+    pushf
+    sti                         ; Not proud of this, pero necesario si quiero que las syscall funcionen con interrupción de Hardware
+    
+    pushState                   ; Mejorar para que sea C friendly :)
     mov rdi, rsp
     call syscallDispatcher
-    
     popState
+
+    popf
 
     mov rsp, rbp
     pop rbp
+
     iretq
 
 
@@ -181,13 +185,13 @@ _irq03Handler:
 
 ; ------ STARTS EXCPETIONS ------ ; 
 
-_exception00Handler
+_exception00Handler:
     exceptionHandlerMaster 0    ; Division by Zero Exception
 
-_exception01Handler
+_exception01Handler:
     exceptionHandlerMaster 1    ; Not valid OpCode
 
-_exception02Handler
+_exception02Handler:
     exceptionHandlerMaster 2    ; Default exception
 
 ; ------  ENDS  EXCPETIONS ------ ; 

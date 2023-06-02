@@ -5,7 +5,8 @@
 #include <keyboard.h>
 #include <stdint.h>
 #include <screen.h>
-
+#include <speaker.h>
+#include <time.h>
 
 /*
  *  Arguementos de una función de SYSCALL
@@ -33,8 +34,10 @@ void read(argumentsStruct args);
 void modoTerminal(argumentsStruct args);
 void setterBuffer(argumentsStruct args);
 void screenUpdater(argumentsStruct args);
+void timer_wait(argumentsStruct args);
+void speaker_playSound(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setterBuffer, screenUpdater };
+void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setterBuffer, screenUpdater, timer_wait, speaker_playSound};
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -72,6 +75,9 @@ void write(argumentsStruct args){
             case '\n':
                 enter();
                 break;
+            case '\a':
+                beep();
+                break;
             case '\b':
                 backspace();
                 break;
@@ -101,4 +107,12 @@ void setterBuffer(argumentsStruct args){
 
 void screenUpdater(argumentsStruct args){
     updateScreen();
+}
+
+void timer_wait(argumentsStruct args){
+    wait(args->r10);
+}
+
+void speaker_playSound(argumentsStruct args){
+    beepCustom(args->r10, args->r9);
 }

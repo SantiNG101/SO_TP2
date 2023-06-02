@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "include/stdio.h"
 
 // Llama solo a getChar() y debe funcionar. 
 char * getString(void){
@@ -71,8 +71,7 @@ int scanf(const char *format, ...) {
                     break;
                 }
                 case 's': {
-                    char *s_arg = va_arg(args,
-                    char *);
+                    char *s_arg = va_arg(args, char *);
                     scanf_str(s_arg);
                     break;
                 }
@@ -123,10 +122,9 @@ static int scanf_int(int64_t * value_ptr){
 
 //Func aux que copia el str a un puntero
 static int scanf_str(char * s_arg){
-
+    char * l = s_arg;
     char * str = getString();
-    strcpy(str, s_arg);
-
+    strcpy(str, l);
     return 0;
 }
 
@@ -216,11 +214,11 @@ int printf(const char * format, ...){
             switch (*format++) {
                 case 'd': {
                     int64_t int_arg = va_arg(args, int64_t);
-                    char * toPrint = (char *)myMalloc(sizeof(int64_t)*5);
-                    //char toPrint[20] = {0};
+                    // char * toPrint = (char *)myMalloc(sizeof(int64_t)*5);
+                    char toPrint[20] = {0};
                     uintToBase(int_arg, toPrint,10);
                     puts(toPrint);
-                    myFree(toPrint);
+                                    // myFree(toPrint);
                     break;
                 }
                 case 's': {
@@ -235,11 +233,11 @@ int printf(const char * format, ...){
                 }
                 case 'x': {
                     uint64_t hex_arg = va_arg(args, uint64_t);
-                    char * toPrint = (char *)myMalloc(sizeof(uint64_t)*5);
-                    //char toPrint[16] = { 0 };
+                    // char * toPrint = (char *)myMalloc(sizeof(uint64_t)*5);
+                    char toPrint[16] = { 0 };
                     uintToBase(hex_arg, toPrint,16);
                     puts(toPrint);
-                    myFree(toPrint);
+                                // myFree(toPrint);
                     break;
                 }
                 default:

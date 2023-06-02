@@ -31,8 +31,8 @@ enum { CTR = 1, ALT, SHF, SCR, NUM, CAP };
 static const char keyboard[6][16] = {{ '\f', '\x1B', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t' },
                                      { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '\n', CTR, 'a', 's' },
                                      { 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', SHF, '\\', 'z', 'x', 'c', 'v' },
-                                     { 'b', 'n', 'm', ',', '.', '/', SHF, '*', ALT, ' ', '\x0F', '\0', '\0', '\0', '\0', '\0' },
-                                     { '\0', '\0', '\0', '\x0E', '\r', '\0', '\0', '7', '8', '9', '-', '4', '5', '6', '+', '1' },
+                                     { 'b', 'n', 'm', ',', '.', '/', SHF, '*', ALT, ' ', CAP, '\0', '\0', '\0', '\0', '\0' },
+                                     { '\0', '\0', '\0', '\x0E', '\r', NUM, SCR, '7', '8', '9', '-', '4', '5', '6', '+', '1' },
                                      { '2', '3', '0', '.', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' }};
 
 const unsigned char shftKeyBoard[6][16] = {{ '\0', '\0', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b', '\t' },
@@ -67,17 +67,20 @@ void keyboardHandler(){
 
     uint8_t data = read_port(KEYBOARD_DATA_PORT);
 
+    if(isReleased(data))
+        return;
+
     if(isSpecial(data)){
         setState(keyboard[(data >> 4) & 0x07][data & 0x0F]);
         return;
     }
 
-    if(isReleased(data))
-        return;
-
     uint8_t keyCode = keyboard[data >> 4][data & 0x0F];
+    if(getState(CAP))
+        keyCode = toMayus(keyCode);
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4][data & 0x0F];
+
 
     // *currentBuff++ = keyCode;
     currentBuff = keyCode;
@@ -85,7 +88,7 @@ void keyboardHandler(){
 }
 
 int getC(){
-    keyboardHandler();  // Me aseguro de que haya dato en el buffer
+    // keyboardHandler();  // Me aseguro de que haya dato en el buffer
 
     // int c = *--currentBuff;
     // *currentBuff = 0;

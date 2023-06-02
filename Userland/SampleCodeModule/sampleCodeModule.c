@@ -1,19 +1,31 @@
 /* sampleCodeModule.c */
 
-char * v = (char*)0xB8000 + 79 * 2;
-
-static int var1 = 0;
-static int var2 = 0;
-
-
+#include <stdio.h>
+#include "terminal.h"
+#include "songs.h"
 int main() {
-	//All the following code may be removed 
-	*v = 'X';
-	*(v+1) = 0x74;
 
-	//Test if BSS is properly set up
-	if (var1 == 0 && var2 == 0)
-		return 0xDEADC0DE;
+    printf("Welcome to Userland!\n");
+    userLandStartTheme();
+    printf("Choose a mode:\nPress 1 for Pong.\nPress 2 for Terminal.\nPress 3 for exit.\n");
+    unsigned char keepGoing = TRUE;
 
-	return 0xDEADBEEF;
+    while(keepGoing){
+        char c = getChar();
+        switch(c){
+            case '1':
+                break;
+            case '2':
+                terminalStart();
+                printf("Choose a mode:\nPress 1 for Pong.\nPress 2 for Terminal.\nPress 3 for exit.\n");
+                break;
+            case '3':
+                keepGoing = FALSE;
+                break;
+            default:
+                break;
+        }
+    }
+
+	return 0;
 }
