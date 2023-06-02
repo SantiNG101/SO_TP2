@@ -85,7 +85,7 @@ void keyboardHandler(){
 }
 
 int getC(){
-    keyboardHandler();  // Me aseguro de que haya dato en el buffer
+    // keyboardHandler();  // Me aseguro de que haya dato en el buffer
 
     // int c = *--currentBuff;
     // *currentBuff = 0;

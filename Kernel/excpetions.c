@@ -24,15 +24,16 @@ uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
 
     // A partir de ahora se pone el texto siempre en rojito.
     // ncColor(0xFF0000);
-    ncPrint("Kernel Exception - Exception ");
+    printErrorStr("-------- [ KERNEL EXCEPTION ] - Exception ");
     ncPrintDec(ex);
-    ncPrint(" @ 0x");
+    printErrorStr(" @ 0x --------");
     ncPrintHex(rip);
-    ncNewline();
+    enter();
 
     // Imprimo los registros.
     showRegisterStatus();
-    ncNewline();
+    enter();
+    
     // Llamo la razón por la que hubo excepción.
     
     exceptions[ex](&rip);
@@ -44,24 +45,24 @@ uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
 }
 
 void zeroDivisionException(uint64_t * rip){
-    ncPrint("Exception: Division by zero");
-    ncNewline();
+    printErrorStr("Exception: Division by zero");
+    enter();
 
     // Debo hacer que continué la ejecución. Porque es un Fault Exception.
     // Primero debo modificar los registros, que causaron el problema.
     cleanActualRegisters();
-    // Luego, debo cambiar el RIP para que ejecute la siguiente linea.
-    *rip += 4;
+    
+    *rip = 0x400000;
     return;
 }
 
 void invalidOperationException(uint64_t * rip){
     // TODO: COMPLETAR
-    printStrScreenFrmt("Exception: Invalid OpCode", RED, COLOR_BACKGROUND_DEFAULT );
+    printErrorStr("Exception: Invalid OpCode");
     enter();
 
     cleanActualRegisters();     
-    *rip += 1;                  // Paso a la siguiente instrucción.
+    *rip = 0x400000;
     return;
 }
 

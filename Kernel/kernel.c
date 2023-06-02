@@ -95,16 +95,8 @@ int divisionBy(int x, int y){
 
 int main()
 {
-	// kernelASM(sampleCodeModuleAddress);
     screen_Initialize();
-	// kernelASM();
-	// printf("\a");
-	// puts("\a");
-	// putChar('\a');
-    // terminalStart();
-
-	int data = ((EntryPoint) sampleCodeModuleAddress)();
-	// printf("exit %x", data);
-
+	((EntryPoint) sampleCodeModuleAddress)();
+	
 	return 0;
 }
