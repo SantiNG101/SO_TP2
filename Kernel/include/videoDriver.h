@@ -51,4 +51,11 @@ void updateScreen();
 // Seteo del estado del buffer, 1 activado 0 desactivado, default 0
 void setDoubleBuffer(int activated);
 
+// para el pong
+void draw_Line(int x1, int y1, int x2, int y2, uint32_t color);
+// dibuja un rectangulo relleno en pantalla
+void draw_Rectangle(int x, int y, int width, int height, uint32_t color);
+// Dibuja un circulo relleno en pantalla
+void draw_CircleFilled(int centerX, int centerY, int radius, uint32_t color);
+
 #endif //KERNEL_VIDEODRIVER_H

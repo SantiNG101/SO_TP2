@@ -2,6 +2,11 @@
 #ifndef __PONG_H__
 #define __PONG_H__
 
+
+#define DEFAULT_BALL_RADIUS 7
+#define DEFALUT_BAR_WIDTH 10
+#define DEFALUT_BAR_HEIGHT 120
+
 //reinicio posicion y dirección de la pelota
 void resetBall(Ball *ball);
 

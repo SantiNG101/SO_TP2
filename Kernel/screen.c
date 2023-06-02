@@ -6,6 +6,11 @@
 // tamaño de pantalla
 // 1024 x 768
 
+#define LIMIT_BAR_SPACE 15
+#define MIDDLE_SCREEN (1024-30)/2
+#define MARQUER_DISTANCE_X 15
+#define MARQUER_DISTANCE_Y 15
+
 void bordersCheck();
 
 uint64_t screenWidth;
@@ -129,3 +134,17 @@ void bordersCheck(){
     }
 }
   
+
+// Funciones PONG
+
+void gameMode(){
+    
+    draw_Rectangle(LIMIT_BAR_SPACE,768/2-60,10,120,BLUE);
+	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,768/2-60,10,120,RED);
+	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
+	draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
+	draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
+	draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
+	draw_char(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',BLUE,COLOR_BACKGROUND_DEFAULT);
+	draw_char(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',RED,COLOR_BACKGROUND_DEFAULT);
+}

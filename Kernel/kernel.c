@@ -93,7 +93,6 @@ int divisionBy(int x, int y){
 }
 
 
-
 int main()
 {
     screen_Initialize();
@@ -106,9 +105,11 @@ int main()
 		i--;
 	}
 	*/
-    kernelASM();
+    // kernelASM();
+	// draw_CircleFilled(100,100,7,RED);
+	gameMode();
    // printf("\a");
-    terminalStart();
+    // terminalStart();
 
 	return 0;
 }
