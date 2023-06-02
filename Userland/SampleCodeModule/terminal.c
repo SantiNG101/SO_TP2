@@ -108,6 +108,7 @@ void help(/*char * token*/){
 
 void showTime(){
     char time[50];
+    printf("%d\n", timestamp());
     // timeToStr(time);
     printf("%s\n",time);
     return;

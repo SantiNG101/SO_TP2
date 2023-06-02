@@ -24,14 +24,14 @@ static uint64_t ticks = 0;
  * el valor del segundo nibble (los últimos 4 bits) y
  * se suma al valor de la primera cifra convertida a decimal.
  */
-static unsigned  int decode(unsigned char time){
+static unsigned int decode(unsigned char time){
     return (time >> 4) * 10 + (time & 0x0F);
     //Decalaje para formato bcd .. b0b1b2b3b4b5b6b7
     // b0b1b2b3  --> Parte decimal alta
     // b4b5b6b7 --> Parte decimal baja --> hago el & para que solo agarre esos bits
 }
 
-unsigned  int seconds(){
+unsigned int seconds(){
     return decode(clock(SECONDS));
 }
 
@@ -82,8 +82,19 @@ void dateToStr(char * dest){
     dest[7] = y %10 + '0';
 }
 
+//long int yyyymmddhhMMss;
+uint64_t getTime() {
+    unsigned int (*funcs[])(void) = {year, month, day, hours, minutes, seconds};
+    int size = sizeof(funcs) / sizeof(funcs[0]);
 
+    uint64_t toReturn = 0;
+    for (int i = 0; i < size - 1; i++) {
+        toReturn = (toReturn * 100) + funcs[i]();
+    }
 
+    toReturn += funcs[size - 1](); 
+    return toReturn;
+}
 
 void tick(){
     ticks++;

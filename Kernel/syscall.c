@@ -36,8 +36,9 @@ void setterBuffer(argumentsStruct args);
 void screenUpdater(argumentsStruct args);
 void timer_wait(argumentsStruct args);
 void speaker_playSound(argumentsStruct args);
+void timeNow(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setterBuffer, screenUpdater, timer_wait, speaker_playSound};
+void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setterBuffer, screenUpdater, timer_wait, speaker_playSound, timeNow };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -115,4 +116,8 @@ void timer_wait(argumentsStruct args){
 
 void speaker_playSound(argumentsStruct args){
     beepCustom(args->r10, args->r9);
+}
+
+void timeNow(argumentsStruct args){
+    args->r10 = getTime();
 }

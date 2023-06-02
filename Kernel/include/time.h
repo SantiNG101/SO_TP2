@@ -17,6 +17,8 @@ unsigned int month();
 void timeToStr(char * dest);
 void dateToStr(char * dest);
 
+uint64_t getTime();
+
 /* ------- TICK ------- */
 void tick(void);
 int getTicks();

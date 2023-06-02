@@ -16,7 +16,7 @@ extern void sleep(uint64_t ms);
   * yyyy mm dd hhMMss
   * long int yyyymmddhhMMss
   */
-extern int timestamp();
+extern uint64_t timestamp();
 
 /*
  * Returns how many ticks has been done since the Kernel Booted.

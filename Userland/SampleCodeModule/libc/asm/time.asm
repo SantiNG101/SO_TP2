@@ -17,6 +17,10 @@ sleep:
     ret
 
 timestamp:
+    mov rdi, 7          ; Llamada a la syscall de timeNow
+    INT 80h
+
+    mov rax, r10
     ret
 
 ticks:
