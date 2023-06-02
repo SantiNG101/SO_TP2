@@ -7,7 +7,6 @@
 // inicializa los valores necesarios de la pantalla
 void screen_Initialize();
 // imprime un string a pantalla con los formatos default
-
 void printErrorStr( char* str );
 // imprime a pantalla con los formatos personalizados
 //void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color );
@@ -27,5 +26,12 @@ void tab();
 void enter();
 // limpia la pantalla y la setea a color negro
 void clearScreen();
+
+// funciones pong
+
+// seteos iniciales
+void gameMode();
+// ya me pasan la direccion actualizada
+void updatePongScreen( uint32_t yformR, uint32_t yfromB, uint8_t scoreR, uint8_t scoreB);
 
 #endif 

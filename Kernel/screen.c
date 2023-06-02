@@ -137,8 +137,9 @@ void bordersCheck(){
 
 // Funciones PONG
 
-void gameMode(){
 
+void gameMode(){
+    clearScreen();
     draw_Rectangle(LIMIT_BAR_SPACE,768/2-60,10,120,BLUE);
 	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,768/2-60,10,120,RED);
 	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
@@ -147,6 +148,19 @@ void gameMode(){
 	draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
 	draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',BLUE,COLOR_BACKGROUND_DEFAULT);
 	draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',RED,COLOR_BACKGROUND_DEFAULT);
+    updateScreen();
 }
 
-//void moveBar(  )
+// me pasan ya la posicion actualizada
+void updatePongScreen( uint32_t yformR, uint32_t yfromB,uint8_t scoreR, uint8_t scoreB){
+    clearScreen();
+    draw_Rectangle(LIMIT_BAR_SPACE,yfromB,10,120,BLUE);
+	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,yformR,10,120,RED);
+	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
+    draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
+    draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
+    draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
+    draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,scoreB,BLUE,COLOR_BACKGROUND_DEFAULT);
+	draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,scoreR,RED,COLOR_BACKGROUND_DEFAULT);
+    updateScreen();
+}

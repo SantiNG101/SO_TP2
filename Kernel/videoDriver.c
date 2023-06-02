@@ -123,6 +123,14 @@ void modifyFrameBuffer( int mode){
 	}
 	*/
 	// hago mem copy de memoria
+	if ( doubleBuffer ){
+		if (mode){
+		memset(buffer,0,bufferlen);
+		return;
+		}
+		memcpy(buffer,buffer+ CHAR_HEIGHT*1024*3,bufferlen - CHAR_HEIGHT*1024*3 );
+		return;
+	}
 	if (mode){
 		memset(VBE_mode_info->framebuffer,0,bufferlen);
 		return;

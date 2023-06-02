@@ -5,6 +5,7 @@
 #define SCREEN_HEIGHT 1024
 #define GAME_OVER 10
 
+// punto x e y de la pelota hacen referencia al centro de la pelota
 typedef struct{
     //posición actual
     int x;
@@ -17,6 +18,7 @@ typedef struct{
     int radius;
 } Ball;
 
+// Punto y tomado de referencia es el de arriba de todo de la barra
 typedef struct{
     int y;
     int length;
