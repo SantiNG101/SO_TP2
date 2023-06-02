@@ -16,7 +16,6 @@ extern void sleep(uint64_t ms);
   * yyyy mm dd hhMMss
   * long int yyyymmddhhMMss
   */
-uint64_t timestam();
 extern uint64_t timestamp();
 
 /*

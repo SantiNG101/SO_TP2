@@ -9,10 +9,4 @@ clearScreen:
     mov rdi, 2
     INT 80h
 
-    ; mov rdi, cadena
-    ; call puts
-
     ret
-
-; section .data
-; cadena db "$ ", 0

@@ -121,7 +121,7 @@ void showTime(){
 void showDate(){
     int year,month,day;
     getDate(&day,&month,&year);
-    printf("%d/%d/%d\n",year,month,year);
+    printf("%d/%d/%d\n",day,month,year);
 }
 
 void exit(){

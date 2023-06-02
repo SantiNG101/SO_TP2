@@ -6,7 +6,7 @@ uint64_t timestam(){
 }
 
 int getDate(int * day, int * month, int * year){
-     uint64_t ts = timestam();
+     uint64_t ts = timestamp();
      *year = ts/10000000000;
      *month = (ts/100000000)%100;
      *day =  (ts/1000000)%100;
@@ -14,7 +14,7 @@ int getDate(int * day, int * month, int * year){
 }
 
 int getTime(int * hour, int * min, int * seconds){
-    uint64_t ts = timestam();
+    uint64_t ts = timestamp();
     *hour = (ts%1000000)/10000;
     *min = (ts%10000)/100;
     *seconds = ts % 100;

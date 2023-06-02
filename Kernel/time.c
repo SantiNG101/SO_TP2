@@ -88,11 +88,9 @@ uint64_t getTime() {
     int size = sizeof(funcs) / sizeof(funcs[0]);
 
     uint64_t toReturn = 0;
-    for (int i = 0; i < size - 1; i++) {
+    for (int i = 0; i < size; i++) {
         toReturn = (toReturn * 100) + funcs[i]();
     }
-
-    toReturn += funcs[size - 1](); 
     return toReturn;
 }
 
