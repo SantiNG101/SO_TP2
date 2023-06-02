@@ -120,6 +120,10 @@ section .text
 
 ; ------ END MACROS ------ ;
 
+getRSB:
+        
+    ret
+
 _hlt:
 	sti
 	hlt
@@ -161,6 +165,7 @@ _irq02Handler:                  ; SYSCALL
     push rbp
     mov rbp, rsp
 
+    pushf
     sti                         ; Not proud of this, pero necesario si quiero que las syscall funcionen con interrupción de Hardware
     
     pushState                   ; Mejorar para que sea C friendly :)
@@ -168,8 +173,11 @@ _irq02Handler:                  ; SYSCALL
     call syscallDispatcher
     popState
 
+    popf
+
     mov rsp, rbp
     pop rbp
+
     iretq
 
 
