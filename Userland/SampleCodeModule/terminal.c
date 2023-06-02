@@ -12,7 +12,6 @@ void showDate();
 void help();
 void divZero();
 void beep();
-// void opCode();
 
 typedef struct {
     char name[20];
@@ -35,7 +34,7 @@ const commandT commands[] = {
                              {"tetris","Displays tetris song",tetris},
                              {"storm","Displays song of storms zelda",songOfStorms},
                              {"div0","Shows how div 0 exception works",divZero},
-                            //  {"opCode","Shows how opCode exception works",opCode}
+                             {"opCode","Shows how opCode exception works",opCode}
                             };
 
 static unsigned char keepGoing = TRUE;

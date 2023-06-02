@@ -11,6 +11,11 @@ extern void sleep(uint64_t ms);
 /*
  * Returns a timestamp with the current system time. It can be perfectly used as to get the current date and/or hour.
  */
+
+ /*
+  * yyyy mm dd hhMMss
+  * long int yyyymmddhhMMss
+  */
 extern int timestamp();
 
 /*
