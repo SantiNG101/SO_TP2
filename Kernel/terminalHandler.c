@@ -40,9 +40,11 @@ const commandT commands[] = {{"time","Shows the current time in GMT-3",showTime}
 static unsigned char keepGoing = TRUE;
 
 int terminalStart(){
+    clearScreen();
     char* ptr = (char*)myMalloc(sizeof(char)*79);
 
     while(keepGoing){
+
         setTerminal();
         printf("$ ");
 
@@ -77,6 +79,7 @@ int terminalStart(){
 
     }
 
+    clearScreen();
     myFree(ptr);
     return 0;
 }

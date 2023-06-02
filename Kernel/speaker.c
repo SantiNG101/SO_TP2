@@ -383,3 +383,9 @@ void songOfStorms(void){
     beepCustom(E4,300);
 }
 
+void userLandStartTheme(void){
+    beepCustom(G4,100);
+    beepCustom(E4,150);
+    beepCustom(A4,150);
+    beepCustom(D4,150);
+}
