@@ -9,6 +9,7 @@ void exit();
 void showDate();
 void help(char * token);
 void divZero();
+void beep();
 // void opCode();
 
 typedef struct {
@@ -22,11 +23,11 @@ const commandT commands[] = {
                             //  {"clear","clears screen and resets position",clearScreen},
                              {"date","Displays current date.",showDate},
                              {"exit","Exits the bash",exit},
-                            //  {"bell","Outputs a Beep", beep},
-                            //  {"66","Displays imperial march for starwars fans", imperialMarch},
-                            //  {"mario","Displays mario bros theme song",marioTheme},
-                            //  {"tetris","Displays tetris song",tetris},
-                            //  {"storm","Displays song of storms zelda",songOfStorms},
+                             {"bell","Outputs a Beep", beep},
+                             {"66","Displays imperial march for starwars fans", imperialMarch},
+                             {"mario","Displays mario bros theme song",marioTheme},
+                             {"tetris","Displays tetris song",tetris},
+                             {"storm","Displays song of storms zelda",songOfStorms},
                              {"div0","Shows how div 0 exception works",divZero},
                             //  {"opCode","Shows how opCode exception works",opCode}
                             };
@@ -123,6 +124,10 @@ int divide(int x, int y){
 
 void divZero(){
     divide(0,0);
+}
+
+void beep(){
+    putChar('\a');
 }
 
 /*

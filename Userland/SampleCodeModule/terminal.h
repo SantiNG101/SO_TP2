@@ -13,6 +13,7 @@
 #include <strings.h>
 #include <time.h>
 #include <stdlib.h>
+#include "songs.h"
 
 #define TRUE 1
 #define FALSE 0
