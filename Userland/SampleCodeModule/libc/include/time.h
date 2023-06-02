@@ -16,6 +16,7 @@ extern void sleep(uint64_t ms);
   * yyyy mm dd hhMMss
   * long int yyyymmddhhMMss
   */
+uint64_t timestam();
 extern uint64_t timestamp();
 
 /*
@@ -27,7 +28,9 @@ extern int ticks();
 // Another functions made out of the first three.
 
 // int getTime();
-int getDate(int * day, int * hour, int * year);
+int getDate(int * day, int * month, int * year);
 // int getDateTime();
-
+int getTime(int * hour, int * min, int * seconds);
+// int getDateTime();
+int getDateTime(int * day, int * month, int * year,int * hour, int * min, int * seconds);
 #endif

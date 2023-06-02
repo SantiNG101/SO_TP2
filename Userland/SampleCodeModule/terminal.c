@@ -57,20 +57,26 @@ int terminalStart(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
+            if(i == 0){
+                commands[i].function();
+                putChar('\n');
+                return;
+            }
+            char * aux = strtok(NULL, " ");
+            if(aux != NULL){
+                printf("This function does not accept arguments.\n");
+                return;
+            }
+
             commands[i].function();
             putChar('\n');
             return;
         }
 
-        char * aux = strtok(NULL, " ");  
-        if(aux != NULL){
-            printf("This function does not accept arguments.\n");
-            return;
-        }
-        
     }
+        printf("Comando no encontrado.\n");
 
-    printf("Comando no encontrado.\n");
+
     return;
 }
 
@@ -107,18 +113,15 @@ void help(/*char * token*/){
 }
 
 void showTime(){
-    char time[50];
-    printf("%d\n", timestamp());
-    // timeToStr(time);
-    printf("%s\n",time);
-    return;
+    int hour,min,sec;
+    getTime(&hour,&min,&sec);
+    printf("%d:%d:%d\n",hour,min,sec);
 }
 
 void showDate(){
-    char date[50];
-    // dateToStr(date);
-    printf("%s\n",date);
-    return;
+    int year,month,day;
+    getDate(&day,&month,&year);
+    printf("%d/%d/%d\n",year,month,year);
 }
 
 void exit(){

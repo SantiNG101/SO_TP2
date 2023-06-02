@@ -2,6 +2,7 @@
 #ifndef __PONG_H__
 #define __PONG_H__
 
+#include <stdio.h>
 
 #define DEFAULT_BALL_RADIUS 7
 #define DEFALUT_BAR_WIDTH 10
@@ -34,5 +35,8 @@ void drawBall(Ball ball);
 
 //dibuja el puntaje del juego
 void drawScore(Game game);
+
+//Interpreta las flechas y ws
+void getInputPlaying();
 
 #endif //__PONG_H__

@@ -44,12 +44,6 @@ void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setter
 
 void syscallDispatcher(argumentsStruct args){
     if(args->rdi > sizeofArr(syscalls)){
-        ncPrint("Que so? boludo?, anda pa' alla bobo");
-        ncNewline();
-        ncPrint("La syscall: ");
-        ncPrintDec(args->rdi);
-        ncPrint(", no existe principe");
-        ncNewline();
         return;
     }
     // Ejecuta la syscall

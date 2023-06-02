@@ -1,9 +1,11 @@
 #include <pong.h>
+#include <screen.h>
 // tamaño de pantalla
 // 1024 x 768
 #define SCREEN_WIDTH 768
 #define SCREEN_HEIGHT 1024
 #define GAME_OVER 10
+#define BAR_MOV 2
 
 // punto x e y de la pelota hacen referencia al centro de la pelota
 typedef struct{
@@ -128,4 +130,23 @@ void drawScore(Game game){
     //implementar funcion que dibuje el puntaje en pantalla
 }
 
-
+void getInputPlaying(Game game){
+    unsigned char c = getChar();
+    switch(c){
+        case 80:        //mov up
+            updateBar(game.player2.bar,BAR_MOV);
+            break;
+        case 81:        //mov down
+            updateBar(game.player2.bar,-BAR_MOV);
+            break;
+        case 'w':       //mov up
+            updateBar(game.player1.bar,BAR_MOV);
+            break;
+        case 's':       //mov down
+            updateBar(game.player1.bar,-BAR_MOV);
+            break;
+        default:
+            break;
+    }
+    return;
+}
