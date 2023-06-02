@@ -107,17 +107,15 @@ void help(/*char * token*/){
 }
 
 void showTime(){
-    char time[50];
-    // timeToStr(time);
-    printf("%s\n",time);
-    return;
+    int hour,min,sec;
+    getTime(&hour,&min,&sec);
+    printf("%d:%d:%d\n",hour,min,sec);
 }
 
 void showDate(){
-    char date[50];
-    // dateToStr(date);
-    printf("%s\n",date);
-    return;
+    int year,month,day;
+    getDate(&day,&month,&year);
+    printf("%d/%d/%d\n",year,month,year);
 }
 
 void exit(){
