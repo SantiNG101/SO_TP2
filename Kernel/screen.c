@@ -6,6 +6,11 @@
 // tamaño de pantalla
 // 1024 x 768
 
+#define LIMIT_BAR_SPACE 15
+#define MIDDLE_SCREEN (1024-30)/2
+#define MARQUER_DISTANCE_X 15
+#define MARQUER_DISTANCE_Y 15
+
 void bordersCheck();
 
 uint64_t screenWidth;
@@ -81,13 +86,16 @@ void enter(){
 
 void scrollScreenUp(){
     // cada pixel lo copio en la de arriba TODO optimizar
+    /*
     for ( int i= 0; i < screenHeight - CHAR_HEIGHT ; i++ ){ // y (altura)
         for( int j=0; j < screenWidth ; j++ ){ // x (ancho)
             copyPixel( j,i+CHAR_HEIGHT,j,i ); // copio al de arriba
         }
     }
+    */
+    // hago mem copy para modificar el frame buffer y paso si borro info o no
+    modifyFrameBuffer(0);
     // imprimo en la ult linea espacios
-    
     for ( int i= 0; i< screenWidth; i+=CHAR_WIDTH ){
         draw_char( i, screenHeight - CHAR_HEIGHT, ' ',
          COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT );
@@ -99,13 +107,16 @@ void scrollScreenUp(){
 }
 
 void clearScreen(){
-
+    /*
     //imprimo en backgroundColor en toda la pantalla
     for ( int i= 0; i < screenHeight; i++ ){
         for( int j=0; j < screenWidth ; j++ ){
             putPixel( j,i,COLOR_BACKGROUND_DEFAULT );
         }
     }
+    */
+    // hago mem copy para modificar el frame buffer y paso si borro info o no
+    modifyFrameBuffer(1);
     // restauro el cursor al inicio
     current_cursor_pos_x = 0;
     current_cursor_pos_y = 0;
@@ -122,3 +133,33 @@ void bordersCheck(){
         scrollScreenUp();
 }
   
+
+// Funciones PONG
+
+
+void gameMode(){
+    clearScreen();
+    draw_Rectangle(LIMIT_BAR_SPACE,768/2-60,10,120,BLUE);
+	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,768/2-60,10,120,RED);
+	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
+	draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
+	draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
+	draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
+	draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',BLUE,COLOR_BACKGROUND_DEFAULT);
+	draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',RED,COLOR_BACKGROUND_DEFAULT);
+    updateScreen();
+}
+
+// me pasan ya la posicion actualizada
+void updatePongScreen( uint32_t yformR, uint32_t yfromB,uint8_t scoreR, uint8_t scoreB){
+    clearScreen();
+    draw_Rectangle(LIMIT_BAR_SPACE,yfromB,10,120,BLUE);
+	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,yformR,10,120,RED);
+	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
+    draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
+    draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
+    draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
+    draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,scoreB,BLUE,COLOR_BACKGROUND_DEFAULT);
+	draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,scoreR,RED,COLOR_BACKGROUND_DEFAULT);
+    updateScreen();
+}

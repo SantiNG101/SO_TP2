@@ -50,15 +50,21 @@ int terminalStart(){
             help(token);
         } else {
             int i = 0;
-            while(i < SIZEOFARR(commands)){
-                if(!strcmp(token,commands[i].name)){
-                    commands[i].function();
-                    break;
+            char * aux = strtok(NULL," ");
+
+            if(aux != NULL){
+                printf("This function does not accept arguments.\n");
+            } else {
+                while (i < SIZEOFARR(commands)) {
+                    if (!strcmp(token, commands[i].name)) {
+                        commands[i].function();
+                        break;
+                    }
+                    i++;
                 }
-                i++;
-            }
-            if(i == SIZEOFARR(commands)){
-                printf("Comando no encontrado.\n");
+                if (i == SIZEOFARR(commands)) {
+                    printf("Comando no encontrado.\n");
+                }
             }
         }
 
@@ -69,6 +75,7 @@ int terminalStart(){
     myFree(ptr);
     return 0;
 }
+
 
 void help(char * token){
     char *aux = NULL;

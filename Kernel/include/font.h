@@ -7,6 +7,9 @@
 
 #define CHAR_WIDTH 6
 #define CHAR_HEIGHT 10
+#define NUMBER_HEIGHT 16
+#define NUMBER_WIDTH 8
+
 
 // (c) 2009, 2010 Lutz Sammer, License: AGPLv3
 
@@ -270,5 +273,6 @@
 
 // conseguir la formacion en pixeles del char
 uint8_t * charBitmap(uint8_t character);
+uint8_t * numberBitmap( uint8_t number );
 
 #endif
