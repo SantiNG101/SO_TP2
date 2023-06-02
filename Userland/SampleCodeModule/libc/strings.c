@@ -1,20 +1,16 @@
 #include "include/strings.h"
 
 int strcmp(const char* str1, const char* str2) {
-    while (*str1 && (*str1 == *str2)) {
-        str1++;
-        str2++;
-    }
+    int i = 0;
+    while (str1[i] && (str1[i] == str2[i])) i++;
 
-    return (int)(*str1 - *str2);
+    return (int)(str1[i] - str2[i]);
 }
 
 int strncmp(const char *str1, const char * str2, size_t n){
-    while(n-- && *str1 && *str2 && *str1 == *str2){
-        str1++;
-        str2++;
-    }
-    return (int)(*str1 - *str2);
+    int i = 0;
+    while(n-- && str1[i] && str2[i] && str1[i] == str2[i]) i++;
+    return (int)(str1[i] - str2[i]);
 }
 
 size_t strlen(const char * str){
@@ -24,9 +20,10 @@ size_t strlen(const char * str){
 }
 
 char * strcpy(const char * src, char * dest){
-    char * temp = dest;
-    while ((*dest++ = *src++));
-    return temp;
+    int i = 0;
+    while ((dest[i] = src[i])) i++;
+    
+    return dest[0];
 }
 
 char * strcat(const char *src, char * dest){
@@ -52,10 +49,9 @@ char * strtok(char * str, const char * delim){
     }
 
     char * token = last_ptr;
-
-    while(*last_ptr != '\0'){
+    while(*last_ptr){
         int i;
-        for(i = 0; delim[i] != '\0'; i++){
+        for(i = 0; delim[i]; i++){
             if (*last_ptr == delim[i]) {
                 *last_ptr = '\0';
                 last_ptr++;

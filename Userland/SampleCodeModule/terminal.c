@@ -4,10 +4,12 @@
 
 extern void opCode();
 
+void runCommand(char *);
+
 void showTime();
 void exit();
 void showDate();
-void help(char * token);
+void help();
 void divZero();
 void beep();
 // void opCode();
@@ -18,7 +20,11 @@ typedef struct {
     void (*function)(void);
 } commandT;
 
+
+
+
 const commandT commands[] = {
+                             {"help", "Provides a command list.", help},
                              {"time","Shows the current time in GMT-3",showTime},
                             //  {"clear","clears screen and resets position",clearScreen},
                              {"date","Displays current date.",showDate},
@@ -35,76 +41,74 @@ const commandT commands[] = {
 static unsigned char keepGoing = TRUE;
 
 int terminalStart(){
-    char* ptr = (char*)myMalloc(sizeof(char)*79);
+    static const char ptr[240] = { 0 };
 
     while(keepGoing){
         // setTerminal();
         printf("$ ");
 
-        scanf("%s",ptr);
-        char *token = strtok(ptr," ");      //creo token con cmdline (modificable)
-        // Process the command and execute actions accordingly
-        printf("\n");
-
-        if(!strcmp(token,"help")){
-            help(token);
-        } else {
-            int i = 0;
-            char * aux = strtok(NULL," ");
-
-            if(aux != NULL){
-                printf("This function does not accept arguments.\n");
-            } else {
-                while (i < SIZEOFARR(commands)) {
-                    if (!strcmp(token, commands[i].name)) {
-                        commands[i].function();
-                        break;
-                    }
-                    i++;
-                }
-                if (i == SIZEOFARR(commands)) {
-                    printf("Comando no encontrado.\n");
-                }
-            }
-        }
+        scanf("%s", ptr);
+        char *token = strtok(ptr, " ");     //creo token con cmdline (modificable)
+                                            //Process the command and execute actions accordingly
+        runCommand(token);
 
         printf("\n");
 
     }
 
-    myFree(ptr);
     return 0;
 }
 
+void runCommand(char * cmd){
+    for(int i = 0; i < SIZEOFARR(commands); i++){
+        if(!strcmp(cmd, commands[i].name)) {
+            commands[i].function();
+            putChar('\n');
+            return;
+        }
 
-void help(char * token){
-    char *aux = NULL;
+        char * aux = strtok(NULL, " ");  
+        if(aux != NULL){
+            printf("This function does not accept arguments.\n");
+            return;
+        }
+        
+    }
 
-    token = strtok(NULL," ");
+    printf("Comando no encontrado.\n");
+    return;
+}
 
-    aux = strtok(NULL," ");
+void help(/*char * token*/){
+    char * token = strtok(NULL, " ");
+    char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("help requires only one argument.\n");
-        return ;
-    } else if(token == NULL){
+        return;
+    }
+
+    if(token == NULL){
         printf("Current functions are:\n");
         for(int i = 0; i < SIZEOFARR(commands); i++){
-            printf("%s\n", commands[i].name);
+            printf("%s - %s\n", commands[i].name, commands[i].description);
         }
         return;
-    }else if(!strcmp(token,"help")){
+    }
+
+    if(!strcmp(token,"help")){
         printf("Provides a list of functions or\nif an argument is passed\na brief description of the function passed as arg.\n");
         return;
     }
 
-        for( int i = 0; i < SIZEOFARR(commands); i++){
-            if(!strcmp(token, commands[i].name)){
-                printf("%s\n",commands[i].description);
-               return;
-            }
+    for( int i = 0; i < SIZEOFARR(commands); i++){
+        if(!strcmp(token, commands[i].name)){
+            printf("%s\n",commands[i].description);
+            return;
         }
-            printf("Desired function does not exist.\n");
+    }
+
+    printf("Desired function does not exist.\n");
 }
 
 void showTime(){

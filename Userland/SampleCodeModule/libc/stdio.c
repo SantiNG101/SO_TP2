@@ -71,8 +71,7 @@ int scanf(const char *format, ...) {
                     break;
                 }
                 case 's': {
-                    char *s_arg = va_arg(args,
-                    char *);
+                    char *s_arg = va_arg(args, char *);
                     scanf_str(s_arg);
                     break;
                 }
@@ -123,10 +122,9 @@ static int scanf_int(int64_t * value_ptr){
 
 //Func aux que copia el str a un puntero
 static int scanf_str(char * s_arg){
-
+    char * l = s_arg;
     char * str = getString();
-    strcpy(str, s_arg);
-
+    strcpy(str, l);
     return 0;
 }
 
