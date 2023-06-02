@@ -8,18 +8,20 @@ STATICLIBS=./libc/libc.a
 
 all: stdlib $(MODULE)
 
-$(MODULE): $(SOURCES) opCode
-	$(GCC) $(GCCFLAGS) -T sampleCodeModule.ld _loader.c $(SOURCES) opCode.a ./libc/libc.a -o ../$(MODULE) -I./libc/include
+$(MODULE): $(SOURCES) others.a
+	$(GCC) $(GCCFLAGS) -T sampleCodeModule.ld _loader.c $(SOURCES) others.a ./libc/libc.a -o ../$(MODULE) -I./libc/include
 
-opCode: 
-	$(ASM) $(ASMFLAGS) opCode.asm -o opCode.o
-	$(AR) rvs opCode.a opCode.o
+%.o: %.asm
+	$(ASM) $(ASMFLAGS) $< -o $@
+
+others.a: $(OBJECTS_ASM)
+	$(AR) rvs others.a $(OBJECTS_ASM)
 
 stdlib:
 	cd libc; make all
 
 clean: stdclean
-	rm -rf *.o
+	rm -rf *.o others.a
 
 stdclean:
 	cd libc; make clean

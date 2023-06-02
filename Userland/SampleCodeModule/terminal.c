@@ -3,9 +3,9 @@
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
 
 extern void opCode();
+extern void clearScreen();
 
 void runCommand(char *);
-
 void showTime();
 void exit();
 void showDate();
@@ -19,13 +19,10 @@ typedef struct {
     void (*function)(void);
 } commandT;
 
-
-
-
 const commandT commands[] = {
                              {"help", "Provides a command list.", help},
                              {"time","Shows the current time in GMT-3",showTime},
-                            //  {"clear","clears screen and resets position",clearScreen},
+                             {"clear","clears screen and resets position",clearScreen},
                              {"date","Displays current date.",showDate},
                              {"exit","Exits the bash",exit},
                              {"bell","Outputs a Beep", beep},
@@ -41,9 +38,9 @@ static unsigned char keepGoing = TRUE;
 
 int terminalStart(){
     static const char ptr[240] = { 0 };
+    clearScreen();
 
     while(keepGoing){
-        // setTerminal();
         printf("$ ");
 
         scanf("%s", ptr);
@@ -52,7 +49,6 @@ int terminalStart(){
         runCommand(token);
 
         printf("\n");
-
     }
 
     return 0;
