@@ -67,8 +67,9 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
 	return digits;
 }
 
-
 void setForegroundColour(uint32_t colour){ foregroundColour = colour; }
+uint32_t getForegroundColour(){ return foregroundColour; }
+
 void setBackgroundColour(uint32_t colour){ backgroundColour = colour; }
 
 void setPrintingColour(uint32_t foreground, uint32_t background){

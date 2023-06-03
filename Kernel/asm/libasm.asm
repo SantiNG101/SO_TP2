@@ -95,31 +95,6 @@ read_port:
 	pop rbp
 	ret
 
-getCurrentRAX:
-	mov rax, [rsp]
-	ret
-getCurrentRBX:
-	mov rax, [rbx]
-	ret
-getCurrentRCX:
-	mov rax, [rcx]
-	ret
-getCurrentRDX:
-	mov rax, [rdx]
-	ret
-getCurrentRBP:
-	mov rax, [rbp]
-	ret
-getCurrentRSP:
-	mov rax, [rsp]
-	ret
-getCurrentRDI:
-	mov rax, [rdi]
-	ret
-getCurrentRSI:
-	mov rax, [rsi]
-	ret
-
 cleanActualRegisters:		; limpiamos todos los registros
 	mov rax, 0
 	mov rbx, 0

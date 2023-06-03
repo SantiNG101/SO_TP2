@@ -116,6 +116,5 @@ void speaker_playSound(argumentsStruct args){
 }
 
 void timeNow(argumentsStruct args){
-    args->r10 = 20230320043030;
     args->r10 = getTime();
 }

@@ -2,12 +2,8 @@
 // File: exceptions.c
 // Basado en la lista de excepciones de: https://wiki.osdev.org/Exceptions
 //
-#include <stdint.h>
-#include <idt/exceptions.h>
-#include <naiveConsole.h>
-#include <screen.h>
-#include <videoDriver.h>
 
+#include <idt/exceptions.h>
 
 /*
  * Mantener actualizado. El EXCEPTION_TYPE_SIZE debe estar SIEMPRE al final.
@@ -22,24 +18,26 @@ uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
     if(ex >= sizeof(exceptions) / sizeof(exceptions[0]))
         defaultException(&rip);
 
-    // A partir de ahora se pone el texto siempre en rojito.
-    // ncColor(0xFF0000);
-    printErrorStr("-------- [ KERNEL EXCEPTION ] - Exception ");
-    ncPrintDec(ex);
-    printErrorStr(" @ 0x --------");
-    ncPrintHex(rip);
+    uint32_t lForeground = getForegroundColour();
+    setForegroundColour(RED);
+    print("-------- [ KERNEL EXCEPTION ] - Exception ");
+    printDec(ex);
+    print(" @ 0x");
+    printHex(rip);
+    print(" --------");
     enter();
 
+    setForegroundColour(lForeground);
     // Imprimo los registros.
     showRegisterStatus();
     enter();
-    
-    // Llamo la razón por la que hubo excepción.
-    
-    exceptions[ex](&rip);
+    setForegroundColour(RED);
 
-    // Cambio el texto otra vez a la normalite.
-    // ncColor(normal);
+    // Controlo la excepción
+    exceptions[ex](&rip);
+    enter();
+
+    setForegroundColour(lForeground);
 
     return rip;
 }
@@ -47,6 +45,7 @@ uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
 void zeroDivisionException(uint64_t * rip){
     printErrorStr("Exception: Division by zero");
     enter();
+    
 
     // Debo hacer que continué la ejecución. Porque es un Fault Exception.
     // Primero debo modificar los registros, que causaron el problema.
@@ -72,4 +71,32 @@ void defaultException(uint64_t * rip){
     // showRegisterStatus();       // muestro registros que dieron el error
     // cleanActualRegisters();     // limpio los registros
     //                             // imprimo el mensaje de que salto la excepcion en rojo
+}
+
+void showRegisterStatus(){
+    enter();
+    printRegister("A: ", getCurrentRAX());
+    printRegister("B: ", getCurrentRBX());
+    printRegister("C: ", getCurrentRCX());
+    printRegister("D: ", getCurrentRDX());
+    printRegister("BP: ", getCurrentRBP());
+    printRegister("SP: ", getCurrentRSP());
+    printRegister("SI: ", getCurrentRSI());
+    printRegister("DI: ", getCurrentRDI());
+
+    printRegister("15: ", getCurrentR15());
+    printRegister("14: ", getCurrentR14());
+    printRegister("13: ", getCurrentR13());
+    printRegister("12: ", getCurrentR12());
+    printRegister("11: ", getCurrentR11());
+    printRegister("10: ", getCurrentR10());
+    printRegister("9: ", getCurrentR9());
+    printRegister("8: ", getCurrentR8());
+    enter();
+}
+
+void printRegister(char * str, uint64_t regValue){
+    print(str);
+    printHex(regValue);
+    tab();
 }

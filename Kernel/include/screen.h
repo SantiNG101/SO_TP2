@@ -116,6 +116,13 @@ void enter();
 void setForegroundColour(uint32_t colour);
 
 //
+// functionName: getForegroundColour
+// Description: Obtiene el color del texto.
+// params:
+//
+void getForegroundColour();
+
+//
 // functionName: setBackgroundColour
 // Description: Cambia el color del fondo.
 // params:
@@ -131,9 +138,6 @@ void setBackgroundColour(uint32_t colour);
 //      * (uint32_t) background - Color del fondo a imprimir
 //
 void setPrintingColour(uint32_t foreground, uint32_t background);
-
-
-
 
 // funciones pong
 
