@@ -136,19 +136,6 @@ void updateBall(Ball ball, Player player1, Player player2){
     }
 }
 
-//TODO screen C userlandia
-void drawBar(Bars bar){
-    //implementar funcion que dibuje las barras
-}
-
-void drawBall(Ball ball){
-    //implementar funcion que dibuje la pelota
-}
-
-void drawScore(Game game){
-    //implementar funcion que dibuje el puntaje en pantalla
-}
-
 void getInputPlaying(Game game){
     unsigned char c = getChar();
     switch(c){
@@ -212,4 +199,6 @@ void playPong(){
     myFree(p2);
     myFree(ball);
     myFree(newGame);
+
+    return;
 }
