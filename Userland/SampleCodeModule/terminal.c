@@ -3,6 +3,7 @@
 #define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
 
 extern void opCode();
+extern void screenSetter();
 extern void clearScreen();
 
 void runCommand(char *);
@@ -38,7 +39,8 @@ static unsigned char keepGoing = TRUE;
 
 int terminalStart(){
     static const char ptr[240] = { 0 };
-    clearScreen();
+    // llamado de syscall para setear al modo terminal pasandole el 0 que indica este modo
+    screenSetter(0);
 
     while(keepGoing){
         printf("$ ");

@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include "terminal.h"
 #include "songs.h"
+
+extern void screenSetter();
+
 int main() {
 
     printf("Welcome to Userland!\n");
@@ -15,6 +18,7 @@ int main() {
         char c = getChar();
         switch(c){
             case '1':
+                screenSetter(1);
                 break;
             case '2':
                 terminalStart();
