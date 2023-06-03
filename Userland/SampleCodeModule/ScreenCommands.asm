@@ -14,6 +14,7 @@ terminalSetter:
 pongUpdater:
     ; Llama a la sys para actualizar la pantalla del pong
     ; faltan agregarles todos los parametros de punteros que le quieran agregar
+    mov r10, rdi
     mov rdi, 4
     INT 80h
     ret

@@ -6,11 +6,6 @@
 // tamaño de pantalla
 // 1024 x 768
 
-#define LIMIT_BAR_SPACE 15
-#define MIDDLE_SCREEN (1024-30)/2
-#define MARQUER_DISTANCE_X 15
-#define MARQUER_DISTANCE_Y 15
-
 void bordersCheck();
 
 uint64_t screenWidth;
@@ -123,46 +118,13 @@ void clearScreen(){
     current_cursor_pos_y = 0;
 }
 
-void bordersCheck(){
-    if ( current_cursor_pos_x <= screenWidth - CHAR_WIDTH )
+void bordersCheck() {
+    if (current_cursor_pos_x <= screenWidth - CHAR_WIDTH)
         return;
 
     current_cursor_pos_x = 0;
-    if( current_cursor_pos_y <= screenHeight - 2*CHAR_HEIGHT)
-            current_cursor_pos_y += CHAR_HEIGHT;
+    if (current_cursor_pos_y <= screenHeight - 2 * CHAR_HEIGHT)
+        current_cursor_pos_y += CHAR_HEIGHT;
     else
         scrollScreenUp();
-}
-  
-
-// Funciones PONG
-
-
-void gameMode(){
-    clearScreen();
-    draw_Rectangle(LIMIT_BAR_SPACE,768/2-60,10,120,BLUE);
-	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,768/2-60,10,120,RED);
-	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
-	draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
-	draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
-	draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
-	draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',BLUE,COLOR_BACKGROUND_DEFAULT);
-	draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,'0',RED,COLOR_BACKGROUND_DEFAULT);
-    draw_CircleFilled(MIDDLE_SCREEN,768/2, 5, LIGHT_GREEN);
-    updateScreen();
-}
-
-// me pasan ya la posicion actualizada
-void updatePongScreen( uint32_t yformR, uint32_t yfromB, uint32_t yball, uint32_t xball, uint8_t scoreR, uint8_t scoreB){
-    clearScreen();
-    draw_Rectangle(LIMIT_BAR_SPACE,yfromB,10,120,BLUE);
-	draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,yformR,10,120,RED);
-	draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
-    draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
-    draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
-    draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
-    //draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,scoreB,BLUE,COLOR_BACKGROUND_DEFAULT);
-	//draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,scoreR,RED,COLOR_BACKGROUND_DEFAULT);
-    draw_CircleFilled(xball, yball, 5, LIGHT_GREEN);
-    updateScreen();
 }

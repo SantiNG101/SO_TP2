@@ -1,5 +1,7 @@
 GLOBAL getChar
 GLOBAL putChar
+GLOBAL putPixel
+GLOBAL updateScreen
 
 section .text
 getChar:
@@ -28,6 +30,29 @@ putChar:
     int 80h
 
     mov rax, rdi            ; retorno el caracter impreso.
+    leave
+    ret
+
+putPixel:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov r9, rsi
+    mov r8, rdx
+    mov rdi, 8
+    int 80h
+
+    leave
+    ret
+
+updateScreen:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 9
+    int 80h
+
     leave
     ret
 
