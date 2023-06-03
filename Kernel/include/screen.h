@@ -32,6 +32,6 @@ void clearScreen();
 // seteos iniciales
 void gameMode();
 // ya me pasan la direccion actualizada
-void updatePongScreen( uint32_t yformR, uint32_t yfromB, uint8_t scoreR, uint8_t scoreB);
+void updatePongScreen( uint32_t yformR, uint32_t yfromB, uint32_t yball, uint32_t xball, uint8_t scoreR, uint8_t scoreB);
 
 #endif 

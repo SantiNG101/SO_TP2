@@ -31,14 +31,14 @@ typedef struct {
 
 void write(argumentsStruct args);
 void read(argumentsStruct args);
-void modoTerminal(argumentsStruct args);
+void modeSetter(argumentsStruct args);
 void setterBuffer(argumentsStruct args);
 void screenUpdater(argumentsStruct args);
 void timer_wait(argumentsStruct args);
 void speaker_playSound(argumentsStruct args);
 void timeNow(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, modoTerminal, setterBuffer, screenUpdater, timer_wait, speaker_playSound, timeNow };
+void (* syscalls[]) (argumentsStruct args) = { write, read, modeSetter, setterBuffer, screenUpdater, timer_wait, speaker_playSound, timeNow };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -92,8 +92,11 @@ void write(argumentsStruct args){
     }
 }
 
-void modoTerminal(argumentsStruct args){
-    setTerminalPrintingMode();
+void modeSetter(argumentsStruct args){
+    if ( args->r10 == 0 )
+        setTerminalPrintingMode();
+    else
+        gameMode();
 }
 
 void setterBuffer(argumentsStruct args){

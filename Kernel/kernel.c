@@ -2,7 +2,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
-#include <screen.h>
+//#include <screen.h>
 #include <speaker.h>
 #include <stdio.h>
 
@@ -106,13 +106,15 @@ int main()
 // 	*/
 //     // kernelASM();
 // 	// draw_CircleFilled(100,100,7,RED);
-// 	setDoubleBuffer(1);
-// 	int i = 768/2;
-// 	int j = 768/2;
-// 	gameMode();
-// 	int p =1000;
-// 	while (p-- > 0)
-// 		updatePongScreen(i++,j--, 0, 0);
+ 	//setDoubleBuffer(1);
+ 	//int i = 768/2;
+ 	//int j = 768/2;
+	//int x = 1024/2;
+	//int y = 768/2;
+ 	//gameMode();
+ 	//int p =1000;
+ 	//while (p-- > 0)
+ 	//	updatePongScreen(i++,j--,x++,y++, 0, 0);
 //    // printf("\a");
 //     // terminalStart();
 	
