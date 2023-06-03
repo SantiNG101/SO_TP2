@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "terminal.h"
 #include "songs.h"
+#include "pong.h"
 
 extern void screenSetter();
 
@@ -17,7 +18,7 @@ int main() {
         char c = getChar();
         switch(c){
             case '1':
-                screenSetter(1);
+                playPong();
                 break;
             case '2':
                 terminalStart();

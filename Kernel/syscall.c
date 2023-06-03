@@ -7,7 +7,7 @@
 #include <screen.h>
 #include <speaker.h>
 #include <time.h>
-
+#include <videoDriver.h>
 /*
  *  Arguementos de una función de SYSCALL
  */
@@ -29,16 +29,19 @@ typedef struct {
     uint64_t rax;
 } * argumentsStruct;
 
+void updtScreen(argumentsStruct args);
+void putPix(argumentsStruct args);
 void write(argumentsStruct args);
 void read(argumentsStruct args);
-void modeSetter(argumentsStruct args);
 void setterBuffer(argumentsStruct args);
-void screenUpdater(argumentsStruct args);
+void pongScreenUpdater(argumentsStruct args);
 void timer_wait(argumentsStruct args);
 void speaker_playSound(argumentsStruct args);
 void timeNow(argumentsStruct args);
+void defaultCleaner(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, modeSetter, setterBuffer, screenUpdater, timer_wait, speaker_playSound, timeNow };
+void (* syscalls[]) (argumentsStruct args) = { write, read, defaultCleaner, setterBuffer, pongScreenUpdater,
+ timer_wait, speaker_playSound, timeNow, putPix,updtScreen };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -93,18 +96,15 @@ void write(argumentsStruct args){
 }
 
 void modeSetter(argumentsStruct args){
-    if ( args->r10 == 0 )
-        setTerminalPrintingMode();
-    else
-        gameMode();
+    setTerminalPrintingMode();
 }
 
 void setterBuffer(argumentsStruct args){
     setDoubleBuffer(args->r10);
 }
 
-void screenUpdater(argumentsStruct args){
-    updateScreen();
+void pongScreenUpdater(argumentsStruct args){
+   // updatePongScreen(args->r10); // agregar los argumentos que vayan a utilizar
 }
 
 void timer_wait(argumentsStruct args){
@@ -117,4 +117,17 @@ void speaker_playSound(argumentsStruct args){
 
 void timeNow(argumentsStruct args){
     args->r10 = getTime();
+}
+
+void defaultCleaner(argumentsStruct args){
+    clearScreen();
+}
+
+//r10 x r9 y r8 color
+void putPix(argumentsStruct args){
+    putPixel(args->r10,args->r9,args->r8);
+}
+
+void updtScreen(argumentsStruct args){
+    updateScreen();
 }

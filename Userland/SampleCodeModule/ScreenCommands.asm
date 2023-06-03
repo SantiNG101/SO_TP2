@@ -1,19 +1,25 @@
-GLOBAL screenSetter
+GLOBAL terminalSetter
+GLOBAL pongUpdater
 GLOBAL clearScreen
 
 EXTERN puts
 
 section .text
+    
+terminalSetter:    
+    mov rdi,2
+    INT 80h
+    ret
 
-screenSetter:
-    ; Llama a la sys de setter
-    mov r10,rdi
-    mov rdi, 2
+pongUpdater:
+    ; Llama a la sys para actualizar la pantalla del pong
+    ; faltan agregarles todos los parametros de punteros que le quieran agregar
+    mov r10, rdi
+    mov rdi, 4
     INT 80h
     ret
 clearScreen:
     ;setea el modo terminal para limpiar la pantalla
-    mov r10, 0
-    mov rdi, 2
+    mov rdi, 8
     INT 80h
     ret

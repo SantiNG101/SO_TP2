@@ -140,10 +140,9 @@ void setBackgroundColour(uint32_t colour);
 void setPrintingColour(uint32_t foreground, uint32_t background);
 
 // funciones pong
-
 // seteos iniciales
 void gameMode();
 // ya me pasan la direccion actualizada
-void updatePongScreen( uint32_t yformR, uint32_t yfromB, uint32_t yball, uint32_t xball, uint8_t scoreR, uint8_t scoreB);
+void updatePongScreen(uint64_t * newGame);
 
 #endif 
