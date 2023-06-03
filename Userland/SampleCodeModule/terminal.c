@@ -39,6 +39,7 @@ static unsigned char keepGoing = TRUE;
 
 int terminalStart(){
     static const char ptr[240] = { 0 };
+    keepGoing = TRUE;
     // llamado de syscall para setear al modo terminal pasandole el 0 que indica este modo
     screenSetter(0);
 
