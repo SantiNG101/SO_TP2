@@ -273,6 +273,6 @@
 
 // conseguir la formacion en pixeles del char
 uint8_t * charBitmap(uint8_t character);
-uint8_t * numberBitmap( uint8_t number );
+
 
 #endif

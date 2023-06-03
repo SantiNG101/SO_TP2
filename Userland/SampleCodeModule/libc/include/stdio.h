@@ -20,6 +20,7 @@ extern char getChar(void);
 extern char putChar(char c);
 extern void putPixel(uint32_t x, uint32_t y, uint32_t hexColor);
 extern void updateScreen(void);
+extern void setBuffer(int mode);
 
 // Uses getChar several times, until Carriage Return (CR) is pressed.
 char * getString(void);

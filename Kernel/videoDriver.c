@@ -85,6 +85,10 @@ void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y) {
 */
 
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
+    if ( failBordersCheck(x, y)){
+        return;
+    }
+
 	// setei el offset en el punto pasado
 	uint32_t offset = VBE_mode_info->pitch*y + x*numberOfColorBytes;
 	// veo si esta activado el doble buffer 

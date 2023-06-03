@@ -4,6 +4,190 @@
 
 #include "figures.h"
 
+const uint8_t numbersXL[][NUMBER_HEIGHT] = {
+//  48 $30 'zero'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {	________,
+                ________,
+                __XXX___,
+                _XX_XX__,
+                XX___XX_,
+                XX___XX_,
+                XX_X_XX_,
+                XX_X_XX_,
+                XX___XX_,
+                XX___XX_,
+                _XX_XX__,
+                __XXX___,
+                ________,
+                ________,
+                ________,
+                ________},
+//  49 $31 'one'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                ___XX___,
+                __XXX___,
+                _XXXX___,
+                ___XX___,
+                ___XX___,
+                ___XX___,
+                ___XX___,
+                ___XX___,
+                ___XX___,
+                _XXXXXX_,
+                ________,
+                ________,
+                ________,
+                ________},
+//  50 $32 'two'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                _XXXXX__,
+                XX___XX_,
+                _____XX_,
+                ____XX__,
+                ___XX___,
+                __XX____,
+                _XX_____,
+                XX______,
+                XX___XX_,
+                XXXXXXX_,
+                ________,
+                ________,
+                ________,
+                ________},
+//  51 $33 'three'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                _XXXXX__,
+                XX___XX_,
+                _____XX_,
+                _____XX_,
+                __XXXX__,
+                _____XX_,
+                _____XX_,
+                _____XX_,
+                XX___XX_,
+                _XXXXX__,
+                ________,
+                ________,
+                ________,
+                ________},
+//  52 $34 'four'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                ____XX__,
+                ___XXX__,
+                __XXXX__,
+                _XX_XX__,
+                XX__XX__,
+                XXXXXXX_,
+                ____XX__,
+                ____XX__,
+                ____XX__,
+                ___XXXX_,
+                ________,
+                ________,
+                ________,
+                ________},
+//  53 $35 'five'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                XXXXXXX_,
+                XX______,
+                XX______,
+                XX______,
+                XXXXXX__,
+                _____XX_,
+                _____XX_,
+                _____XX_,
+                XX___XX_,
+                _XXXXX__,
+                ________,
+                ________,
+                ________,
+                ________},
+//  54 $36 'six'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                __XXX___,
+                _XX_____,
+                XX______,
+                XX______,
+                XXXXXX__,
+                XX___XX_,
+                XX___XX_,
+                XX___XX_,
+                XX___XX_,
+                _XXXXX__,
+                ________,
+                ________,
+                ________,
+                ________},
+//  55 $37 'seven'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                XXXXXXX_,
+                XX___XX_,
+                _____XX_,
+                _____XX_,
+                ____XX__,
+                ___XX___,
+                __XX____,
+                __XX____,
+                __XX____,
+                __XX____,
+                ________,
+                ________,
+                ________,
+                ________},
+//  56 $38 'eight'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                _XXXXX__,
+                XX___XX_,
+                XX___XX_,
+                XX___XX_,
+                _XXXXX__,
+                XX___XX_,
+                XX___XX_,
+                XX___XX_,
+                XX___XX_,
+                _XXXXX__,
+                ________,
+                ________,
+                ________,
+                ________},
+//  57 $39 'nine'
+//	width 8, bbx 0, bby -4, bbw 8, bbh 16
+        {________,
+                ________,
+                _XXXXX__,
+                XX___XX_,
+                XX___XX_,
+                XX___XX_,
+                _XXXXXX_,
+                _____XX_,
+                _____XX_,
+                _____XX_,
+                ____XX__,
+                _XXXX___,
+                ________,
+                ________,
+                ________,
+                ________}
+};
+
+
 
 
 // funciones para el pong
@@ -96,13 +280,15 @@ void draw_CircleFilled(int centerX, int centerY, int radius, uint32_t color) {
         x++;
     }
 }
-/*
+
+
+
+uint8_t * numberBitmap( uint8_t number ){
+    return numbersXL[number];
+}
+
 //Dibuja un numero xxl
 void draw_numberXL(uint32_t x, uint32_t y, char character, uint32_t fontColor,uint32_t backgroundColor){
-    if ( failBordersCheck(x, y)){
-        return;
-    }
-
     uint32_t auxx = x, auxy = y;
     char pixIsPresent = 0;
 
@@ -122,8 +308,4 @@ void draw_numberXL(uint32_t x, uint32_t y, char character, uint32_t fontColor,ui
         auxx = x;
         auxy++;
     }
-
-
-
 }
- */

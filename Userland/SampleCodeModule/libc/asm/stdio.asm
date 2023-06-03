@@ -2,6 +2,7 @@ GLOBAL getChar
 GLOBAL putChar
 GLOBAL putPixel
 GLOBAL updateScreen
+GLOBAL setBuffer
 
 section .text
 getChar:
@@ -55,6 +56,15 @@ updateScreen:
 
     leave
     ret
+setBuffer:
+    push rbp
+    mov rbp, rsp
 
+    mov r10, rdi
+    mov rdi, 3
+    int 80h
+
+    leave
+    ret
 section .bss
 placeholder resb 1

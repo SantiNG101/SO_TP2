@@ -90,14 +90,12 @@ void keyboardHandler(){
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4][data & 0x0F];
 
-
     // *currentBuff++ = keyCode;
     currentBuff = keyCode;
     return;
 }
 
 int getC(){
-    // keyboardHandler();  // Me aseguro de que haya dato en el buffer
 
     // int c = *--currentBuff;
     // *currentBuff = 0;

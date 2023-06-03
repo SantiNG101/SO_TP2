@@ -5,7 +5,7 @@
 #define SCREEN_WIDTH 768
 #define SCREEN_HEIGHT 1024
 #define GAME_OVER 10
-#define BAR_MOV 5
+#define BAR_MOV 10
 
 /* TODO Para la pelota hay que agregar un draw, updatePosition y detector de tocar la barra
     Mismo para las barras */
@@ -32,16 +32,19 @@ typedef struct Bars {
     int length;
 } * Bars;
 
+
 typedef struct Player{
     Bars bar;
     int score;
 } * Player;
+
 
 typedef struct Game{
     Player player1;
     Player player2;
     Ball ball;
 } * Game;
+
 
 static void updatePong(Game newGame){
     //clearScreen();
@@ -52,8 +55,8 @@ static void updatePong(Game newGame){
     draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
     draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
     draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
-    //draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,BLUE,COLOR_BACKGROUND_DEFAULT);
-   // draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player2->score,RED,COLOR_BACKGROUND_DEFAULT);
+    draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,BLUE,COLOR_BACKGROUND_DEFAULT);
+    draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player2->score,RED,COLOR_BACKGROUND_DEFAULT);
     draw_CircleFilled(newGame->ball->x, newGame->ball->y,newGame->ball->radius, LIGHT_GREEN);
    updateScreen();
 }
@@ -136,6 +139,7 @@ void updateBall(Ball ball, Player player1, Player player2){
     }
 }
 
+//TODO CONTROL TECLADO FLECHAS EN SIMULTANEO
 void getInputPlaying(Game game){
     unsigned char c = getChar();
     switch(c){
@@ -159,6 +163,7 @@ void getInputPlaying(Game game){
 
 void playPong(){
     //p1 left     p2 right
+    setBuffer(1);
     Game newGame = myMalloc(sizeof(Game));
     Ball ball = myMalloc(sizeof(Ball));
     Player p1= myMalloc(sizeof(Player));
@@ -186,6 +191,7 @@ void playPong(){
     ball->posx = 2;
     ball->posy = 2;
 
+    updatePong(newGame);
 
     int p = 100;
     while(p--){
@@ -200,5 +206,6 @@ void playPong(){
     myFree(ball);
     myFree(newGame);
 
+    setBuffer(0);
     return;
 }
