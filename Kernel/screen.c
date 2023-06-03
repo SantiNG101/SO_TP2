@@ -1,22 +1,22 @@
-
-
 #include <screen.h>
-#include <string.h>
-#include <time.h>
+
 // tamaño de pantalla
 // 1024 x 768
-
 #define LIMIT_BAR_SPACE 15
 #define MIDDLE_SCREEN (1024-30)/2
 #define MARQUER_DISTANCE_X 15
 #define MARQUER_DISTANCE_Y 15
 
-void bordersCheck();
+static void bordersCheck();
 
-uint64_t screenWidth;
-uint64_t screenHeight;
-uint32_t current_cursor_pos_x = 0;
-uint32_t current_cursor_pos_y = 0;
+static uint64_t screenWidth;
+static uint64_t screenHeight;
+static uint32_t current_cursor_pos_x = 0;
+static uint32_t current_cursor_pos_y = 0;
+
+static char buffer[64] = { '0' };
+static uint32_t foregroundColour = COLOR_LETTER_DEFAULT;
+static uint32_t backgroundColour = COLOR_BACKGROUND_DEFAULT;
 
 void screen_Initialize(){
     vd_Initialize();
@@ -24,33 +24,86 @@ void screen_Initialize(){
     screenWidth = getHorizontalPixelCount();
 }
 
-// setea el modo terminal para que imprima en la ultima linea
-void setTerminalPrintingMode(){
+void setPrintingMode(uint32_t y, int bufferMode){
     clearScreen();
-    // current_cursor_pos_x = 0;
-    current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
-    setDoubleBuffer(0);
+    current_cursor_pos_y = y;
+    setDoubleBuffer(bufferMode);
 }
 
+// setea el modo terminal para que imprima en la ultima linea
+void setTerminalPrintingMode(){
+    setPrintingMode(screenHeight - CHAR_HEIGHT, 0);
+}
+
+static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
+	char *p = buffer;
+	char *p1, *p2;
+	uint32_t digits = 0;
+
+	//Calculate characters for each digit
+	do
+	{
+		uint32_t remainder = value % base;
+		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+		digits++;
+	}
+	while (value /= base);
+
+	// Terminate string in buffer.
+	*p = 0;
+
+	//Reverse string in buffer.
+	p1 = buffer;
+	p2 = p - 1;
+	while (p1 < p2)
+	{
+		char tmp = *p1;
+		*p1 = *p2;
+		*p2 = tmp;
+		p1++;
+		p2--;
+	}
+
+	return digits;
+}
+
+
+void setForegroundColour(uint32_t colour){ foregroundColour = colour; }
+void setBackgroundColour(uint32_t colour){ backgroundColour = colour; }
+
+void setPrintingColour(uint32_t foreground, uint32_t background){
+    setForegroundColour(foreground);
+    setBackgroundColour(background);
+}
 
 // tabla de caracteres especiales
 // tabla de relaciones con letras
-
-void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color ){
-    while(*str != '\0'){
-        putCharScreenFrmt(*str++,font_color,background_Color);
+void printStrScreenFrmt(char * str, uint32_t font_color, uint32_t background_Color ){
+    while(*str){
+        putCharScreenFrmt(*str++, font_color, background_Color);
     }
 }
 
-void printErrorStr( char* str ){
-    printStrScreenFrmt(str,RED, COLOR_BACKGROUND_DEFAULT);
+// Para imprimir un string normal.
+void print(char * str){
+    printStrScreenFrmt(str, foregroundColour, backgroundColour);
 }
 
-
-
-void putCharScreen( char character ){
-    putCharScreenFrmt(character,COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT);
+void printErrorStr(char* str){
+    printStrScreenFrmt(str, RED, backgroundColour);
 }
+
+static void printBase(uint64_t value, uint32_t base){
+    uintToBase(value, buffer, base);
+    print(buffer);
+}
+
+// Las diferentes base para imprimir.
+void printDec(uint64_t value){ printBase(value, 10); }
+void printHex(uint64_t value){ printBase(value, 16); }
+void printBin(uint64_t value){ printBase(value, 2); }
+
+void putCharScreen( char character ){ putCharScreenFrmt(character, foregroundColour, backgroundColour); }
 
 void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background_Color ){
     bordersCheck();
@@ -59,6 +112,10 @@ void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background
      font_color, background_Color );
     current_cursor_pos_x +=CHAR_WIDTH;
 }
+
+
+
+//
 // retrocede 1 char limpiando su contenido
 void backspace(){
     if ( current_cursor_pos_x == 0 ){
@@ -68,6 +125,7 @@ void backspace(){
     putCharScreen(' ');
     current_cursor_pos_x -= CHAR_WIDTH;
 }
+
 // imprime 2 char ' ' 
 void tab(){
     putCharScreen(' ');
@@ -75,6 +133,7 @@ void tab(){
     putCharScreen(' ');
     putCharScreen(' ');
 }
+
 // pasa a la linea de abajo
 void enter(){
     if ( current_cursor_pos_y <= screenHeight - 2*2*CHAR_HEIGHT ){
@@ -106,7 +165,6 @@ void scrollScreenUp(){
     current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
     
 }
-
 void clearScreen(){
     /*
     //imprimo en backgroundColor en toda la pantalla
@@ -122,7 +180,6 @@ void clearScreen(){
     current_cursor_pos_x = 0;
     current_cursor_pos_y = 0;
 }
-
 void bordersCheck(){
     if ( current_cursor_pos_x <= screenWidth - CHAR_WIDTH )
         return;
@@ -133,11 +190,8 @@ void bordersCheck(){
     else
         scrollScreenUp();
 }
-  
 
 // Funciones PONG
-
-
 void gameMode(){
     clearScreen();
     draw_Rectangle(LIMIT_BAR_SPACE,768/2-60,10,120,BLUE);
@@ -151,7 +205,6 @@ void gameMode(){
     draw_CircleFilled(MIDDLE_SCREEN,768/2, 5, LIGHT_GREEN);
     updateScreen();
 }
-
 // me pasan ya la posicion actualizada
 void updatePongScreen( uint32_t yformR, uint32_t yfromB, uint32_t yball, uint32_t xball, uint8_t scoreR, uint8_t scoreB){
     clearScreen();
