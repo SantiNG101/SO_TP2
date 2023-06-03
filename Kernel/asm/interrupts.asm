@@ -45,6 +45,7 @@ GLOBAL _exception02Handler  ;   Default exception
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallDispatcher
+EXTERN getStackBase
 
 section .text
 
@@ -103,14 +104,17 @@ section .text
     push rbp
     mov rbp, rsp                ; Armo el stackFrame
 
-    pushState                   ;
+    pushState
 
     mov rdi, %1                 ; Paso el parametro
     mov rsi, [rbp + 8]
     call exceptionDispatcher    ; Ejecuto la excepción correspondiente
-
+    
     mov [rbp + 8], rax          ; Cambio el RIP
-    test al, al                 ; Limpio los flags acorde a la excepcion
+    
+    call getStackBase           ; Obtengo la base del stack
+    mov [rbp + 32], rax         ; Cambio el original RSP
+
     popState
 
     mov rsp, rbp                ; Desarmo el stackFrame
@@ -164,12 +168,15 @@ _irq02Handler:                  ; SYSCALL
     pushf
     sti                         ; Not proud of this, pero necesario si quiero que las syscall funcionen con interrupción de Hardware
     
-    pushState                   ; Mejorar para que sea C friendly :)
+    pushState                   ; Mejorar para que siga el estándar de C
     mov rdi, rsp
     call syscallDispatcher
     popState
 
     popf
+
+    mov al, 20h                 ; Signal PIC EOI (End of Interrupt)
+    out 20h, al
 
     mov rsp, rbp
     pop rbp
