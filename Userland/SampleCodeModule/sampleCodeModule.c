@@ -17,7 +17,7 @@ int main() {
         char c = getChar();
         switch(c){
             case '1':
-                screenSetter(1);
+                pongUpdater();
                 break;
             case '2':
                 terminalStart();

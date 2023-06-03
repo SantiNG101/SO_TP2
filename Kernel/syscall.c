@@ -31,14 +31,16 @@ typedef struct {
 
 void write(argumentsStruct args);
 void read(argumentsStruct args);
-void modeSetter(argumentsStruct args);
+void terminalCleaner(argumentsStruct args);
 void setterBuffer(argumentsStruct args);
-void screenUpdater(argumentsStruct args);
+void pongScreenUpdater(argumentsStruct args);
 void timer_wait(argumentsStruct args);
 void speaker_playSound(argumentsStruct args);
 void timeNow(argumentsStruct args);
+void defaultCleaner(argumentsStruct args);
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, modeSetter, setterBuffer, screenUpdater, timer_wait, speaker_playSound, timeNow };
+void (* syscalls[]) (argumentsStruct args) = { write, read, terminalCleaner, setterBuffer, pongScreenUpdater,
+ timer_wait, speaker_playSound, timeNow, defaultCleaner };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
@@ -93,18 +95,15 @@ void write(argumentsStruct args){
 }
 
 void modeSetter(argumentsStruct args){
-    if ( args->r10 == 0 )
-        setTerminalPrintingMode();
-    else
-        gameMode();
+    setTerminalPrintingMode();
 }
 
 void setterBuffer(argumentsStruct args){
     setDoubleBuffer(args->r10);
 }
 
-void screenUpdater(argumentsStruct args){
-    updateScreen();
+void pongScreenUpdater(argumentsStruct args){
+    updatePongScreen( ); // agregar los argumentos que vayan a utilizar 
 }
 
 void timer_wait(argumentsStruct args){
@@ -118,4 +117,8 @@ void speaker_playSound(argumentsStruct args){
 void timeNow(argumentsStruct args){
     args->r10 = 20230320043030;
     args->r10 = getTime();
+}
+
+void defaultCleaner(argumentsStruct args){
+    clearScreen();
 }
