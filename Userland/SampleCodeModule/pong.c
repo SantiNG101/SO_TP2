@@ -55,8 +55,8 @@ static void updatePong(Game newGame){
     draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
     draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
     draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,RED);
-    draw_numberXL(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,BLUE,COLOR_BACKGROUND_DEFAULT);
-    draw_numberXL(MIDDLE_SCREEN+MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player2->score,RED,COLOR_BACKGROUND_DEFAULT);
+    draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,BLUE,COLOR_BACKGROUND_DEFAULT);
+    draw_number(MIDDLE_SCREEN+MARQUER_DISTANCE_X+3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,newGame->player2->score,RED,COLOR_BACKGROUND_DEFAULT);
     draw_CircleFilled(newGame->ball->x, newGame->ball->y,newGame->ball->radius, LIGHT_GREEN);
    updateScreen();
 }

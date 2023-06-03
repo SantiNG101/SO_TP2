@@ -282,7 +282,6 @@ void draw_CircleFilled(int centerX, int centerY, int radius, uint32_t color) {
 }
 
 
-
 uint8_t * numberBitmap( uint8_t number ){
     return numbersXL[number];
 }
@@ -307,5 +306,15 @@ void draw_numberXL(uint32_t x, uint32_t y, char character, uint32_t fontColor,ui
         }
         auxx = x;
         auxy++;
+    }
+}
+
+void draw_number(uint32_t x, uint32_t y, uint16_t num, uint32_t fontColor,uint32_t backgroundColor){
+    if(num == 0){
+        draw_numberXL(x,y,num,fontColor,backgroundColor);
+        return;
+    }
+    for(int i = num; i ; i=i/10){
+        draw_numberXL(x-=NUMBER_WIDTH,y,i%10,fontColor,backgroundColor);
     }
 }
