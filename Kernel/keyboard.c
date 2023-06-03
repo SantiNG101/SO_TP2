@@ -67,13 +67,22 @@ void keyboardHandler(){
 
     uint8_t data = read_port(KEYBOARD_DATA_PORT);
 
-    if(isReleased(data))
-        return;
-
     if(isSpecial(data)){
-        setState(keyboard[(data >> 4) & 0x07][data & 0x0F]);
+        char sp = keyboard[(data >> 4) & 0x07][data & 0x0F];
+
+        // Me fijo si es un SpecialLock, si es un SpecialLock entonces me aseguro de que no pase dos veces por setState
+        // Si no es un SpecialLock, entonces no hace falta ver si es released, porque se mantiene apretado
+        // y luego se lo suelta.
+        //
+        // En otras palabras, como que el valor de SCR, NUM, CAP es de 4, 5 y 6 respectivamente. Es evidente que tienen
+        // El bit de peso 2 activado. Mientras que los otros no lo tienen.
+        if(sp & 0x04 && isReleased(data) || !(sp & 0x04))
+            setState(sp);
         return;
     }
+
+    if(isReleased(data))
+        return;
 
     uint8_t keyCode = keyboard[data >> 4][data & 0x0F];
     if(getState(CAP))
