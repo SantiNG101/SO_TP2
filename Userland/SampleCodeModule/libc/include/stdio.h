@@ -22,6 +22,7 @@ extern void putPixel(uint32_t x, uint32_t y, uint32_t hexColor);
 extern void updateScreen(void);
 extern void setBuffer(int mode);
 extern int getKeyState(int keyCode);
+extern void clearScreen(int mode);
 
 //
 // functionName: setBackgroundColour

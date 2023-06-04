@@ -71,10 +71,6 @@ void write(argumentsStruct args){
     }
 }
 
-void modeSetter(argumentsStruct args){
-    setTerminalPrintingMode();
-}
-
 void setterBuffer(argumentsStruct args){
     setDoubleBuffer(args->r10);
 }
@@ -95,8 +91,8 @@ void timeNow(argumentsStruct args){
     args->r10 = getTime();
 }
 
-void defaultCleaner(argumentsStruct args){
-    clearScreen();
+void clean(argumentsStruct args){
+    clearScreen(args->r10);
 }
 
 //r10 x r9 y r8 color
@@ -120,7 +116,7 @@ void keyState(argumentsStruct args){
     args->rsi = getKeyState(args->r10);
 }
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, defaultCleaner, setterBuffer, pongScreenUpdater,
+void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, pongScreenUpdater,
  timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

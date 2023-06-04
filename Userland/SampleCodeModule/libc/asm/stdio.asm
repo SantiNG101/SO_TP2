@@ -6,6 +6,7 @@ GLOBAL setBuffer
 GLOBAL getKeyState
 GLOBAL setForegroundColour
 GLOBAL setBackgroundColour
+GLOBAL clearScreen
 
 section .text
 getChar:
@@ -99,6 +100,17 @@ setBackgroundColour:
 
     mov r10, rdi
     mov rdi, 11
+    int 80h
+
+    leave
+    ret
+
+clearScreen:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 2
     int 80h
 
     leave

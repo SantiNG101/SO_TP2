@@ -12,7 +12,7 @@ void setTerminalPrintingMode();
 // mueve to el texto una para arriba cuando se queda sin espacio la pantalla
 void scrollScreenUp();
 // limpia la pantalla y la setea a color negro
-void clearScreen();
+void clearScreen(uint8_t);
 
 /*
  * ------------------------------- Printing --------------------------------

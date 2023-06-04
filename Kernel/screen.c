@@ -21,14 +21,14 @@ void screen_Initialize(){
 }
 
 void setPrintingMode(uint32_t y, int bufferMode){
-    clearScreen();
+    clearScreen(1);
     current_cursor_pos_y = y;
     setDoubleBuffer(bufferMode);
 }
 
 // setea el modo terminal para que imprima en la ultima linea
 void setTerminalPrintingMode(){
-    setPrintingMode(screenHeight - CHAR_HEIGHT, 0);
+    // setPrintingMode(screenHeight - CHAR_HEIGHT, 0);
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
@@ -162,7 +162,8 @@ void scrollScreenUp(){
     current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
     
 }
-void clearScreen(){
+void clearScreen(uint8_t val){
+    if(val > 1) return;
     /*
     //imprimo en backgroundColor en toda la pantalla
     for ( int i= 0; i < screenHeight; i++ ){
@@ -173,6 +174,7 @@ void clearScreen(){
     */
     // hago mem copy para modificar el frame buffer y paso si borro info o no
     modifyFrameBuffer(1);
+    setDoubleBuffer(!val);
     // restauro el cursor al inicio
     current_cursor_pos_x = 0;
     current_cursor_pos_y = 0;
