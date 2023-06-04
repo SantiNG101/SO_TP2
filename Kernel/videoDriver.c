@@ -3,7 +3,7 @@
 #include <lib.h>
 
 // realiza el chequeo de fuera de bordes retorna 1 si esta fuera, 0 si no.
-int failBordersCheck( uint32_t x, uint32_t y );
+int failBordersCheck( uint32_t x, uint32_t y, uint8_t OffsetX, uint8_t OffsetY);
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -85,7 +85,7 @@ void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y) {
 */
 
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
-    if ( failBordersCheck(x, y)){
+    if ( failBordersCheck(x, y, 0, 0)){
         return;
     }
 
@@ -151,7 +151,7 @@ void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
     while(*input) {
         draw_char(x,y,input[0],fontColor, backgroundColor);
         x += CHAR_WIDTH;
-		if ( failBordersCheck(x, y)){
+		if ( failBordersCheck(x, y, CHAR_WIDTH, CHAR_HEIGHT)){
 			y+=CHAR_HEIGHT;
 			x = 0;
 		}
@@ -162,8 +162,7 @@ void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
 
 void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 				 uint32_t backgroundColor ){
-
-	if ( failBordersCheck(x, y)){
+	if ( failBordersCheck(x, y, CHAR_WIDTH, CHAR_HEIGHT)){
 		return;
 	}
 
@@ -189,15 +188,10 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 }
 
 
-int failBordersCheck( uint32_t x, uint32_t y ){
+int failBordersCheck( uint32_t x, uint32_t y, uint8_t OffsetX, uint8_t OffsetY){
 	//chequeo los limites (es - o / comparando con la cantidad de espacio del char en los bordes)
-	if ( x < 0 || x > horizontalPixelCount - CHAR_WIDTH || y < 0
-				|| y > verticalPixelCount - CHAR_HEIGHT){
-		return 1;
-	}
-	return 0;
+	return  x < 0 || x > horizontalPixelCount - OffsetX || y < 0 || y > verticalPixelCount - OffsetY;
 }
-
 uint16_t getHorizontalPixelCount(){
 	return horizontalPixelCount;
 }

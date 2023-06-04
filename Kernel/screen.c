@@ -175,7 +175,7 @@ void clearScreen(uint8_t val){
     modifyFrameBuffer(1);
     // restauro el cursor al inicio
     current_cursor_pos_x = 0;
-    current_cursor_pos_y = 0;
+    current_cursor_pos_y = val ? screenHeight - CHAR_HEIGHT : 0;
 }
 
 void bordersCheck() {

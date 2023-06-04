@@ -48,8 +48,7 @@ typedef struct Game{
 
 
 static void updatePong(Game newGame){
-    //clearScreen();
-    terminalSetter();
+    clearScreen(0);
     draw_Rectangle(newGame->player1->bar->x, newGame->player1->bar->y, newGame->player1->bar->width, newGame->player1->bar->height, BLUE);
     draw_Rectangle(newGame->player2->bar->x, newGame->player2->bar->y, newGame->player2->bar->width, newGame->player2->bar->height,RED);
     draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
