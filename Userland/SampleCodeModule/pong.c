@@ -92,8 +92,8 @@ void checkAndHandleWallCollision(Ball ball, Player player1, Player player2){
 }
 
 int checkBarCollision(Ball ball, Bars bar){
-    if(ball->x - ball->radius <= bar->width + LIMIT_BAR_SPACE && ball->x + ball->radius >= SCREEN_WIDTH - LIMIT_BAR_SPACE - bar->width){
-        if(ball->y >= bar->y - bar->height/2 && ball->y <= bar->y + bar->height/2){
+    if(ball->x - ball->radius <= bar->width + LIMIT_BAR_SPACE || ball->x + ball->radius >= SCREEN_WIDTH - LIMIT_BAR_SPACE - bar->width){
+        if(ball->y >= bar->y && ball->y <= (bar->y + bar->height)){
             return 1; //se detecta colision entre la pelota y la barra
         }
     }
@@ -105,7 +105,7 @@ void barCollision(Ball ball, Bars bar){
     ball->posx = -ball->posx;
 
     //ajusto la velocidad de la pelota dependiendo sobre que parte de la barra colisiona
-    int barCenter = bar->y + bar->width / 2;
+    int barCenter = bar->y + (bar->height / 2);
     int ballCenter = ball->y;
     int offset = ballCenter - barCenter;
     ball->posy = offset / 2;
@@ -120,12 +120,13 @@ void updateBall(Ball ball, Player player1, Player player2){
     ball->x += ball->posx;
     ball->y += ball->posy;
     //chequeo si hay colisiones con las barras
-    if(checkBarCollision(ball, player1->bar)==1){
-        barCollision(ball, player1->bar);
-    }
     if(checkBarCollision(ball, player2->bar)==1){
         barCollision(ball, player2->bar);
     }
+    if(checkBarCollision(ball, player1->bar)==1){
+        barCollision(ball, player1->bar);
+    }
+
 
     //chequeo si hay colision con los bordes de la pantalla
     checkAndHandleWallCollision(ball, player1,player2);
@@ -172,8 +173,10 @@ void playPong(){
     //Comparten el y
     p1->bar->y = (768/2) - 60;
     p1->bar->width = 10;
+    p2->bar->height = 120;
     p2->bar->y = (768/2) - 60;
     p2->bar->width = 10;
+    p2->bar->height = 120;
 
     ball->radius = 7;
     ball->y = (768/2);
