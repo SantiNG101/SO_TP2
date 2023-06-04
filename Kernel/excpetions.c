@@ -38,7 +38,8 @@ uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
     enter();
 
     setForegroundColour(lForeground);
-
+    print("Press any key to continue []:");
+    while((getC())==0);
     return rip;
 }
 
