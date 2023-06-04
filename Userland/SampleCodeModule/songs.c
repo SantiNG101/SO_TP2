@@ -375,3 +375,7 @@ void userLandStartTheme(void){
     playSound(A4,150);
     playSound(D4,150);
 }
+
+void ballBeep(void){
+    playSound(A4,100);
+}

@@ -108,6 +108,7 @@ void barCollision(Ball ball, Bars bar){
     //invierto la velocidad en la que se mueve la pelota
     ball->posx = -ball->posx;
 
+    ballBeep();
     //ajusto la velocidad de la pelota dependiendo sobre que parte de la barra colisiona
     int barCenter = bar->y + (bar->height / 2);
     int ballCenter = ball->y;
@@ -125,11 +126,13 @@ void updateBall(Ball ball, Player player1, Player player2){
     ball->y += ball->posy;
     //chequeo si hay colisiones con las barras
     if(checkBarCollision(ball, player2->bar)){
+        ballBeep();
         barCollision(ball, player2->bar);
         return;
     }
 
     if(checkBarCollision(ball, player1->bar)){
+        ballBeep();
         barCollision(ball, player1->bar);
         return;
     }

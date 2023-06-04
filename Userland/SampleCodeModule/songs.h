@@ -50,4 +50,5 @@ void tetris(void);
 void ffVFanfare(void);
 void songOfStorms(void);
 void userLandStartTheme(void);
+void ballBeep(void);
 #endif
