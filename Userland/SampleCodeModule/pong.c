@@ -224,7 +224,7 @@ void playPong(){
     Game newGame = myMalloc(sizeof(Game));
     Ball ball = buildBall(10, (1024-30)/2, 768/2, 2, 2);
     Player p1 = buildPlayer(LIMIT_BAR_SPACE);
-    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 5);
+    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 15);
 
     newGame->ball = ball;
     ball->radius = 10;
@@ -234,6 +234,7 @@ void playPong(){
 
     newGame->player1->bar->width = LIMIT_BAR_SPACE;
     newGame->player2->bar->width = LIMIT_BAR_SPACE;
+
     newGame->player1->bar->height = newGame->player2->bar->height;
 
     keepGoing = 1;
