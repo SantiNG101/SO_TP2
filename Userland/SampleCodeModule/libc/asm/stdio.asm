@@ -4,6 +4,8 @@ GLOBAL putPixel
 GLOBAL updateScreen
 GLOBAL setBuffer
 GLOBAL getKeyState
+GLOBAL setForegroundColour
+GLOBAL setBackgroundColour
 
 section .text
 getChar:
@@ -79,5 +81,28 @@ getKeyState:
     mov rax, rsi
     leave
     ret
+
+setForegroundColour:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 10
+    int 80h
+
+    leave
+    ret
+
+setBackgroundColour:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 11
+    int 80h
+
+    leave
+    ret
+
 section .bss
 placeholder resb 1

@@ -23,6 +23,21 @@ extern void updateScreen(void);
 extern void setBuffer(int mode);
 extern int getKeyState(int keyCode);
 
+//
+// functionName: setBackgroundColour
+// Description: Cambia el color del fondo.
+// params:
+//      * (uint32_t) colour - Color del fondo a imprimir
+//
+extern void setBackgroundColour(uint32_t colour);
+//
+// functionName: setForegroundColour
+// Description: Cambia el color del texto.
+// params:
+//      * (uint32_t) colour - Color del texto a imprimir
+//
+extern void setForegroundColour(uint32_t colour);
+
 // Uses getChar several times, until Carriage Return (CR) is pressed.
 char * getString(void);
 
