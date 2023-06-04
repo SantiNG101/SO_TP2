@@ -117,11 +117,11 @@ void updateBall(Ball ball, Player player1, Player player2){
     ball->x += ball->posx;
     ball->y += ball->posy;
     //chequeo si hay colisiones con las barras
+    if(checkBarCollision(ball, player1->bar)==1) {
+        barCollision(ball, player1->bar);
+    }
     if(checkBarCollision(ball, player2->bar)==1){
         barCollision(ball, player2->bar);
-    }
-    if(checkBarCollision(ball, player1->bar)==1){
-        barCollision(ball, player1->bar);
     }
 
 
@@ -170,12 +170,13 @@ void playPong(){
     //Comparten el y
     p1->bar->y = (768/2) - 60;
     p1->bar->width = 10;
-    p2->bar->height = 120;
+    p1->bar->height = 120;
+
     p2->bar->y = (768/2) - 60;
     p2->bar->width = 10;
     p2->bar->height = 120;
 
-    ball->radius = 7;
+    ball->radius = 10;
     ball->y = (768/2);
     ball->x = (1024-30)/2;
     ball->posx = 6;
@@ -184,7 +185,7 @@ void playPong(){
     updatePong(newGame);
 
     int p = 100;
-    while(p1->score != 21 || p2->score != 21){
+    while(p1->score < 21 || p2->score < 21){
         updateBall(newGame->ball, newGame->player1, newGame->player2);
         getInputPlaying(newGame);
         updatePong(newGame);
