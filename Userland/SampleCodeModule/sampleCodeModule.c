@@ -14,6 +14,8 @@ int main() {
     unsigned char keepGoing = TRUE;
 
     while(keepGoing){
+        setBackgroundColour(BLACK);
+        setForegroundColour(WHITE);
         clearScreen(0);
         printf("Choose a mode:\nPress 1 for Pong.\nPress 2 for Terminal.\nPress 3 for exit.\n");
         char c = getChar();
