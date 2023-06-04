@@ -4,7 +4,7 @@
 // 1024 x 768
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
-#define GAME_OVER 5
+#define GAME_OVER 3
 #define BAR_MOV 10
 
 static int keepGoing = 1;
@@ -12,7 +12,7 @@ static int keepGoing = 1;
 extern void terminalSetter();
 
 // punto x e y de la pelota hacen referencia al centro de la pelota
-typedef struct Ball{
+typedef struct Ball {
     //posición actual
     int x;
     int y;
@@ -33,13 +33,13 @@ typedef struct Bars {
 } * Bars;
 
 
-typedef struct Player{
+typedef struct Player {
     Bars bar;
     int score;
 } * Player;
 
 
-typedef struct Game{
+typedef struct Game {
     Player player1;
     Player player2;
     Ball ball;
@@ -174,8 +174,8 @@ void getInputPlaying(Game game){
 }
 
 Player buildPlayer(int barX){
-    Player player = myMalloc(sizeof(Player));
-    Bars bar = player->bar = myMalloc(sizeof(Bars));
+    Player player = myMalloc(sizeof(struct Player));
+    Bars bar = player->bar = myMalloc(sizeof(struct Bars));
 
     player->score = 0;
 
@@ -188,7 +188,7 @@ Player buildPlayer(int barX){
 }
 
 Ball buildBall(int radius, int x, int y, int posx, int posy){
-    Ball ball = myMalloc(sizeof(Ball));
+    Ball ball = myMalloc(sizeof(struct Ball));
 
     ball->x = x;
     ball->y = y;
@@ -221,21 +221,16 @@ void pausePong(){
 void playPong(){
     //p1 left     p2 right
     setBuffer(1);
-    Game newGame = myMalloc(sizeof(Game));
-    Ball ball = buildBall(10, (1024-30)/2, 768/2, 2, 2);
+
+    Game newGame = myMalloc(sizeof(struct Game));
+    Ball ball = buildBall(10, (1024-30)/2, 768/2, 8, 8);
     Player p1 = buildPlayer(LIMIT_BAR_SPACE);
-    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 15);
+    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 35);
 
     newGame->ball = ball;
-    ball->radius = 10;
 
     newGame->player1 = p1;
     newGame->player2 = p2;
-
-    newGame->player1->bar->width = LIMIT_BAR_SPACE;
-    newGame->player2->bar->width = LIMIT_BAR_SPACE;
-
-    newGame->player1->bar->height = newGame->player2->bar->height;
 
     keepGoing = 1;
     while(keepGoing && (p1->score < GAME_OVER || p2->score < GAME_OVER)){
