@@ -7,9 +7,6 @@
 #define GAME_OVER 10
 #define BAR_MOV 10
 
-/* TODO Para la pelota hay que agregar un draw, updatePosition y detector de tocar la barra
-    Mismo para las barras */
-
 //TODO hacer clear screen (0,0) --> generico y setear terminal a abajo a la izq pal terminal mode
 extern void terminalSetter();
 
@@ -139,7 +136,7 @@ void updateBall(Ball ball, Player player1, Player player2){
     }
 }
 
-//TODO CONTROL TECLADO FLECHAS EN SIMULTANEO
+//TODO CONTROL TECLADO FLECHAS EN SIMULTANEO //
 void getInputPlaying(Game game){
     if(getKeyState(80)) updateBar(game->player2->bar,-BAR_MOV);
     if(getKeyState(81)) updateBar(game->player2->bar, BAR_MOV);

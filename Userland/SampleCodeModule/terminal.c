@@ -4,7 +4,11 @@
 
 extern void opCode();
 extern void terminalSetter();
+extern void setBackgroundColour(uint32_t colour);
+extern void setForegroundColour(uint32_t colour);
 
+void setBackground();
+void setForeground();
 void runCommand(char *);
 void showTime();
 void exit();
@@ -15,9 +19,14 @@ void beep();
 
 typedef struct {
     char name[20];
-    char description[100];
+    char description[150];
     void (*function)(void);
 } commandT;
+
+typedef struct{
+    char color[15];
+    int hex;
+}colour;
 
 const commandT commands[] = {
                              {"help", "Provides a command list.", help},
@@ -30,6 +39,8 @@ const commandT commands[] = {
                              {"mario","Displays mario bros theme song",marioTheme},
                              {"tetris","Displays tetris song",tetris},
                              {"storm","Displays song of storms zelda",songOfStorms},
+                             {"background","Changes background to hexColour: ",setBackground},
+                             {"foreground","Changes foreground to hexColour: ",setForeground},
                              {"div0","Shows how div 0 exception works",divZero},
                              {"opCode","Shows how opCode exception works",opCode}
                             };
@@ -59,11 +70,12 @@ int terminalStart(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            if(i == 0){
+            if(i == 0 || i == 10 || i == 11){
                 commands[i].function();
                 putChar('\n');
                 return;
             }
+
             char * aux = strtok(NULL, " ");
             if(aux != NULL){
                 printf("This function does not accept arguments.\n");
@@ -142,6 +154,63 @@ void beep(){
     putChar('\a');
 }
 
+
+const colour colors[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
+                        {"cyan",CYAN},{"red",RED},{"purple",PURPLE},
+                        {"brown",BROWN},{"gray",GRAY},{"darkgray",DARK_GRAY},
+                        {"lightblue",LIGHT_BLUE},{"lime",LIGHT_GREEN},{"lightcyan",LIGHT_CYAN},
+                        {"lightred",LIGHT_RED},{"lightpurple",LIGHT_PURPLE},{"yellow",YELLOW},
+                        {"white",WHITE}};
+
+void nonExistentColor(){
+    printf("Selected color is not available, please choose from the following list:\n");
+    for(int j = 0; j < SIZEOFARR(colors); j++){
+        printf("%s ",colors[j].color);
+    }
+    return;
+}
+
+void setBackground(){
+
+    char * token = strtok(NULL, " ");
+    char * aux = strtok(NULL, " ");
+
+    if(aux != NULL){
+        printf("Background requires only one argument.\n");
+        return;
+    }
+
+    for(int i = 0; i < SIZEOFARR(colors); i++){
+        if(!strcmp(colors[i].color,token)){
+            setBackgroundColour(colors[i].hex);
+            return;
+        }
+    }
+
+    nonExistentColor();
+    return;
+}
+
+void setForeground(){
+
+    char * token = strtok(NULL, " ");
+    char * aux = strtok(NULL, " ");
+
+    if(aux != NULL){
+        printf("Foreground requires only one argument.\n");
+        return;
+    }
+
+    for(int i = 0; i < SIZEOFARR(colors); i++){
+        if(!strcmp(colors[i].color,token)){
+            setForegroundColour(colors[i].hex);
+            return;
+        }
+    }
+
+    nonExistentColor();
+    return;
+}
 /*
  * TOADD
  * showRegisters(); ---> Con interrupcion
