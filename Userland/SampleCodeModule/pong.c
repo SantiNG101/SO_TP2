@@ -25,6 +25,7 @@ typedef struct Ball{
 
 // Punto y tomado de referencia es el de arriba de
 typedef struct Bars {
+    int x;
     int y;
     int width;
     int height;
@@ -47,8 +48,8 @@ typedef struct Game{
 static void updatePong(Game newGame){
     //clearScreen();
     terminalSetter();
-    draw_Rectangle(LIMIT_BAR_SPACE,newGame->player1->bar->y,10,120,BLUE);
-    draw_Rectangle(1024 - LIMIT_BAR_SPACE-10,newGame->player2->bar->y,10,120,RED);
+    draw_Rectangle(newGame->player1->bar->x, newGame->player1->bar->y, newGame->player1->bar->width, newGame->player1->bar->height, BLUE);
+    draw_Rectangle(newGame->player2->bar->x, newGame->player2->bar->y, newGame->player2->bar->width, newGame->player2->bar->height,RED);
     draw_Line (MIDDLE_SCREEN-1,0,MIDDLE_SCREEN-1,768,BLUE);
     draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,BLUE);
     draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,RED);
@@ -56,6 +57,7 @@ static void updatePong(Game newGame){
     draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,BLUE,COLOR_BACKGROUND_DEFAULT);
     draw_number(MIDDLE_SCREEN+MARQUER_DISTANCE_X+3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,newGame->player2->score,RED,COLOR_BACKGROUND_DEFAULT);
     draw_CircleFilled(newGame->ball->x, newGame->ball->y,newGame->ball->radius, LIGHT_GREEN);
+
     updateScreen();
 }
 
@@ -72,29 +74,34 @@ void checkAndHandleWallCollision(Ball ball, Player player1, Player player2){
     //reviso si la pelota colisionó en la parte de arriba o de abajo de la pantalla
     if(ball->y - ball->radius <= 0 || ball->y + ball->radius >= SCREEN_HEIGHT-1){
         ball->posy = -ball->posy;
+        return;
     }
-
     //reviso de la pelota colisionó con el borde derecho o izquierdo de la pantalla
     //de ser así, suma puntaje
     if (ball->x + ball->radius >= SCREEN_WIDTH-1){
         //player1 suma un punto y se reinicia la posición y velocidad
         player1->score++;
         resetBall(ball);
+        return;
     }
-    else if(ball->x - ball->radius <= 0){
+
+    if(ball->x - ball->radius <= 0){
         //player2 suma un punto y se reinicia la posición y velocidad
         player2->score++;
         resetBall(ball);
     }
 }
 
+int isOnRange(int left, int right, int value){
+    return value >= left && value <= right;
+}
+
 int checkBarCollision(Ball ball, Bars bar){
-    if(ball->x - ball->radius <= bar->width + LIMIT_BAR_SPACE || ball->x + ball->radius >= SCREEN_WIDTH - LIMIT_BAR_SPACE - bar->width){
-        if(ball->y >= bar->y && ball->y <= (bar->y + bar->height)){
-            return 1; //se detecta colision entre la pelota y la barra
-        }
-    }
-    return 0; //no hay colision
+    int leftCollision = isOnRange(bar->x, bar->x + bar->width, ball->x + ball->radius);
+    int rightCollision = isOnRange(bar->x, bar->x + bar->width, ball->x - ball->radius);
+    int yCollision = isOnRange(bar->y, bar->y + bar->height, ball->y);
+    
+    return (leftCollision || rightCollision) && yCollision;
 }
 
 void barCollision(Ball ball, Bars bar){
@@ -117,16 +124,18 @@ void updateBall(Ball ball, Player player1, Player player2){
     ball->x += ball->posx;
     ball->y += ball->posy;
     //chequeo si hay colisiones con las barras
-    if(checkBarCollision(ball, player1->bar)==1) {
-        barCollision(ball, player1->bar);
-    }
-    if(checkBarCollision(ball, player2->bar)==1){
+    if(checkBarCollision(ball, player2->bar)){
         barCollision(ball, player2->bar);
+        return;
     }
 
-
+    if(checkBarCollision(ball, player1->bar)){
+        barCollision(ball, player1->bar);
+        return;
+    }
+      
     //chequeo si hay colision con los bordes de la pantalla
-    checkAndHandleWallCollision(ball, player1,player2);
+    checkAndHandleWallCollision(ball, player1, player2);
 
     //chequeo condiciones para fin del juego
     if(player1->score >= GAME_OVER || player2->score >= GAME_OVER){
@@ -144,58 +153,64 @@ void getInputPlaying(Game game){
     if(getKeyState('w'))updateBar(game->player1->bar,-BAR_MOV);
     if(getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
 
+    
     return;
+}
+
+Player buildPlayer(int barX){
+    Player player = myMalloc(sizeof(Player));
+    Bars bar = player->bar = myMalloc(sizeof(Bars));
+
+    player->score = 0;
+
+    bar->width = 30;
+    bar->height = 120;
+    bar-> y = (768/2) - 60;
+    bar->x = barX;
+
+    return player;
+}
+
+Ball buildBall(int radius, int x, int y, int posx, int posy){
+    Ball ball = myMalloc(sizeof(Ball));
+
+    ball->x = x;
+    ball->y = y;
+    ball->posx = posx;
+    ball->posy = posy;
+    ball->radius = 10;
+
+    return ball;
 }
 
 void playPong(){
     //p1 left     p2 right
     setBuffer(1);
     Game newGame = myMalloc(sizeof(Game));
-    Ball ball = myMalloc(sizeof(Ball));
-    Player p1= myMalloc(sizeof(Player));
-    Player p2= myMalloc(sizeof(Player));
-    Bars b1= myMalloc(sizeof(Bars));
-    Bars b2= myMalloc(sizeof(Bars));
+    Ball ball = buildBall(10, (1024-30)/2, 768/2, 2, 2);
+    Player p1 = buildPlayer(LIMIT_BAR_SPACE), p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 5);
 
     newGame->ball = ball;
+    ball->radius = 10;
+
     newGame->player1 = p1;
     newGame->player2 = p2;
 
-    p1->score = 0;
-    p1->bar = b1;
+    newGame->player1->bar->width = LIMIT_BAR_SPACE;
+    newGame->player1->bar->height = newGame->player2->bar->height;
 
-    p2->score = 0;
-    p2->bar = b2;
-
-    //Comparten el y
-    p1->bar->y = (768/2) - 60;
-    p1->bar->width = 10;
-    p1->bar->height = 120;
-
-    p2->bar->y = (768/2) - 60;
-    p2->bar->width = 10;
-    p2->bar->height = 120;
-
-    ball->radius = 10;
-    ball->y = (768/2);
-    ball->x = (1024-30)/2;
-    ball->posx = 6;
-    ball->posy = 6;
-
-    updatePong(newGame);
-
-    int p = 100;
     while(p1->score < 21 || p2->score < 21){
-        updateBall(newGame->ball, newGame->player1, newGame->player2);
         getInputPlaying(newGame);
+        
+        updateBall(newGame->ball, newGame->player1, newGame->player2);
         updatePong(newGame);
     }
 
-    myFree(b1);
-    myFree(b2);
+    myFree(p1->bar);
+    myFree(p2->bar);
     myFree(p1);
     myFree(p2);
-    myFree(ball);
+    myFree(newGame->ball);
     myFree(newGame);
 
     setBuffer(0);

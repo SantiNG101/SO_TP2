@@ -129,13 +129,13 @@ void help(/*char * token*/){
 void showTime(){
     int hour,min,sec;
     getTime(&hour,&min,&sec);
-    printf("%d:%d:%d\n",hour,min,sec);
+    printf("%2d:%2d:%2d\n",hour,min,sec);
 }
 
 void showDate(){
     int year,month,day;
     getDate(&day,&month,&year);
-    printf("%d/%d/%d\n",day,month,year);
+    printf("%2d/%2d/%d\n",day,month,year);
 }
 
 void exit(){

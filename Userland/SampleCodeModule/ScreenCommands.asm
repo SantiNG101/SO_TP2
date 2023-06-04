@@ -1,6 +1,5 @@
 GLOBAL terminalSetter
 GLOBAL pongUpdater
-GLOBAL clearScreen
 
 EXTERN puts
 
