@@ -120,7 +120,7 @@ void setForegroundColour(uint32_t colour);
 // Description: Obtiene el color del texto.
 // params:
 //
-void getForegroundColour();
+uint32_t getForegroundColour();
 
 //
 // functionName: setBackgroundColour

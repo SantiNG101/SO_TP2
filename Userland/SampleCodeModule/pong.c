@@ -141,23 +141,11 @@ void updateBall(Ball ball, Player player1, Player player2){
 
 //TODO CONTROL TECLADO FLECHAS EN SIMULTANEO
 void getInputPlaying(Game game){
-    unsigned char c = getChar();
-    switch(c){
-        case 80:        //mov up
-            updateBar(game->player2->bar,-BAR_MOV);
-            break;
-        case 81:        //mov down
-            updateBar(game->player2->bar,BAR_MOV);
-            break;
-        case 'w':       //mov up
-            updateBar(game->player1->bar,-BAR_MOV);
-            break;
-        case 's':       //mov down
-            updateBar(game->player1->bar,BAR_MOV);
-            break;
-        default:
-            break;
-    }
+    if(getKeyState(80)) updateBar(game->player2->bar,-BAR_MOV);
+    if(getKeyState(81)) updateBar(game->player2->bar, BAR_MOV);
+    if(getKeyState('w'))updateBar(game->player1->bar,-BAR_MOV);
+    if(getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
+    
     return;
 }
 
@@ -194,7 +182,7 @@ void playPong(){
     updatePong(newGame);
 
     int p = 100;
-    while(p--){
+    while(p1->score != 21 || p2->score != 21){
         getInputPlaying(newGame);
         updatePong(newGame);
     }

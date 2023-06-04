@@ -24,6 +24,7 @@
  * En resumen, es un arreglo de flags.
  */
 static uint8_t specialKeys = 0x0;
+static char keyStates[256] = { 0 };
 
 /* NOTAR QUE TIENEN EL MISMO NUMERO CORRESPONDIENTE AL BIT DE LA VARIABLE */
 enum { CTR = 1, ALT, SHF, SCR, NUM, CAP };
@@ -81,18 +82,21 @@ void keyboardHandler(){
         return;
     }
 
-    if(isReleased(data))
-        return;
-
-    uint8_t keyCode = keyboard[data >> 4][data & 0x0F];
+    uint8_t keyCode = keyboard[data >> 4 & 0x07][data & 0x0F];
     if(getState(CAP))
         keyCode = toMayus(keyCode);
     if(getState(SHF))
-        keyCode = shftKeyBoard[data >> 4][data & 0x0F];
-
+        keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
     // *currentBuff++ = keyCode;
-    currentBuff = keyCode;
+
+    if(keyStates[keyCode] = !isReleased(data))
+        currentBuff = keyCode;
+
     return;
+}
+
+int getKeyState(int keyCode){
+    return keyStates[keyCode];
 }
 
 int getC(){

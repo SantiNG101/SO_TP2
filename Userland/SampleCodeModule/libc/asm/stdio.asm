@@ -3,6 +3,7 @@ GLOBAL putChar
 GLOBAL putPixel
 GLOBAL updateScreen
 GLOBAL setBuffer
+GLOBAL getKeyState
 
 section .text
 getChar:
@@ -64,6 +65,18 @@ setBuffer:
     mov rdi, 3
     int 80h
 
+    leave
+    ret
+
+getKeyState:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 12
+    int 80h
+    
+    mov rax, rsi
     leave
     ret
 section .bss

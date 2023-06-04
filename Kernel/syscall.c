@@ -29,30 +29,6 @@ typedef struct {
     uint64_t rax;
 } * argumentsStruct;
 
-void updtScreen(argumentsStruct args);
-void putPix(argumentsStruct args);
-void write(argumentsStruct args);
-void read(argumentsStruct args);
-void setterBuffer(argumentsStruct args);
-void pongScreenUpdater(argumentsStruct args);
-void timer_wait(argumentsStruct args);
-void speaker_playSound(argumentsStruct args);
-void timeNow(argumentsStruct args);
-void defaultCleaner(argumentsStruct args);
-
-void (* syscalls[]) (argumentsStruct args) = { write, read, defaultCleaner, setterBuffer, pongScreenUpdater,
- timer_wait, speaker_playSound, timeNow, putPix,updtScreen };
-
-#define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
-
-void syscallDispatcher(argumentsStruct args){
-    if(args->rdi > sizeofArr(syscalls)){
-        return;
-    }
-    // Ejecuta la syscall
-    syscalls[args->rdi]((argumentsStruct) args);
-}
-
 void read(argumentsStruct args){
     // This might read from keyboard buffer, print it and return it into the r10 Register.
     char*   data = (char *) args->r10;
@@ -130,4 +106,29 @@ void putPix(argumentsStruct args){
 
 void updtScreen(argumentsStruct args){
     updateScreen();
+}
+
+void foreGround(argumentsStruct args){
+    setForegroundColour(args->r10);
+}
+
+void backGround(argumentsStruct args){
+    setBackgroundColour(args->r10);
+}
+
+void keyState(argumentsStruct args){
+    args->rsi = getKeyState(args->r10);
+}
+
+void (* syscalls[]) (argumentsStruct args) = { write, read, defaultCleaner, setterBuffer, pongScreenUpdater,
+ timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState };
+
+#define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
+
+void syscallDispatcher(argumentsStruct args){
+    if(args->rdi > sizeofArr(syscalls)){
+        return;
+    }
+    // Ejecuta la syscall
+    syscalls[args->rdi]((argumentsStruct) args);
 }
