@@ -119,7 +119,7 @@ void backspace(){
         current_cursor_pos_y-=CHAR_HEIGHT;
     }
     current_cursor_pos_x -= CHAR_WIDTH;
-    putCharScreen(' ');
+    putCharScreenFrmt(' ',WHITE,BLACK);
     current_cursor_pos_x -= CHAR_WIDTH;
 }
 

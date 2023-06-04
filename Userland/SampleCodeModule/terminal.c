@@ -64,6 +64,8 @@ int terminalStart(){
         printf("\n");
     }
 
+    setBackgroundColour(BLACK);
+    setForegroundColour(WHITE);
     return 0;
 }
 
