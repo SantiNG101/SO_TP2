@@ -2,8 +2,8 @@
 #include <stdlib.h>
 // tamaño de pantalla
 // 1024 x 768
-#define SCREEN_WIDTH 768
-#define SCREEN_HEIGHT 1024
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
 #define GAME_OVER 10
 #define BAR_MOV 10
 
@@ -63,7 +63,7 @@ static void updatePong(Game newGame){
 
 void resetBall(Ball ball){
     //reinicio la posición y dirección de la pelota
-    ball->x = SCREEN_WIDTH/2;
+    ball->x = (SCREEN_WIDTH-30)/2;
     ball->y = SCREEN_HEIGHT/2;
     ball->posx = -ball->posx;
     ball->posy = 1;
@@ -183,6 +183,7 @@ void playPong(){
 
     int p = 100;
     while(p1->score != 21 || p2->score != 21){
+        updateBall(newGame->ball, newGame->player1, newGame->player2);
         getInputPlaying(newGame);
         updatePong(newGame);
     }
