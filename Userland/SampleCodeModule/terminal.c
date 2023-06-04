@@ -48,7 +48,7 @@ const commandT commands[] = {
 static unsigned char keepGoing = TRUE;
 
 int terminalStart(){
-    static const char ptr[240] = { 0 };
+    static char ptr[240] = { 0 };
     keepGoing = TRUE;
     // llamado de syscall para setear al modo terminal pasandole el 0 que indica este modo
     terminalSetter();
@@ -56,7 +56,7 @@ int terminalStart(){
     while(keepGoing){
         printf("$ ");
 
-        scanf("%s", ptr);
+        strcpy(getString(),ptr);
         char *token = strtok(ptr, " ");     //creo token con cmdline (modificable)
                                             //Process the command and execute actions accordingly
         runCommand(token);
@@ -164,9 +164,10 @@ const colour colors[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
 
 void nonExistentColor(){
     printf("Selected color is not available, please choose from the following list:\n");
-    for(int j = 0; j < SIZEOFARR(colors); j++){
-        printf("%s ",colors[j].color);
+    for(int j = 0; j < SIZEOFARR(colors)-1; j++){
+        printf("%s, ",colors[j].color);
     }
+    printf("%s \n\nExamples of usage: background cyan\n                   or\n                   foreground cyan",colors[SIZEOFARR(colors)-1].color);
     return;
 }
 
