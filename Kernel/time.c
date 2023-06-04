@@ -40,15 +40,22 @@ unsigned int minutes(){
 }
 
 unsigned int hours(){
-    return decode(clock(HOURS)) + TIME_ZONE;
+    return (decode(clock(HOURS)) + 24 + TIME_ZONE) % 24;
 }
 
 unsigned int year(){
     return decode(clock(YEAR));
 }
 
+int paddDay(){
+    int sys_hour = decode(clock(HOURS));
+    if(sys_hour + TIME_ZONE > 23) return 1;
+    if(sys_hour + TIME_ZONE < 0) return -1;
+    return 0;
+}
+
 unsigned int day(){
-    return decode(clock(DAYS));
+    return decode(clock(DAYS)) + paddDay();
 }
 
 unsigned int month(){
