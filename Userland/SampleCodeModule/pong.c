@@ -233,7 +233,7 @@ void playPong(){
     newGame->player2 = p2;
 
     keepGoing = 1;
-    while(keepGoing && (p1->score < GAME_OVER || p2->score < GAME_OVER)){
+    while(keepGoing && (p1->score < GAME_OVER && p2->score < GAME_OVER)){
         getInputPlaying(newGame);
 
         updateBall(newGame->ball, newGame->player1, newGame->player2);
