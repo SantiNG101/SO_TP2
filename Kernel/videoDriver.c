@@ -74,22 +74,13 @@ void setDoubleBuffer(int activated){
 	doubleBuffer = activated;
 }
 
-/*
-void putPixel(uint8_t r, uint8_t g, uint8_t b, uint32_t x, uint32_t y) {
-	uint8_t * videoPtr = VBE_mode_info->framebuffer;
-	int offset = y * VBE_mode_info->pitch + x * (VBE_mode_info->bpp / 8);
-	videoPtr[offset] = b;
-	videoPtr[offset+1] = g;
-	videoPtr[offset+2] = r;
-}
-*/
 
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
     if ( failBordersCheck(x, y, 0, 0)){
         return;
     }
 
-	// setei el offset en el punto pasado
+	// seteo el offset en el punto pasado
 	uint32_t offset = VBE_mode_info->pitch*y + x*numberOfColorBytes;
 	// veo si esta activado el doble buffer 
 	if ( doubleBuffer ){
@@ -105,27 +96,9 @@ void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
 	}
 }
 
-// necesario para cuando se haga la subida de pantalla
+
 // hace copia de memoria para cambiar el estado de los pixeles de la pantalla de lugar
 void modifyFrameBuffer( int mode){
-	/*
-	// creo el offset de form
-	uint32_t offsetFrom = VBE_mode_info->pitch*yfrom + xfrom*numberOfColorBytes;
-	// creo el offset de to
-	uint32_t offsetTo = VBE_mode_info->pitch*yto + xto*numberOfColorBytes;
-	// paso uno al otro
-	if ( doubleBuffer ){
-		buffer[offsetTo] = buffer[offsetFrom];
-		buffer[offsetTo+1] = buffer[offsetFrom+1];
-		buffer[offsetTo+2] = buffer[offsetFrom+2];
-		return;
-	}else{
-		uint8_t * screen = (uint8_t *) ((uint64_t) (VBE_mode_info->framebuffer));
-		screen[offsetTo] = screen[offsetFrom];
-		screen[offsetTo+1] = screen[offsetFrom+1];
-	 	screen[offsetTo+2] = screen[offsetFrom+2];
-	}
-	*/
 	// hago mem copy de memoria
 	if ( doubleBuffer ){
 		if (mode){
@@ -144,7 +117,7 @@ void modifyFrameBuffer( int mode){
 }
 	
 
-// chequear esta funcion pues el string se puede cortar en pantalla
+
 void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
 				 uint32_t backgroundColor) {
 

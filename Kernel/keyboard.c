@@ -58,8 +58,6 @@ const unsigned char shftKeyBoard[6][16] = {{ '\0', '\0', '!', '@', '#', '$', '%'
 #define isSpecial(key) (!(((uint8_t) keyboard[(key >> 4) & 0x07][key & 0x0F]) & 0xF8))
 #define isReleased(key) (key & 0x80)
 
-// static char buffer[64] = { 0 };
-// static char * currentBuff = buffer;
 
 static char currentBuff = 0;
 
@@ -90,7 +88,6 @@ void keyboardHandler(){
         keyCode = toMayus(keyCode);
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
-    // *currentBuff++ = keyCode;
     if(keyStates[keyCode] = !isReleased(data))
         currentBuff = keyCode;
 
@@ -102,9 +99,6 @@ int getKeyState(int keyCode){
 }
 
 int getC(){
-
-    // int c = *--currentBuff;
-    // *currentBuff = 0;
 
     int c = currentBuff;
     currentBuff = 0;

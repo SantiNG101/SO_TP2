@@ -213,11 +213,3 @@ void setForeground(){
     nonExistentColor();
     return;
 }
-/*
- * TOADD
- * showRegisters(); ---> Con interrupcion
- * Rtc();   --> Con interrupcion
- * self cleaning y que escriba en la ultima linea
- * generateXException(); --> genere div 0 y haga un seguimiento ?) y verifica su funcionamiento
- *
- */

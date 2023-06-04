@@ -5,12 +5,6 @@
 
 #include <idt/exceptions.h>
 
-/*
- * Mantener actualizado. El EXCEPTION_TYPE_SIZE debe estar SIEMPRE al final.
- * Da, independientemente del contexto la cantidad de excepciones que hay.
- */
-// typedef enum { ZERO_DIVISION = 0, INVALID_OPERATION, DEFAULTEXCEPTION,EXCEPTION_TYPE_SIZE } EXCEPTION_T;
-
 /* Arreglo de excepciones para que sea fácilmente mantenible. */
 static void (* exceptions[])(uint64_t * rip) = { zeroDivisionException, invalidOperationException, defaultException };
 
@@ -57,21 +51,12 @@ void zeroDivisionException(uint64_t * rip){
 }
 
 void invalidOperationException(uint64_t * rip){
-    // TODO: COMPLETAR
     printErrorStr("Exception: Invalid OpCode");
     enter();
 
     cleanActualRegisters();     
     *rip = 0x400000;
     return;
-}
-
-void defaultException(uint64_t * rip){
-    // // TODO: COMPLETAR
-    // // Excepción por default. En caso de que algo male sal, entonces le decimos che flaco
-    // showRegisterStatus();       // muestro registros que dieron el error
-    // cleanActualRegisters();     // limpio los registros
-    //                             // imprimo el mensaje de que salto la excepcion en rojo
 }
 
 void printRegister(char * str, uint64_t regValue){

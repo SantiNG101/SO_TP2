@@ -95,29 +95,6 @@ int divisionBy(int x, int y){
 int main()
 {
     screen_Initialize();
-// 	/*
-// 	while(i){
-// 		putCharScreen('C');
-// 		enter();
-// 		putCharScreen('A');
-// 		enter();
-// 		i--;
-// 	}
-// 	*/
-//     // kernelASM();
-// 	// draw_CircleFilled(100,100,7,RED);
- 	//setDoubleBuffer(1);
- 	//int i = 768/2;
- 	//int j = 768/2;
-	//int x = 1024/2;
-	//int y = 768/2;
- 	//gameMode();
- 	//int p =1000;
- 	//while (p-- > 0)
- 	//	updatePongScreen(i++,j--,x++,y++, 0, 0);
-//    // printf("\a");
-//     // terminalStart();
-	
 	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;
 }

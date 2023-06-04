@@ -34,7 +34,6 @@ GLOBAL _hlt
 GLOBAL _irq00Handler        ;   TIMER TICK
 GLOBAL _irq01Handler        ;   KEYBOARD
 GLOBAL _irq02Handler        ;   SYSCALL
-GLOBAL _irq03Handler        ;   
 
 GLOBAL _exception00Handler  ;   Division by Zero Exception
 GLOBAL _exception01Handler  ;   Not an available function
@@ -182,10 +181,6 @@ _irq02Handler:                  ; SYSCALL
     pop rbp
 
     iretq
-
-
-_irq03Handler:
-    irqHandlerMaster 3          ;
 
 
 ; ------  ENDS  IRQ ------ ;
