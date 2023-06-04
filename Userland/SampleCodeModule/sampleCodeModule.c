@@ -10,7 +10,7 @@ extern void screenSetter();
 int main() {
 
     printf("Welcome to Userland!\n");
-    // userLandStartTheme();
+     userLandStartTheme();
     printf("Choose a mode:\nPress 1 for Pong.\nPress 2 for Terminal.\nPress 3 for exit.\n");
     unsigned char keepGoing = TRUE;
 

@@ -123,8 +123,7 @@ static int scanf_int(int64_t * value_ptr){
 //Func aux que copia el str a un puntero
 static int scanf_str(char * s_arg){
     char * l = s_arg;
-    char * str = getString();
-    strcpy(str, l);
+    strcpy(getString(),l);
     return 0;
 }
 

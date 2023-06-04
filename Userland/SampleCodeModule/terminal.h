@@ -14,7 +14,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "songs.h"
-
+#include "figures.h"
 #define TRUE 1
 #define FALSE 0
 //HashCodes (obtained from hashing in range)

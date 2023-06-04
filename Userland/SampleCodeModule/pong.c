@@ -7,9 +7,6 @@
 #define GAME_OVER 10
 #define BAR_MOV 10
 
-/* TODO Para la pelota hay que agregar un draw, updatePosition y detector de tocar la barra
-    Mismo para las barras */
-
 //TODO hacer clear screen (0,0) --> generico y setear terminal a abajo a la izq pal terminal mode
 extern void terminalSetter();
 
@@ -29,7 +26,8 @@ typedef struct Ball{
 // Punto y tomado de referencia es el de arriba de
 typedef struct Bars {
     int y;
-    int length;
+    int width;
+    int height;
 } * Bars;
 
 
@@ -58,7 +56,7 @@ static void updatePong(Game newGame){
     draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,BLUE,COLOR_BACKGROUND_DEFAULT);
     draw_number(MIDDLE_SCREEN+MARQUER_DISTANCE_X+3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,newGame->player2->score,RED,COLOR_BACKGROUND_DEFAULT);
     draw_CircleFilled(newGame->ball->x, newGame->ball->y,newGame->ball->radius, LIGHT_GREEN);
-   updateScreen();
+    updateScreen();
 }
 
 void resetBall(Ball ball){
@@ -66,15 +64,13 @@ void resetBall(Ball ball){
     ball->x = (SCREEN_WIDTH-30)/2;
     ball->y = SCREEN_HEIGHT/2;
     ball->posx = -ball->posx;
-    ball->posy = 1;
+    ball->posy = 2;
 }
 
 void checkAndHandleWallCollision(Ball ball, Player player1, Player player2){
-    //invierto la velocidad en y de la pelota
-    ball->posy=-ball->posy;
 
     //reviso si la pelota colisionó en la parte de arriba o de abajo de la pantalla
-    if(ball->y -ball ->radius <= 0 || ball->y + ball->radius >= SCREEN_HEIGHT-1){
+    if(ball->y - ball->radius <= 0 || ball->y + ball->radius >= SCREEN_HEIGHT-1){
         ball->posy = -ball->posy;
     }
 
@@ -93,8 +89,8 @@ void checkAndHandleWallCollision(Ball ball, Player player1, Player player2){
 }
 
 int checkBarCollision(Ball ball, Bars bar){
-    if(ball->x - ball->radius <= bar->length && ball->x + ball->radius >= 0){
-        if(ball->y >= bar->y && ball->y <= bar->y + bar->length){
+    if(ball->x - ball->radius <= bar->width + LIMIT_BAR_SPACE || ball->x + ball->radius >= SCREEN_WIDTH - LIMIT_BAR_SPACE - bar->width){
+        if(ball->y >= bar->y && ball->y <= (bar->y + bar->height)){
             return 1; //se detecta colision entre la pelota y la barra
         }
     }
@@ -106,7 +102,7 @@ void barCollision(Ball ball, Bars bar){
     ball->posx = -ball->posx;
 
     //ajusto la velocidad de la pelota dependiendo sobre que parte de la barra colisiona
-    int barCenter = bar->y + bar->length / 2;
+    int barCenter = bar->y + (bar->height / 2);
     int ballCenter = ball->y;
     int offset = ballCenter - barCenter;
     ball->posy = offset / 2;
@@ -118,14 +114,16 @@ void updateBar(Bars bar, int direction){
 }
 
 void updateBall(Ball ball, Player player1, Player player2){
-    //actualizo la posición de la pelota
     ball->x += ball->posx;
     ball->y += ball->posy;
-
     //chequeo si hay colisiones con las barras
-    if(checkBarCollision(ball, player1->bar) || checkBarCollision(ball, player2->bar)){
+    if(checkBarCollision(ball, player1->bar)==1) {
         barCollision(ball, player1->bar);
     }
+    if(checkBarCollision(ball, player2->bar)==1){
+        barCollision(ball, player2->bar);
+    }
+
 
     //chequeo si hay colision con los bordes de la pantalla
     checkAndHandleWallCollision(ball, player1,player2);
@@ -139,13 +137,13 @@ void updateBall(Ball ball, Player player1, Player player2){
     }
 }
 
-//TODO CONTROL TECLADO FLECHAS EN SIMULTANEO
+//TODO CONTROL TECLADO FLECHAS EN SIMULTANEO //
 void getInputPlaying(Game game){
     if(getKeyState(80)) updateBar(game->player2->bar,-BAR_MOV);
     if(getKeyState(81)) updateBar(game->player2->bar, BAR_MOV);
     if(getKeyState('w'))updateBar(game->player1->bar,-BAR_MOV);
     if(getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
-    
+
     return;
 }
 
@@ -171,18 +169,23 @@ void playPong(){
 
     //Comparten el y
     p1->bar->y = (768/2) - 60;
-    p2->bar->y = (768/2) - 60;
+    p1->bar->width = 10;
+    p1->bar->height = 120;
 
-    ball->radius = 7;
+    p2->bar->y = (768/2) - 60;
+    p2->bar->width = 10;
+    p2->bar->height = 120;
+
+    ball->radius = 10;
     ball->y = (768/2);
     ball->x = (1024-30)/2;
-    ball->posx = 2;
-    ball->posy = 2;
+    ball->posx = 6;
+    ball->posy = 6;
 
     updatePong(newGame);
 
     int p = 100;
-    while(p1->score != 21 || p2->score != 21){
+    while(p1->score < 21 || p2->score < 21){
         updateBall(newGame->ball, newGame->player1, newGame->player2);
         getInputPlaying(newGame);
         updatePong(newGame);
