@@ -74,30 +74,8 @@ void defaultException(uint64_t * rip){
     //                             // imprimo el mensaje de que salto la excepcion en rojo
 }
 
-void showRegisterStatus(){
-    enter();
-    printRegister("A: ", getCurrentRAX());
-    printRegister("B: ", getCurrentRBX());
-    printRegister("C: ", getCurrentRCX());
-    printRegister("D: ", getCurrentRDX());
-    printRegister("BP: ", getCurrentRBP());
-    printRegister("SP: ", getCurrentRSP());
-    printRegister("SI: ", getCurrentRSI());
-    printRegister("DI: ", getCurrentRDI());
-
-    printRegister("15: ", getCurrentR15());
-    printRegister("14: ", getCurrentR14());
-    printRegister("13: ", getCurrentR13());
-    printRegister("12: ", getCurrentR12());
-    printRegister("11: ", getCurrentR11());
-    printRegister("10: ", getCurrentR10());
-    printRegister("9: ", getCurrentR9());
-    printRegister("8: ", getCurrentR8());
-    enter();
-}
-
 void printRegister(char * str, uint64_t regValue){
     print(str);
     printHex(regValue);
-    tab();
+    enter();
 }

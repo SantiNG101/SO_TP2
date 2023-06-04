@@ -8,26 +8,10 @@
 #include <speaker.h>
 #include <time.h>
 #include <videoDriver.h>
+#include <registers.h>
 /*
  *  Arguementos de una función de SYSCALL
  */
-typedef struct {
-    uint64_t r15;
-    uint64_t r14;
-    uint64_t r13;
-    uint64_t r12;
-    uint64_t r11;
-    uint64_t r10;
-    uint64_t r9;
-    uint64_t r8;
-    uint64_t rsi;
-    uint64_t rdi;
-    uint64_t rbp;
-    uint64_t rdx;
-    uint64_t rcx;
-    uint64_t rbx;
-    uint64_t rax;
-} * argumentsStruct;
 
 void read(argumentsStruct args){
     // This might read from keyboard buffer, print it and return it into the r10 Register.
@@ -116,8 +100,12 @@ void keyState(argumentsStruct args){
     args->rsi = getKeyState(args->r10);
 }
 
+void showRegisters(argumentsStruct args){
+    printRegisterStatus();
+}
+
 void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, pongScreenUpdater,
- timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState };
+ timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 

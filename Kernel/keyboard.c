@@ -69,6 +69,9 @@ void keyboardHandler(){
     uint8_t data = read_port(KEYBOARD_DATA_PORT);
 
     if(isSpecial(data)){
+        if(data == 0x57) {
+            saveRegisterStatus();
+        }
         char sp = keyboard[(data >> 4) & 0x07][data & 0x0F];
 
         // Me fijo si es un SpecialLock, si es un SpecialLock entonces me aseguro de que no pase dos veces por setState
@@ -88,7 +91,6 @@ void keyboardHandler(){
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
     // *currentBuff++ = keyCode;
-
     if(keyStates[keyCode] = !isReleased(data))
         currentBuff = keyCode;
 

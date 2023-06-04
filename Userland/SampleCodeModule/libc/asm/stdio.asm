@@ -7,6 +7,7 @@ GLOBAL getKeyState
 GLOBAL setForegroundColour
 GLOBAL setBackgroundColour
 GLOBAL clearScreen
+GLOBAL showRegisters
 
 section .text
 getChar:
@@ -115,6 +116,16 @@ clearScreen:
 
     leave
     ret
+
+showRegisters:
+     push rbp
+     mov rbp, rsp
+
+     mov rdi, 13
+     int 80h
+
+     leave
+     ret
 
 section .bss
 placeholder resb 1
