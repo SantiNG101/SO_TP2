@@ -9,7 +9,6 @@
 
 static int keepGoing = 1;
 
-//TODO hacer clear screen (0,0) --> generico y setear terminal a abajo a la izq pal terminal mode
 extern void terminalSetter();
 
 // punto x e y de la pelota hacen referencia al centro de la pelota
@@ -147,7 +146,6 @@ void updateBall(Ball ball, Player player1, Player player2){
     // }
 }
 
-//TODO CONTROL TECLADO FLECHAS EN SIMULTANEO //
 void getInputPlaying(Game game){
     if(game->player2->bar->y + game->player2->bar->height < SCREEN_HEIGHT && game->player2->bar->y > 0) {
         if (getKeyState(0x80)) updateBar(game->player2->bar, -BAR_MOV);
@@ -210,7 +208,6 @@ void pausePong(){
     printf("Para continuar presione [ P ]\n");
     printf("Para cerrar el juego presione [ C ]");
 
-    // TODO: ARREGLAR
     for(int c = 0; c != 'c' && c != 'p'; ){
         c = getChar();
         if(c == 'c') keepGoing = 0;
@@ -226,7 +223,8 @@ void playPong(){
     setBuffer(1);
     Game newGame = myMalloc(sizeof(Game));
     Ball ball = buildBall(10, (1024-30)/2, 768/2, 2, 2);
-    Player p1 = buildPlayer(LIMIT_BAR_SPACE), p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 5);
+    Player p1 = buildPlayer(LIMIT_BAR_SPACE);
+    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 5);
 
     newGame->ball = ball;
     ball->radius = 10;
@@ -235,6 +233,7 @@ void playPong(){
     newGame->player2 = p2;
 
     newGame->player1->bar->width = LIMIT_BAR_SPACE;
+    newGame->player2->bar->width = LIMIT_BAR_SPACE;
     newGame->player1->bar->height = newGame->player2->bar->height;
 
     keepGoing = 1;
