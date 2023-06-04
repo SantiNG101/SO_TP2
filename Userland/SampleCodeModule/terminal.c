@@ -56,7 +56,7 @@ int terminalStart(){
     while(keepGoing){
         printf("$ ");
 
-        strcpy(getString(),ptr);
+        scanf("%s",ptr);
         char *token = strtok(ptr, " ");     //creo token con cmdline (modificable)
                                             //Process the command and execute actions accordingly
         runCommand(token);
