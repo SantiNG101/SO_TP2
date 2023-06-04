@@ -4,8 +4,10 @@
 // 1024 x 768
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
-#define GAME_OVER 10
+#define GAME_OVER 5
 #define BAR_MOV 10
+
+static int keepGoing = 1;
 
 //TODO hacer clear screen (0,0) --> generico y setear terminal a abajo a la izq pal terminal mode
 extern void terminalSetter();
@@ -138,21 +140,21 @@ void updateBall(Ball ball, Player player1, Player player2){
     checkAndHandleWallCollision(ball, player1, player2);
 
     //chequeo condiciones para fin del juego
-    if(player1->score >= GAME_OVER || player2->score >= GAME_OVER){
-        // reinicio puntaje y hago un resetBall
-        player1->score=0;
-        player2->score=0;
-        resetBall(ball);
-    }
+    // if(player1->score >= GAME_OVER || player2->score >= GAME_OVER){
+    //     // reinicio puntaje y hago un resetBall
+    //     player1->score=0;
+    //     player2->score=0;
+    //     resetBall(ball);
+    // }
 }
 
 //TODO CONTROL TECLADO FLECHAS EN SIMULTANEO //
 void getInputPlaying(Game game){
-    if(getKeyState(80)) updateBar(game->player2->bar,-BAR_MOV);
-    if(getKeyState(81)) updateBar(game->player2->bar, BAR_MOV);
+    if(getKeyState(0x80)) updateBar(game->player2->bar,-BAR_MOV);
+    if(getKeyState(0x81)) updateBar(game->player2->bar, BAR_MOV);
     if(getKeyState('w'))updateBar(game->player1->bar,-BAR_MOV);
     if(getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
-
+    if(getKeyState(0x1B))pausePong();
     
     return;
 }
@@ -183,6 +185,25 @@ Ball buildBall(int radius, int x, int y, int posx, int posy){
     return ball;
 }
 
+
+void pausePong(){
+    // Imprimo el menú
+    setBuffer(0);
+
+    printf("PAUSA: \n");
+    printf("Para continuar presione [ P ]\n");
+    printf("Para cerrar el juego presione [ C ]");
+
+    // TODO: ARREGLAR
+    for(int c = getChar(); c != 'c' && c != 'p'; c = getChar()){
+        c = getChar();
+        if(c == 'c') keepGoing = 0;
+        if(c == 'p') keepGoing = 1;
+    }
+    
+    setBuffer(1);
+}
+
 void playPong(){
     //p1 left     p2 right
     setBuffer(1);
@@ -199,7 +220,8 @@ void playPong(){
     newGame->player1->bar->width = LIMIT_BAR_SPACE;
     newGame->player1->bar->height = newGame->player2->bar->height;
 
-    while(p1->score < 21 || p2->score < 21){
+    keepGoing = 1;
+    while(keepGoing && (p1->score < GAME_OVER || p2->score < GAME_OVER)){
         getInputPlaying(newGame);
         
         updateBall(newGame->ball, newGame->player1, newGame->player2);
@@ -214,5 +236,6 @@ void playPong(){
     myFree(newGame);
 
     setBuffer(0);
+    terminalSetter();
     return;
 }
