@@ -104,8 +104,13 @@ void showRegisters(argumentsStruct args){
     printRegisterStatus();
 }
 
+void setPrintAnywhere(argumentsStruct args){
+    setPrintingMode(args->r10,args->r9,0);
+}
+
 void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, pongScreenUpdater,
- timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters };
+ timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
+ setPrintAnywhere };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 

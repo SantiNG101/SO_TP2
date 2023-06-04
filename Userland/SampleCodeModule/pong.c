@@ -7,6 +7,8 @@
 #define GAME_OVER 3
 #define BAR_MOV 10
 
+extern void setPrintAnywhere(uint32_t y, uint32_t x);
+
 static int keepGoing = 1;
 
 extern void terminalSetter();
@@ -243,13 +245,16 @@ void playPong(){
     }
 
     setBuffer(0);
+    setPrintAnywhere(383,MIDDLE_SCREEN-30);
     if(p1->score == 3){
         printf("GANADOR JUGADOR 1\n");
+        sleep(5000);
     } else if (p2->score ==3) {
         printf("GANADOR JUGADOR 2\n");
+        sleep(5000);
     }
 
-    sleep(5000);
+
 
     myFree(p1->bar);
     myFree(p2->bar);

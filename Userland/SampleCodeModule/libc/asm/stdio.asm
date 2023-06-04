@@ -8,6 +8,7 @@ GLOBAL setForegroundColour
 GLOBAL setBackgroundColour
 GLOBAL clearScreen
 GLOBAL showRegisters
+GLOBAL setPrintAnywhere
 
 section .text
 getChar:
@@ -126,6 +127,19 @@ showRegisters:
 
      leave
      ret
+
+setPrintAnywhere:
+   push rbp
+   mov rbp, rsp
+
+   mov r10, rdi
+   mov r9,  rsi
+
+   mov rdi, 14
+   int 80h
+
+   leave
+   ret
 
 section .bss
 placeholder resb 1

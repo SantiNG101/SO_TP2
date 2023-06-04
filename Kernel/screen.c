@@ -20,15 +20,16 @@ void screen_Initialize(){
     screenWidth = getHorizontalPixelCount();
 }
 
-void setPrintingMode(uint32_t y, int bufferMode){
+void setPrintingMode(uint32_t y, uint32_t x ,int bufferMode){
     clearScreen(1);
     current_cursor_pos_y = y;
+    current_cursor_pos_x = x;
     setDoubleBuffer(bufferMode);
 }
 
 // setea el modo terminal para que imprima en la ultima linea
 void setTerminalPrintingMode(){
-    setPrintingMode(screenHeight - CHAR_HEIGHT, 0);
+    setPrintingMode(screenHeight - CHAR_HEIGHT, current_cursor_pos_x,0);
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
