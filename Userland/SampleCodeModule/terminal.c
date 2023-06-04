@@ -164,9 +164,10 @@ const colour colors[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
 
 void nonExistentColor(){
     printf("Selected color is not available, please choose from the following list:\n");
-    for(int j = 0; j < SIZEOFARR(colors); j++){
-        printf("%s ",colors[j].color);
+    for(int j = 0; j < SIZEOFARR(colors)-1; j++){
+        printf("%s, ",colors[j].color);
     }
+    printf("%s \n\nExamples of usage: background cyan\n                   or\n                   foreground cyan",colors[SIZEOFARR(colors)-1].color);
     return;
 }
 

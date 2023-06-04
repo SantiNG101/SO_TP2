@@ -150,10 +150,27 @@ void updateBall(Ball ball, Player player1, Player player2){
 
 //TODO CONTROL TECLADO FLECHAS EN SIMULTANEO //
 void getInputPlaying(Game game){
-    if(getKeyState(0x80)) updateBar(game->player2->bar,-BAR_MOV);
-    if(getKeyState(0x81)) updateBar(game->player2->bar, BAR_MOV);
-    if(getKeyState('w'))updateBar(game->player1->bar,-BAR_MOV);
-    if(getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
+    if(game->player2->bar->y + game->player2->bar->height < SCREEN_HEIGHT && game->player2->bar->y > 0) {
+        if (getKeyState(0x80)) updateBar(game->player2->bar, -BAR_MOV);
+        if (getKeyState(0x81)) updateBar(game->player2->bar, BAR_MOV);
+    }
+    if(game->player1->bar->y + game->player1->bar->height < SCREEN_HEIGHT && game->player1->bar->y > 0) {
+        if (getKeyState('w'))updateBar(game->player1->bar, -BAR_MOV);
+        if (getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
+    }
+    if(game->player1->bar->y <= 0) {
+        if (getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
+    }
+    if(game->player2->bar->y <= 0){
+        if (getKeyState(0x81)) updateBar(game->player2->bar, BAR_MOV);
+    }
+    if(game->player1->bar->y + game->player1->bar->height >= SCREEN_HEIGHT) {
+        if (getKeyState('w'))updateBar(game->player1->bar, -BAR_MOV);
+    }
+    if(game->player2->bar->y + game->player2->bar->height >= SCREEN_HEIGHT){
+        if (getKeyState(0x80)) updateBar(game->player2->bar, -BAR_MOV);
+    }
+
     if(getKeyState(0x1B))pausePong();
 
     return;
