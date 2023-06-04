@@ -102,7 +102,7 @@ int checkBarCollision(Ball ball, Bars bar){
     int leftCollision = isOnRange(bar->x, bar->x + bar->width, ball->x + ball->radius);
     int rightCollision = isOnRange(bar->x, bar->x + bar->width, ball->x - ball->radius);
     int yCollision = isOnRange(bar->y, bar->y + bar->height, ball->y);
-    
+
     return (leftCollision || rightCollision) && yCollision;
 }
 
@@ -135,7 +135,7 @@ void updateBall(Ball ball, Player player1, Player player2){
         barCollision(ball, player1->bar);
         return;
     }
-      
+
     //chequeo si hay colision con los bordes de la pantalla
     checkAndHandleWallCollision(ball, player1, player2);
 
@@ -155,7 +155,7 @@ void getInputPlaying(Game game){
     if(getKeyState('w'))updateBar(game->player1->bar,-BAR_MOV);
     if(getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
     if(getKeyState(0x1B))pausePong();
-    
+
     return;
 }
 
@@ -195,12 +195,13 @@ void pausePong(){
     printf("Para cerrar el juego presione [ C ]");
 
     // TODO: ARREGLAR
-    for(int c = getChar(); c != 'c' && c != 'p'; c = getChar()){
+    for(int c = 0; c != 'c' && c != 'p'; ){
         c = getChar();
         if(c == 'c') keepGoing = 0;
         if(c == 'p') keepGoing = 1;
     }
-    
+
+
     setBuffer(1);
 }
 
@@ -223,7 +224,7 @@ void playPong(){
     keepGoing = 1;
     while(keepGoing && (p1->score < GAME_OVER || p2->score < GAME_OVER)){
         getInputPlaying(newGame);
-        
+
         updateBall(newGame->ball, newGame->player1, newGame->player2);
         updatePong(newGame);
     }
