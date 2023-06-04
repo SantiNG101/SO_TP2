@@ -208,15 +208,23 @@ void uintToBase(uint64_t value, char * buffer, uint32_t base)
 int printf(const char * format, ...){
     va_list args;
     va_start(args, format);
+
     while (*format != '\0') {
         if (*format == '%') {
             format++;
+            int padd = 0;
+            while(*format >= '0' && *format <= '9'){ padd = padd*10 + *format++ - '0'; }
             switch (*format++) {
                 case 'd': {
                     int64_t int_arg = va_arg(args, int64_t);
                     // char * toPrint = (char *)myMalloc(sizeof(int64_t)*5);
-                    char toPrint[20] = {0};
-                    uintToBase(int_arg, toPrint,10);
+                    char toPrint[20] = { 0 };
+                    uintToBase(int_arg, toPrint, 10);
+
+                    while(padd > 20 || (padd > 0 && toPrint[padd - 1] == 0)){
+                        putChar('0');
+                        padd--;
+                    }
                     puts(toPrint);
                                     // myFree(toPrint);
                     break;
