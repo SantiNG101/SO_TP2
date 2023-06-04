@@ -242,6 +242,15 @@ void playPong(){
         updatePong(newGame);
     }
 
+    setBuffer(0);
+    if(p1->score == 3){
+        printf("GANADOR JUGADOR 1\n");
+    } else if (p2->score ==3) {
+        printf("GANADOR JUGADOR 2\n");
+    }
+
+    sleep(5000);
+
     myFree(p1->bar);
     myFree(p2->bar);
     myFree(p1);
@@ -249,7 +258,7 @@ void playPong(){
     myFree(newGame->ball);
     myFree(newGame);
 
-    setBuffer(0);
+
     terminalSetter();
     return;
 }

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "figures.h"
 #include "songs.h"
+
 #define DEFAULT_BALL_RADIUS 7
 #define DEFALUT_BAR_WIDTH 10
 #define DEFALUT_BAR_HEIGHT 120
