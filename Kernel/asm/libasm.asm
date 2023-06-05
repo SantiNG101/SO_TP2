@@ -41,6 +41,7 @@ dVideo:
 	pop rbp
 	ret
 
+; Obtiene el horario de la computadora
 clock:
 	push rbp
 	mov rbp, rsp
@@ -78,6 +79,7 @@ cpuVendor:
 	pop rbp
 	ret
 
+; lee del puerto y lo retorna
 read_port:
 	push rbp
 	mov rbp, rsp
