@@ -11,6 +11,7 @@ GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 
 section .text
+; realiza la llamada a la syscall de read
 getChar:
     push rbp
     mov rbp, rsp
@@ -25,6 +26,7 @@ getChar:
     leave
     ret
 
+; realiza la llamada a la syscall de write
 putChar:
     push rbp
     mov rbp, rsp
@@ -39,7 +41,7 @@ putChar:
     mov rax, rdi            ; retorno el caracter impreso.
     leave
     ret
-
+; realiza la syscall a la syscall para imprimir un pixel en pantalla
 putPixel:
     push rbp
     mov rbp, rsp
@@ -52,7 +54,7 @@ putPixel:
 
     leave
     ret
-
+; llamado a la syscall de actualizar la pantalla
 updateScreen:
     push rbp
     mov rbp, rsp
@@ -62,6 +64,7 @@ updateScreen:
 
     leave
     ret
+; llamado a la sycall para setear el doble buffer para suavizar el cambio de pantalla
 setBuffer:
     push rbp
     mov rbp, rsp
@@ -72,7 +75,7 @@ setBuffer:
 
     leave
     ret
-
+; retorna el estado de la key, si esta apretada o no
 getKeyState:
     push rbp
     mov rbp, rsp
@@ -84,7 +87,7 @@ getKeyState:
     mov rax, rsi
     leave
     ret
-
+; llamado de la syscall para cambiar el color de letra
 setForegroundColour:
     push rbp
     mov rbp, rsp
@@ -95,7 +98,7 @@ setForegroundColour:
 
     leave
     ret
-
+; llamado a la syscall para cambiar el fondo de la letra
 setBackgroundColour:
     push rbp
     mov rbp, rsp
@@ -106,7 +109,7 @@ setBackgroundColour:
 
     leave
     ret
-
+; llamado a la sycall para limpiar la pantalla
 clearScreen:
     push rbp
     mov rbp, rsp
@@ -117,7 +120,7 @@ clearScreen:
 
     leave
     ret
-
+; llamado a la syscall para mostrar los registros
 showRegisters:
      push rbp
      mov rbp, rsp
@@ -127,7 +130,7 @@ showRegisters:
 
      leave
      ret
-
+; llamado a la syscall para poder setear el lugar de impresion en pantalla
 setPrintAnywhere:
    push rbp
    mov rbp, rsp

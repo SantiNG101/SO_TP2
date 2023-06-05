@@ -60,7 +60,7 @@ void setterBuffer(argumentsStruct args){
 }
 
 void printLarge(argumentsStruct args){
-   // updatePongScreen(args->r10); // agregar los argumentos que vayan a utilizar
+   // futura implementacion
 }
 
 void timer_wait(argumentsStruct args){
