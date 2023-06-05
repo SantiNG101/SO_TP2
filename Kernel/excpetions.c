@@ -6,11 +6,11 @@
 #include <idt/exceptions.h>
 
 /* Arreglo de excepciones para que sea fácilmente mantenible. */
-static void (* exceptions[])(uint64_t * rip) = { zeroDivisionException, invalidOperationException, defaultException };
+static void (* exceptions[])(uint64_t * rip) = { zeroDivisionException, invalidOperationException };
 
 uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
     if(ex >= sizeof(exceptions) / sizeof(exceptions[0]))
-        defaultException(&rip);
+        return;
 
     uint32_t lForeground = getForegroundColour();
     setForegroundColour(RED);
