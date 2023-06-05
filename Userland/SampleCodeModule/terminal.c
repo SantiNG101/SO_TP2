@@ -18,6 +18,7 @@ void help();
 void divZero();
 void beep();
 
+// struct para definir la lista de comandos a utilizar en la terminal
 typedef struct {
     char name[20];
     char description[150];
@@ -68,6 +69,8 @@ int terminalStart(){
     return 0;
 }
 
+// corre un comando, verifica con cual coincide del array de comandos y ejecuta su accion
+// si no existe imprime comando incorrecto
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
@@ -95,6 +98,8 @@ void runCommand(char * cmd){
     return;
 }
 
+// imprime todas las opciones posibles si se lo llama solo
+// imprime la funcionalidad si se lo acompaña con una funcion existente
 void help(/*char * token*/){
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
@@ -127,35 +132,41 @@ void help(/*char * token*/){
     printf("Desired function does not exist.\n");
 }
 
+// muestra el tiempo actual
 void showTime(){
     int hour,min,sec;
     getTime(&hour,&min,&sec);
     printf("%2d:%2d:%2d\n",hour,min,sec);
 }
 
+// muestra la fecha actual
 void showDate(){
     int year,month,day;
     getDate(&day,&month,&year);
     printf("%2d/%2d/%d\n",day,month,year);
 }
 
+//funcion para salir del modo terminal
 void exit(){
     keepGoing = FALSE;
 }
 
+// funcion para dividir 
 int divide(int x, int y){
     return x/y;
 }
 
+// funcion que fuerza la division por 0 para la excepcion
 void divZero(){
     divide(0,0);
 }
 
+//realiza el ruido
 void beep(){
     putChar('\a');
 }
 
-
+// array de colores que los relacionan con una descripcion
 const colour colors[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
                         {"cyan",CYAN},{"red",RED},{"purple",PURPLE},
                         {"brown",BROWN},{"gray",GRAY},{"darkgray",DARK_GRAY},
@@ -163,6 +174,7 @@ const colour colors[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
                         {"lightred",LIGHT_RED},{"lightpurple",LIGHT_PURPLE},{"yellow",YELLOW},
                         {"white",WHITE}};
 
+// funcion para aclarar colores no existentes
 void nonExistentColor(){
     printf("Selected color is not available, please choose from the following list:\n");
     for(int j = 0; j < SIZEOFARR(colors)-1; j++){
@@ -172,6 +184,8 @@ void nonExistentColor(){
     return;
 }
 
+
+// funcion para setear el background
 void setBackground(){
 
     char * token = strtok(NULL, " ");
@@ -193,6 +207,7 @@ void setBackground(){
     return;
 }
 
+// funcion para setear el color de las letras
 void setForeground(){
 
     char * token = strtok(NULL, " ");
