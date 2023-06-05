@@ -99,7 +99,6 @@ int getKeyState(int keyCode){
 }
 
 int getC(){
-
     int c = currentBuff;
     currentBuff = 0;
 

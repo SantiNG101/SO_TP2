@@ -108,11 +108,11 @@ section .text
     mov rdi, %1                 ; Paso el parametro
     mov rsi, [rbp + 8]
     call exceptionDispatcher    ; Ejecuto la excepción correspondiente
-    
     mov [rbp + 8], rax          ; Cambio el RIP
-    
+
     call getStackBase           ; Obtengo la base del stack
-    mov [rbp + 32], rax         ; Cambio el original RSP
+    sub rax, 40
+    mov [rbp + 32], rax         ; Cambio el Original RSP
 
     popState
 

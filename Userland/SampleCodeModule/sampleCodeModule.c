@@ -7,16 +7,21 @@
 
 extern void screenSetter();
 
-int main() {
+void setDefault(){
+    clearScreen(0);
+    setBackgroundColour(BLACK);
+    setForegroundColour(WHITE);
+}
 
+int main() {
+    setDefault();
+        
     printf("Welcome to Userland!\n");
     //  userLandStartTheme();
     unsigned char keepGoing = TRUE;
 
     while(keepGoing){
-        setBackgroundColour(BLACK);
-        setForegroundColour(WHITE);
-        clearScreen(0);
+
         printf("Choose a mode:\nPress 1 for Pong.\nPress 2 for Terminal.\nPress 3 for exit.\n");
         char c = getChar();
         switch(c){
@@ -30,6 +35,7 @@ int main() {
                 keepGoing = FALSE;
                 break;
         }
+        setDefault();
     }
 
 	return 0;

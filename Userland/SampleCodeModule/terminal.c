@@ -6,7 +6,6 @@ extern void opCode();
 extern void terminalSetter();
 extern void setBackgroundColour(uint32_t colour);
 extern void setForegroundColour(uint32_t colour);
-extern void showRegisters();
 
 void setBackground();
 void setForeground();
@@ -43,28 +42,119 @@ const commandT commands[] = {
                              {"background","Changes background to hexColour: ",setBackground},
                              {"foreground","Changes foreground to hexColour: ",setForeground},
                              {"div0","Shows how div 0 exception works",divZero},
-                             {"opCode","Shows how opCode exception works",opCode},
-                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}};
+                             {"opCode","Shows how opCode exception works",opCode}
+                            };
+
+#define BUFFER_SIZE 50
+#define INSTRUCTION_SIZE 240    
+
+typedef struct{
+    char command[INSTRUCTION_SIZE];
+    uint8_t size;
+} instructionT;
+
+typedef struct{
+    instructionT data[BUFFER_SIZE];
+    uint64_t readWriteIndex, size;
+} bufferT;
+
+// Lo dejo en una zona de memoria q
+static bufferT buffer = { 0 };
 
 static unsigned char keepGoing = TRUE;
 
+/**
+ * changeCommand 
+ * 
+ * Cambia el commando actual impreso en la pantalla con lo que hay en el buffer. 
+ */
+int changeCommand(int insNumber, char * current){
+    if(insNumber >= buffer.size)
+        return -1;                                          // Nunca debería entrar acá
+
+    for(int i = 0; current[i]; i++){ putChar('\b'); }       // Borro los caracteres anteriores.
+    strcpy(buffer.data[insNumber].command, current);
+    puts(buffer.data[insNumber].command);                                          // Imprimo los actuales
+
+    return buffer.data[insNumber].size;
+}
+
+/**
+ * Guarda el comando en el buffer. (Si el readWriteIndex es mayor o igual al BUFFER_SIZE, entonces readWriteIndex se pone en 0),
+ * y cambio read.
+ * 
+ */
+int saveCommand(char * current){
+    buffer.size += buffer.size <= BUFFER_SIZE;                          // Cambio el tamaño del buffer
+
+    int size =  buffer.data[buffer.readWriteIndex].size = strlen(current);
+    strcpy(current, buffer.data[buffer.readWriteIndex].command);        // Guardo el commando.
+
+    memset(current, 0, INSTRUCTION_SIZE);
+
+    buffer.readWriteIndex = (buffer.readWriteIndex + 1) % BUFFER_SIZE;  // Cambio la posición en la que leo y guardo.
+    return 0;
+}
+
+char * getInstruction(char * ptr){
+    uint8_t c;
+    int j = buffer.readWriteIndex - 1;
+    int i = 0;
+    while((c = getChar()) != '\n' && i < INSTRUCTION_SIZE){
+        switch(c){
+            case 0x80:      // Arrow UP     (Pone los comandos más viejos)
+                if(buffer.size > 0){
+                    i = changeCommand(j, ptr);
+                    j = (j + buffer.size - 1) % buffer.size;
+                }
+                break;
+            case 0x81:      // Arrow DOWN   (Pone los comandos más nuevos)
+                if(buffer.size > 0){
+                    i = changeCommand(j, ptr);
+                    j = (j + 1) % buffer.size;
+                }
+                break;
+            case '\b':
+                if(i != 0){
+                    putChar(c);
+                    --i;
+                }
+                ptr[i] = 0;
+                break;
+            default:
+                putChar(c);
+                ptr[i++] = c;
+                break;
+        }
+    }
+    putChar(c);
+    ptr[i] = 0;
+
+    return ptr;
+}
+
+
 int terminalStart(){
-    static char ptr[240] = { 0 };
+    static char ptr[INSTRUCTION_SIZE] = { 0 };
     keepGoing = TRUE;
     // llamado de syscall para setear al modo terminal pasandole el 0 que indica este modo
     terminalSetter();
-
     while(keepGoing){
         printf("$ ");
 
-        scanf("%s",ptr);
+        getInstruction(ptr);
+
         char *token = strtok(ptr, " ");     //creo token con cmdline (modificable)
                                             //Process the command and execute actions accordingly
         runCommand(token);
 
         printf("\n");
+
+        saveCommand(ptr);
     }
 
+    setBackgroundColour(BLACK);
+    setForegroundColour(WHITE);
     return 0;
 }
 
@@ -213,3 +303,11 @@ void setForeground(){
     nonExistentColor();
     return;
 }
+/*
+ * TOADD
+ * showRegisters(); ---> Con interrupcion
+ * Rtc();   --> Con interrupcion
+ * self cleaning y que escriba en la ultima linea
+ * generateXException(); --> genere div 0 y haga un seguimiento ?) y verifica su funcionamiento
+ *
+ */

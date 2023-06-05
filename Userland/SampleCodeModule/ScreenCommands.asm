@@ -1,10 +1,9 @@
 GLOBAL terminalSetter
 GLOBAL pongUpdater
 
-EXTERN puts
-
 section .text
     
+     
 terminalSetter:    
     mov rdi,2
     INT 80h
