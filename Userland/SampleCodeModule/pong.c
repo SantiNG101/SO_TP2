@@ -80,7 +80,7 @@ static void updatePong(Game newGame){
     draw_Line (MIDDLE_SCREEN-2,0,MIDDLE_SCREEN-2,768,newGame->player1->colorHex);
     draw_Line (MIDDLE_SCREEN+2,0,MIDDLE_SCREEN+2,768,newGame->player2->colorHex);
     draw_Line (MIDDLE_SCREEN+3,0,MIDDLE_SCREEN+3,768,newGame->player2->colorHex);
-    draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X,MARQUER_DISTANCE_Y,newGame->player1->score,newGame->player1->colorHex,COLOR_BACKGROUND_DEFAULT);
+    draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X-3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,newGame->player1->score,newGame->player1->colorHex,COLOR_BACKGROUND_DEFAULT);
     draw_number(MIDDLE_SCREEN+MARQUER_DISTANCE_X+3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,newGame->player2->score,newGame->player2->colorHex,COLOR_BACKGROUND_DEFAULT);
     draw_CircleFilled(newGame->ball->x, newGame->ball->y,newGame->ball->radius, newGame->ball->hexColor);
 
@@ -298,20 +298,22 @@ void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, u
 void printSettings(){
     clearScreen(0);
     setPrintAnywhere(360,MIDDLE_SCREEN-30);
-    printf("Press 1 to modify ballradius\n");
+    printf("PONG");
     setPrintAnywhere(360+NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 2 to modify ballspeed\n");
+    printf("Press 1 to modify ballradius\n");
     setPrintAnywhere(360+2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 3 to modify barspeed\n");
+    printf("Press 2 to modify ballspeed\n");
     setPrintAnywhere(360+3*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 4 to modify ballColor\n");
+    printf("Press 3 to modify barspeed\n");
     setPrintAnywhere(360+4*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 5 to modify p1Color\n");
+    printf("Press 4 to modify ballColor\n");
     setPrintAnywhere(360+5*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 6 to modify p2Color\n");
+    printf("Press 5 to modify p1Color\n");
     setPrintAnywhere(360+6*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 7 to return to change end score\n");
+    printf("Press 6 to modify p2Color\n");
     setPrintAnywhere(360+7*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 7 to return to change end score\n");
+    setPrintAnywhere(360+8*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
     printf("Press 8 to return to menu.");
     return;
 }
@@ -411,12 +413,14 @@ void settings(int * bRad, int * bSpeed, int * barSpeed,uint64_t * ballColor, uin
 }
 
 void printMenu(){
-    terminalSetter();
+    clearScreen(0);
     setPrintAnywhere(360,MIDDLE_SCREEN-30);
+    printf("PONG");
+    setPrintAnywhere(360 + NUMBER_HEIGHT,MIDDLE_SCREEN-30);
     printf("Press 1 to play\n");
-    setPrintAnywhere(360+NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 2 for Settings\n");
     setPrintAnywhere(360+2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 2 for Settings\n");
+    setPrintAnywhere(360+3*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
     printf("Press 3 to exit");
 }
 
