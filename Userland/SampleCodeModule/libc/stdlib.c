@@ -1,7 +1,7 @@
 #include "include/stdlib.h"
 
 //INTENTO DE ALOCAR MEMORIA ESTATICA DE MANERA DINAMICA (Para un manipular mas facilmente los strings)
-#define MEMORY_SIZE 1024            // Tamano del array donde se asigna la memoria le reservo 1kb
+#define MEMORY_SIZE 2048            // Tamano del array donde se asigna la memoria le reservo 2kb
 static char memory[MEMORY_SIZE];    // Dicho array
 
 /*

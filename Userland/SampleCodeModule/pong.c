@@ -32,8 +32,10 @@ typedef struct Ball {
 typedef struct Bars {
     int x;
     int y;
+
     int width;
     int height;
+
     int pace;
 } * Bars;
 
@@ -181,16 +183,17 @@ void getInputPlaying(Game game){
 
 Player buildPlayer(int barX, int pace){
     Player player = myMalloc(sizeof(struct Player));
-    Bars bar = player->bar = myMalloc(sizeof(struct Bars));
+    Bars barr = myMalloc(sizeof(struct Bars));
 
     player->score = 0;
 
-    bar->width = 30;
-    bar->height = 120;
-    bar-> y = (768/2) - 60;
-    bar->x = barX;
-    bar->pace = pace;
+    barr->width = 30;
+    barr->height = 120;
+    barr-> y = (768/2) - 60;
+    barr->x = barX;
+    barr->pace = pace;
 
+    player->bar = barr;
     return player;
 }
 
@@ -333,9 +336,9 @@ void printMenu(){
 }
 
 void menuPong(){
-    int * ballRadius = myMalloc(sizeof(int));
-    int * ballSpeed = myMalloc(sizeof(int));
-    int * barSpeed = myMalloc(sizeof(int));
+    int * ballRadius = myMalloc(sizeof(int)*2);
+    int * ballSpeed = myMalloc(sizeof(int)*2);
+    int * barSpeed = myMalloc(sizeof(int)*2);
 
     *ballRadius = DEFAULT_BRADIUS;
     *ballSpeed = DEFAULT_BALLSPEED;
