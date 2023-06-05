@@ -74,8 +74,7 @@ void setPrintingColour(uint32_t foreground, uint32_t background){
     setBackgroundColour(background);
 }
 
-// tabla de caracteres especiales
-// tabla de relaciones con letras
+
 void printStrScreenFrmt(char * str, uint32_t font_color, uint32_t background_Color ){
     while(*str){
         putCharScreenFrmt(*str++, font_color, background_Color);
@@ -111,9 +110,6 @@ void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background
     current_cursor_pos_x +=CHAR_WIDTH;
 }
 
-
-
-//
 // retrocede 1 char limpiando su contenido
 void backspace(){
     if ( current_cursor_pos_x == 0 ){
@@ -143,14 +139,6 @@ void enter(){
 }
 
 void scrollScreenUp(){
-    // cada pixel lo copio en la de arriba TODO optimizar
-    /*
-    for ( int i= 0; i < screenHeight - CHAR_HEIGHT ; i++ ){ // y (altura)
-        for( int j=0; j < screenWidth ; j++ ){ // x (ancho)
-            copyPixel( j,i+CHAR_HEIGHT,j,i ); // copio al de arriba
-        }
-    }
-    */
     // hago mem copy para modificar el frame buffer y paso si borro info o no
     modifyFrameBuffer(0);
     // imprimo en la ult linea espacios
@@ -164,14 +152,6 @@ void scrollScreenUp(){
     
 }
 void clearScreen(uint8_t val){
-    /*
-    //imprimo en backgroundColor en toda la pantalla
-    for ( int i= 0; i < screenHeight; i++ ){
-        for( int j=0; j < screenWidth ; j++ ){
-            putPixel( j,i,COLOR_BACKGROUND_DEFAULT );
-        }
-    }
-    */
     // hago mem copy para modificar el frame buffer y paso si borro info o no
     modifyFrameBuffer(1);
     // restauro el cursor al inicio

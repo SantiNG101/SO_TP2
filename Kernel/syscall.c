@@ -59,7 +59,7 @@ void setterBuffer(argumentsStruct args){
     setDoubleBuffer(args->r10);
 }
 
-void pongScreenUpdater(argumentsStruct args){
+void printLarge(argumentsStruct args){
    // updatePongScreen(args->r10); // agregar los argumentos que vayan a utilizar
 }
 
@@ -108,7 +108,7 @@ void setPrintAnywhere(argumentsStruct args){
     setPrintingMode(args->r10,args->r9,0);
 }
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, pongScreenUpdater,
+void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, printLarge,
  timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
  setPrintAnywhere };
 

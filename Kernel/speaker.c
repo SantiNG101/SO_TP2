@@ -8,9 +8,5 @@ void beepCustom(int Hz, int ms){
 }
 
 void beep(){
-    // uint32_t orFreq = getPITFrq();
-
     beepCustom(300,200);
-
-    // setPITFrq(orFreq);
 }

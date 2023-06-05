@@ -12,8 +12,8 @@
 
 
 // (c) 2009, 2010 Lutz Sammer, License: AGPLv3
-
 // defines to have human readable font files
+
 #define ________ 0x00
 #define _______X 0x01
 #define ______X_ 0x02
