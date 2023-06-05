@@ -56,6 +56,8 @@ uint64_t bufferlen = 1024*768*3;
 static uint8_t  buffer[ 1024*768*3 ];
 int doubleBuffer = 0;
 
+
+// inicializa los aspectos basico de la pantalla
 void vd_Initialize(){
 	horizontalPixelCount = VBE_mode_info->width;
 	verticalPixelCount = VBE_mode_info->height;
@@ -64,17 +66,18 @@ void vd_Initialize(){
 		memset(buffer, 0, bufferlen);
 }
 
-
+// funcion que actualiza la pantalla si se esta utiilzando el double buffer
 void updateScreen(){
 	if ( doubleBuffer != 0 )
 		memcpy(VBE_mode_info->framebuffer,buffer,bufferlen);
 }
 
+// activa o desactiba el doble buffer para que se vea mas suavizado el cambio de pantalla
 void setDoubleBuffer(int activated){
 	doubleBuffer = activated;
 }
 
-
+// imprime un pixel en pantalla
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
     if ( failBordersCheck(x, y, 0, 0)){
         return;
@@ -117,7 +120,7 @@ void modifyFrameBuffer( int mode){
 }
 	
 
-
+// imprime un string en pantalla
 void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
 				 uint32_t backgroundColor) {
 
@@ -132,7 +135,7 @@ void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor,
     }
 }
 
-
+// imprime un char en pantalla basandose en un charBitmap en font
 void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 				 uint32_t backgroundColor ){
 	if ( failBordersCheck(x, y, CHAR_WIDTH, CHAR_HEIGHT)){
@@ -165,9 +168,11 @@ int failBordersCheck( uint32_t x, uint32_t y, uint8_t OffsetX, uint8_t OffsetY){
 	//chequeo los limites (es - o / comparando con la cantidad de espacio del char en los bordes)
 	return  x < 0 || x > horizontalPixelCount - OffsetX || y < 0 || y > verticalPixelCount - OffsetY;
 }
+
 uint16_t getHorizontalPixelCount(){
 	return horizontalPixelCount;
 }
+
 uint16_t getVerticalPixelCount(){
 	return verticalPixelCount;
 }

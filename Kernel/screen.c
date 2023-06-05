@@ -14,12 +14,14 @@ static char buffer[64] = { '0' };
 static uint32_t foregroundColour = COLOR_LETTER_DEFAULT;
 static uint32_t backgroundColour = COLOR_BACKGROUND_DEFAULT;
 
+// inicializa la pantalla, inicializando el driver de video y obeniendo la cantidad de pixeles de la pantalla en x e y
 void screen_Initialize(){
     vd_Initialize();
     screenHeight = getVerticalPixelCount();
     screenWidth = getHorizontalPixelCount();
 }
 
+// funcion para poder imprimir en cualquier sector de la pantalla
 void setPrintingMode(uint32_t y, uint32_t x ,int bufferMode){
     current_cursor_pos_y = y;
     current_cursor_pos_x = x;
@@ -32,6 +34,7 @@ void setTerminalPrintingMode(){
     setPrintingMode(screenHeight - CHAR_HEIGHT, current_cursor_pos_x,0);
 }
 
+// funcion para el cambio de base
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
 	char *p = buffer;
 	char *p1, *p2;
@@ -64,17 +67,20 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base){
 	return digits;
 }
 
+// setea el color de las letras
 void setForegroundColour(uint32_t colour){ foregroundColour = colour; }
 uint32_t getForegroundColour(){ return foregroundColour; }
 
+// setea el color del fondo de las letras
 void setBackgroundColour(uint32_t colour){ backgroundColour = colour; }
 
+// funcion para el seteo de los colores de letra y fondo
 void setPrintingColour(uint32_t foreground, uint32_t background){
     setForegroundColour(foreground);
     setBackgroundColour(background);
 }
 
-
+// imprime un string con un color y fondo especifico
 void printStrScreenFrmt(char * str, uint32_t font_color, uint32_t background_Color ){
     while(*str){
         putCharScreenFrmt(*str++, font_color, background_Color);
@@ -86,6 +92,7 @@ void print(char * str){
     printStrScreenFrmt(str, foregroundColour, backgroundColour);
 }
 
+// imprimir en formato de error, color rojo letras blancas
 void printErrorStr(char* str){
     printStrScreenFrmt(str, RED, backgroundColour);
 }
@@ -100,8 +107,10 @@ void printDec(uint64_t value){ printBase(value, 10); }
 void printHex(uint64_t value){ printBase(value, 16); }
 void printBin(uint64_t value){ printBase(value, 2); }
 
+// imprime char a pantalla con los colores default
 void putCharScreen( char character ){ putCharScreenFrmt(character, foregroundColour, backgroundColour); }
 
+// imprime char a pantalla con los colores especificados
 void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background_Color ){
     bordersCheck();
     // imprimo el caracter en la pantalla
@@ -138,6 +147,7 @@ void enter(){
     current_cursor_pos_x = 0; 
 }
 
+// funcion que permite mover el texto para arriba para liberar la ultima linea
 void scrollScreenUp(){
     // hago mem copy para modificar el frame buffer y paso si borro info o no
     modifyFrameBuffer(0);
@@ -151,6 +161,8 @@ void scrollScreenUp(){
     current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
     
 }
+
+// limpia la pantalla 
 void clearScreen(uint8_t val){
     // hago mem copy para modificar el frame buffer y paso si borro info o no
     modifyFrameBuffer(1);
@@ -159,6 +171,8 @@ void clearScreen(uint8_t val){
     current_cursor_pos_y = val ? screenHeight - CHAR_HEIGHT : 0;
 }
 
+// chequeo de bordes para saber en que estado se ecuentran los current curson para sumarles si queda espacio o liberar el espacio
+// para poder seguir escribiendo
 void bordersCheck() {
     if (current_cursor_pos_x <= screenWidth - CHAR_WIDTH)
         return;
