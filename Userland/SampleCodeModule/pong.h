@@ -14,5 +14,5 @@
 #define MARQUER_DISTANCE_X 15
 #define MARQUER_DISTANCE_Y 15
 
-void playPong();
+void menuPong();
 #endif //__PONG_H__

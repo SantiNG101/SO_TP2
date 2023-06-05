@@ -21,7 +21,7 @@ int main() {
         char c = getChar();
         switch(c){
             case '1':
-                playPong();
+                menuPong();
                 break;
             case '2':
                 terminalStart();

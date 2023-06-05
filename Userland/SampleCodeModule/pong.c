@@ -6,7 +6,9 @@
 #define SCREEN_HEIGHT 768
 #define GAME_OVER 3
 #define BAR_MOV 10
-
+#define DEFAULT_BRADIUS 10
+#define DEFAULT_BARSPEED 6
+#define DEFAULT_BALLSPEED 8
 extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
 static int keepGoing = 1;
@@ -46,7 +48,6 @@ typedef struct Game {
     Player player2;
     Ball ball;
 } * Game;
-
 
 static void updatePong(Game newGame){
     clearScreen(0);
@@ -198,11 +199,10 @@ Ball buildBall(int radius, int x, int y, int posx, int posy){
     ball->y = y;
     ball->posx = posx;
     ball->posy = posy;
-    ball->radius = 10;
+    ball->radius = radius;
 
     return ball;
 }
-
 
 void pausePong(){
     // Imprimo el menú
@@ -222,12 +222,13 @@ void pausePong(){
     setBuffer(1);
 }
 
-void playPong(){
+
+void playPong(int ballRadius, int ballSpeed, int barSpeed){
     //p1 left     p2 right
     setBuffer(1);
 
     Game newGame = myMalloc(sizeof(struct Game));
-    Ball ball = buildBall(10, (1024-30)/2, 768/2, 8, 8);
+    Ball ball = buildBall(ballRadius, (1024-30)/2, 768/2, ballSpeed, ballSpeed);
     Player p1 = buildPlayer(LIMIT_BAR_SPACE);
     Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 35);
 
@@ -245,6 +246,7 @@ void playPong(){
     }
 
     setBuffer(0);
+    clearScreen(0);
     setPrintAnywhere(383,MIDDLE_SCREEN-30);
     if(p1->score == 3){
         printf("GANADOR JUGADOR 1\n");
@@ -266,4 +268,98 @@ void playPong(){
 
     terminalSetter();
     return;
+}
+
+void printSettings(){
+    clearScreen(0);
+    setPrintAnywhere(360,MIDDLE_SCREEN-30);
+    printf("Press 1 to modify ballradius\n");
+    setPrintAnywhere(360+NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 2 to modify ballspeed\n");
+    setPrintAnywhere(360+2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 3 to modify barspeed\n");
+    setPrintAnywhere(360+3*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 4 to return to menu.");
+    return;
+}
+
+void settings(int * bRad, int * bSpeed, int * barSpeed){
+    printSettings();
+
+    char c;
+    while ((c = getChar())) {
+        switch (c) {
+            case '1':
+                clearScreen(0);
+                setPrintAnywhere(360,MIDDLE_SCREEN-30);
+                printf("Inserte nuevo radio: ");
+                scanf("%d",bRad);
+                printSettings();
+                break;
+            case '2':
+                clearScreen(0);
+                setPrintAnywhere(360,MIDDLE_SCREEN-30);
+                printf("Inserte nueva velocidad: ");
+                scanf("%d",bSpeed);
+                printSettings();
+                break;
+            case '3':
+                clearScreen(0);
+                setPrintAnywhere(360,MIDDLE_SCREEN-30);
+                printf("Inserte nuevo velocidad: ");
+                scanf("%d",barSpeed);
+                printSettings();
+                break;
+            case '4':
+                clearScreen(0);
+                setPrintAnywhere(360,MIDDLE_SCREEN-30);
+                return;
+            default:
+                break;
+        }
+    }
+}
+
+void printMenu(){
+    terminalSetter();
+    setPrintAnywhere(360,MIDDLE_SCREEN-30);
+    printf("Press 1 to play\n");
+    setPrintAnywhere(360+NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 2 for Settings\n");
+    setPrintAnywhere(360+2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 3 to exit");
+}
+
+void menuPong(){
+    int * ballRadius = myMalloc(sizeof(int));
+    int * ballSpeed = myMalloc(sizeof(int));
+    int * barSpeed = myMalloc(sizeof(int));
+
+    *ballRadius = DEFAULT_BRADIUS;
+    *ballSpeed = DEFAULT_BALLSPEED;
+    *barSpeed = DEFAULT_BARSPEED;
+
+    printMenu();
+
+    char c;
+    while ((c = getChar())) {
+        switch (c) {
+            case '1':
+                playPong(*ballRadius,*ballSpeed,*barSpeed);
+                printMenu();
+                break;
+            case '2':
+                settings(ballRadius,ballSpeed,barSpeed);
+                printMenu();
+                break;
+            case '3':
+                return;
+            default:
+                break;
+        }
+    }
+
+    myFree(ballRadius);
+    myFree(ballSpeed);
+    myFree(barSpeed);
 }

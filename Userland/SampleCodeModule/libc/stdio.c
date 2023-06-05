@@ -113,6 +113,7 @@ static int scanf_int(int64_t * value_ptr){
             putChar('\n');
             break;
         }
+        putChar(c);
     }
 
     *value_ptr = sign * value;

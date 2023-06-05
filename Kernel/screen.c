@@ -21,7 +21,6 @@ void screen_Initialize(){
 }
 
 void setPrintingMode(uint32_t y, uint32_t x ,int bufferMode){
-    clearScreen(1);
     current_cursor_pos_y = y;
     current_cursor_pos_x = x;
     setDoubleBuffer(bufferMode);
@@ -29,6 +28,7 @@ void setPrintingMode(uint32_t y, uint32_t x ,int bufferMode){
 
 // setea el modo terminal para que imprima en la ultima linea
 void setTerminalPrintingMode(){
+    clearScreen(1);
     setPrintingMode(screenHeight - CHAR_HEIGHT, current_cursor_pos_x,0);
 }
 
