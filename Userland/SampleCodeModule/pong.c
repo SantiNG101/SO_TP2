@@ -17,9 +17,9 @@
 typedef struct{
     char color[15];
     int hex;
-}colour;
+}colour2;
 
-const colour colors2[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
+const colour2 colors2[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
                         {"cyan",CYAN},{"red",RED},{"purple",PURPLE},
                         {"brown",BROWN},{"gray",GRAY},{"darkgray",DARK_GRAY},
                         {"lightblue",LIGHT_BLUE},{"lime",LIGHT_GREEN},{"lightcyan",LIGHT_CYAN},
@@ -248,8 +248,7 @@ void pausePong(){
     setBuffer(1);
 }
 
-
-void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, uint64_t p1Color, uint64_t p2Color){
+void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, uint64_t p1Color, uint64_t p2Color, int topScore){
     //p1 left     p2 right
     setBuffer(1);
 
@@ -264,7 +263,7 @@ void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, u
     newGame->player2 = p2;
 
     keepGoing = 1;
-    while(keepGoing && (p1->score < GAME_OVER && p2->score < GAME_OVER)){
+    while(keepGoing && (p1->score < topScore && p2->score < topScore)){
         getInputPlaying(newGame);
 
         updateBall(newGame->ball, newGame->player1, newGame->player2);
@@ -305,13 +304,15 @@ void printSettings(){
     setPrintAnywhere(360+2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
     printf("Press 3 to modify barspeed\n");
     setPrintAnywhere(360+3*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 4 to modify ballColor.");
+    printf("Press 4 to modify ballColor\n");
     setPrintAnywhere(360+4*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
     printf("Press 5 to modify p1Color\n");
     setPrintAnywhere(360+5*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
     printf("Press 6 to modify p2Color\n");
     setPrintAnywhere(360+6*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
-    printf("Press 7 to return to menu.");
+    printf("Press 7 to return to change end score\n");
+    setPrintAnywhere(360+7*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+    printf("Press 8 to return to menu.");
     return;
 }
 
@@ -341,7 +342,7 @@ void getColor(uint64_t * color){
     }
 }
 
-void settings(int * bRad, int * bSpeed, int * barSpeed,uint64_t * ballColor, uint64_t * p1Color, uint64_t * p2Color){
+void settings(int * bRad, int * bSpeed, int * barSpeed,uint64_t * ballColor, uint64_t * p1Color, uint64_t * p2Color, int * topScore){
     printSettings();
 
     char c;
@@ -390,6 +391,16 @@ void settings(int * bRad, int * bSpeed, int * barSpeed,uint64_t * ballColor, uin
                 printSettings();
                 break;
             case '7':
+                *topScore = -1;
+                while(*topScore < 1){
+                    clearScreen(0);
+                    setPrintAnywhere(360,MIDDLE_SCREEN-30);
+                    printf("Inserte maxima cantidad de puntos: ");
+                    scanf("%d",topScore);
+                }
+                printSettings();
+                break;
+            case '8':
                 clearScreen(0);
                 setPrintAnywhere(360,MIDDLE_SCREEN-30);
                 return;
@@ -416,6 +427,7 @@ void menuPong(){
     uint64_t * ballColor = myMalloc(sizeof(uint64_t)*2);
     uint64_t * p1Color = myMalloc(sizeof(uint64_t)*2);
     uint64_t * p2Color = myMalloc(sizeof(uint64_t)*2);
+    int * topScore = myMalloc(sizeof(int)*2);
 
     *ballRadius = DEFAULT_BRADIUS;
     *ballSpeed = DEFAULT_BALLSPEED;
@@ -423,6 +435,7 @@ void menuPong(){
     *ballColor = DEFAULT_BC;
     *p1Color = DEFAULT_P1C;
     *p2Color = DEFAULT_P2C;
+    *topScore = GAME_OVER;
 
     printMenu();
 
@@ -430,11 +443,11 @@ void menuPong(){
     while ((c = getChar())) {
         switch (c) {
             case '1':
-                playPong(*ballRadius,*ballSpeed,*barSpeed,*ballColor,*p1Color,*p2Color);
+                playPong(*ballRadius,*ballSpeed,*barSpeed,*ballColor,*p1Color,*p2Color,*topScore);
                 printMenu();
                 break;
             case '2':
-                settings(ballRadius,ballSpeed,barSpeed,ballColor,p1Color,p2Color);
+                settings(ballRadius,ballSpeed,barSpeed,ballColor,p1Color,p2Color,topScore);
                 printMenu();
                 break;
             case '3':
@@ -450,4 +463,5 @@ void menuPong(){
     myFree(ballColor);
     myFree(p1Color);
     myFree(p2Color);
+    myFree(topScore);
 }
