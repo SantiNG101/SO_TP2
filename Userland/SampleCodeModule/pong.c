@@ -7,7 +7,7 @@
 #define GAME_OVER 3
 #define BAR_MOV 10
 #define DEFAULT_BRADIUS 10
-#define DEFAULT_BARSPEED 6
+#define DEFAULT_BARSPEED 10
 #define DEFAULT_BALLSPEED 8
 extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
@@ -34,6 +34,7 @@ typedef struct Bars {
     int y;
     int width;
     int height;
+    int pace;
 } * Bars;
 
 
@@ -122,7 +123,7 @@ void barCollision(Ball ball, Bars bar){
 
 void updateBar(Bars bar, int direction){
     //Actualizo posición de la barra
-    bar->y += direction;
+    bar->y += direction*(bar->pace);
 }
 
 void updateBall(Ball ball, Player player1, Player player2){
@@ -153,24 +154,24 @@ void updateBall(Ball ball, Player player1, Player player2){
 
 void getInputPlaying(Game game){
     if(game->player2->bar->y + game->player2->bar->height < SCREEN_HEIGHT && game->player2->bar->y > 0) {
-        if (getKeyState(0x80)) updateBar(game->player2->bar, -BAR_MOV);
-        if (getKeyState(0x81)) updateBar(game->player2->bar, BAR_MOV);
+        if (getKeyState(0x80)) updateBar(game->player2->bar, -1);
+        if (getKeyState(0x81)) updateBar(game->player2->bar, 1);
     }
     if(game->player1->bar->y + game->player1->bar->height < SCREEN_HEIGHT && game->player1->bar->y > 0) {
-        if (getKeyState('w'))updateBar(game->player1->bar, -BAR_MOV);
-        if (getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
+        if (getKeyState('w'))updateBar(game->player1->bar, -1);
+        if (getKeyState('s'))updateBar(game->player1->bar, 1);
     }
     if(game->player1->bar->y <= 0) {
-        if (getKeyState('s'))updateBar(game->player1->bar, BAR_MOV);
+        if (getKeyState('s'))updateBar(game->player1->bar, 1);
     }
     if(game->player2->bar->y <= 0){
-        if (getKeyState(0x81)) updateBar(game->player2->bar, BAR_MOV);
+        if (getKeyState(0x81)) updateBar(game->player2->bar, 1);
     }
     if(game->player1->bar->y + game->player1->bar->height >= SCREEN_HEIGHT) {
-        if (getKeyState('w'))updateBar(game->player1->bar, -BAR_MOV);
+        if (getKeyState('w'))updateBar(game->player1->bar, -1);
     }
     if(game->player2->bar->y + game->player2->bar->height >= SCREEN_HEIGHT){
-        if (getKeyState(0x80)) updateBar(game->player2->bar, -BAR_MOV);
+        if (getKeyState(0x80)) updateBar(game->player2->bar, -1);
     }
 
     if(getKeyState(0x1B))pausePong();
@@ -178,7 +179,7 @@ void getInputPlaying(Game game){
     return;
 }
 
-Player buildPlayer(int barX){
+Player buildPlayer(int barX, int pace){
     Player player = myMalloc(sizeof(struct Player));
     Bars bar = player->bar = myMalloc(sizeof(struct Bars));
 
@@ -188,6 +189,7 @@ Player buildPlayer(int barX){
     bar->height = 120;
     bar-> y = (768/2) - 60;
     bar->x = barX;
+    bar->pace = pace;
 
     return player;
 }
@@ -229,8 +231,8 @@ void playPong(int ballRadius, int ballSpeed, int barSpeed){
 
     Game newGame = myMalloc(sizeof(struct Game));
     Ball ball = buildBall(ballRadius, (1024-30)/2, 768/2, ballSpeed, ballSpeed);
-    Player p1 = buildPlayer(LIMIT_BAR_SPACE);
-    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 35);
+    Player p1 = buildPlayer(LIMIT_BAR_SPACE,barSpeed);
+    Player p2 = buildPlayer(SCREEN_WIDTH - LIMIT_BAR_SPACE - 35,barSpeed);
 
     newGame->ball = ball;
 
