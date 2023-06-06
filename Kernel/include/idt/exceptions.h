@@ -19,10 +19,4 @@ void zeroDivisionException(uint64_t * rip);
  */
 void invalidOperationException(uint64_t * rip);
 
-/*
- * Excepcion default, para cuando aún no se ha programado la excepcion.
- * Por ejemplo: En este caso, la excepcion 230 no existe, por lo que dará una notKnownException.
- */
-void defaultException(uint64_t * rip);
-
 #endif

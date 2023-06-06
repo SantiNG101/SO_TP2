@@ -5,8 +5,6 @@
 #include "songs.h"
 #include "pong.h"
 
-extern void screenSetter();
-
 void setDefault(){
     clearScreen(0);
     setBackgroundColour(BLACK);
@@ -31,7 +29,6 @@ int main() {
                 break;
             case '3':
                 keepGoing = FALSE;
-                clearScreen(1);
                 break;
         }
         setDefault();

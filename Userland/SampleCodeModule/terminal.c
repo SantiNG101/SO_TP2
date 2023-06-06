@@ -6,6 +6,7 @@ extern void opCode();
 extern void terminalSetter();
 extern void setBackgroundColour(uint32_t colour);
 extern void setForegroundColour(uint32_t colour);
+extern void showRegisters();
 
 void setBackground();
 void setForeground();
@@ -43,8 +44,8 @@ const commandT commands[] = {
                              {"background","Changes background to hexColour: ",setBackground},
                              {"foreground","Changes foreground to hexColour: ",setForeground},
                              {"div0","Shows how div 0 exception works",divZero},
-                             {"opCode","Shows how opCode exception works",opCode}
-                            };
+                             {"opCode","Shows how opCode exception works",opCode},
+                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}};
 
 #define BUFFER_SIZE 50
 #define INSTRUCTION_SIZE 240    
@@ -182,7 +183,7 @@ void runCommand(char * cmd){
         }
 
     }
-        printf("Comando no encontrado.\n");
+        printf("Command not found.\n");
 
 
     return;
