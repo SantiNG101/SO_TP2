@@ -249,9 +249,9 @@ void pausePong(){
     // Imprimo el menú
     setBuffer(0);
 
-    printf("PAUSA: \n");
-    printf("Para continuar presione [ P ]\n");
-    printf("Para cerrar el juego presione [ C ]");
+    printf("PAUSE: \n");
+    printf("To continue press [ P ]\n");
+    printf("For end this game press [ C ]");
 
     for(int c = 0; c != 'c' && c != 'p'; ){
         c = getChar();
