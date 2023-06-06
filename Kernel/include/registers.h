@@ -19,8 +19,16 @@ extern uint64_t getCurrentR10();
 extern uint64_t getCurrentR9();
 extern uint64_t getCurrentR8();
 
+/**
+    funcion que guarda los registros y luego los imprime en pantalla
+    especialmente para excepciones
+**/
 void showRegisterStatus();
+
+// guarda los registros en un array con capacidad para todos los registros (F11)
 void saveRegisterStatus();
+
+// imprime los registros guardados en pantalla en el momentos que se quiera
 void printRegisterStatus();
 
 typedef struct RegArgs{

@@ -51,11 +51,12 @@ exit:
     leave
     ret
 
+; detiene la reproduccion del sondido
 stopSound:
     push rbp
     mov rbp, rsp
 
-    getTmp
+    getTmp 
     and al, 0xFC
     out 0x61, al
 

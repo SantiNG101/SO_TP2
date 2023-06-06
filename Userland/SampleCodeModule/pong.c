@@ -14,11 +14,12 @@
 #define DEFAULT_P2C RED
 #define DEFAULT_BC LIGHT_GREEN
 
+//Struct de colores para el pong
 typedef struct{
     char color[15];
     int hex;
 }colour2;
-
+//Array del struct para mapear los colores con su valor hexa
 const colour2 colors2[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
                         {"cyan",CYAN},{"red",RED},{"purple",PURPLE},
                         {"brown",BROWN},{"gray",GRAY},{"darkgray",DARK_GRAY},
@@ -58,13 +59,11 @@ typedef struct Bars {
     int pace;
 } * Bars;
 
-
 typedef struct Player {
     Bars bar;
     int score;
     uint64_t colorHex;
 } * Player;
-
 
 typedef struct Game {
     Player player1;
@@ -72,6 +71,7 @@ typedef struct Game {
     Ball ball;
 } * Game;
 
+/*Esta funcion dibuja las figuras del pong en las posiciones actualizadas llama a la syscall updateScreen*/
 static void updatePong(Game newGame){
     clearScreen(0);
     draw_Rectangle(newGame->player1->bar->x, newGame->player1->bar->y, newGame->player1->bar->width, newGame->player1->bar->height, newGame->player1->colorHex);
@@ -87,6 +87,7 @@ static void updatePong(Game newGame){
     updateScreen();
 }
 
+/*Devuelve la pelota a la posicion inicial en el medio de la cancha del pong*/
 void resetBall(Ball ball){
     //reinicio la posición y dirección de la pelota
     ball->x = (SCREEN_WIDTH-30)/2;
@@ -95,6 +96,10 @@ void resetBall(Ball ball){
     ball->posy = 2;
 }
 
+/*Revisa colisiones con los bordes de la cancha del pong:
+ * Pared izquierda / derecha genera un gol para el respectivo jugador.
+ * Pared superior e inferior generan un rebote.
+ * */
 void checkAndHandleWallCollision(Ball ball, Player player1, Player player2){
 
     //reviso si la pelota colisionó en la parte de arriba o de abajo de la pantalla
@@ -120,10 +125,12 @@ void checkAndHandleWallCollision(Ball ball, Player player1, Player player2){
     }
 }
 
+/*Auxiliar para revisar la colision de la pelota con la barra*/
 int isOnRange(int left, int right, int value){
     return value >= left && value <= right;
 }
 
+/*revisa si hay colision con la barra*/
 int checkBarCollision(Ball ball, Bars bar){
     int leftCollision = isOnRange(bar->x, bar->x + bar->width, ball->x + ball->radius);
     int rightCollision = isOnRange(bar->x, bar->x + bar->width, ball->x - ball->radius);
@@ -132,6 +139,7 @@ int checkBarCollision(Ball ball, Bars bar){
     return (leftCollision || rightCollision) && yCollision;
 }
 
+//Handler de la colision con la barra
 void barCollision(Ball ball, Bars bar){
     //invierto la velocidad en la que se mueve la pelota
     ball->posx = -ball->posx;
@@ -143,11 +151,13 @@ void barCollision(Ball ball, Bars bar){
     ball->posy = offset / 2;
 }
 
+//Translacion de la barra verticalmente
 void updateBar(Bars bar, int direction){
     //Actualizo posición de la barra
     bar->y += direction*(bar->pace);
 }
 
+//Movimiento de la pelota de un punto en la pantalla a otro
 void updateBall(Ball ball, Player player1, Player player2){
     ball->x += ball->posx;
     ball->y += ball->posy;
@@ -174,7 +184,9 @@ void updateBall(Ball ball, Player player1, Player player2){
     // }
 }
 
+//Handler del teclado para el pong
 void getInputPlaying(Game game){
+    //0x80 flecha abajo 0x81 flecha arriba
     if(game->player2->bar->y + game->player2->bar->height < SCREEN_HEIGHT && game->player2->bar->y > 0) {
         if (getKeyState(0x80)) updateBar(game->player2->bar, -1);
         if (getKeyState(0x81)) updateBar(game->player2->bar, 1);
@@ -201,6 +213,7 @@ void getInputPlaying(Game game){
     return;
 }
 
+//Inicializa al objeto jugador
 Player buildPlayer(int barX, int pace, uint64_t cHex){
     Player player = myMalloc(sizeof(struct Player));
     Bars barr = myMalloc(sizeof(struct Bars));
@@ -218,6 +231,7 @@ Player buildPlayer(int barX, int pace, uint64_t cHex){
     return player;
 }
 
+//Inicializa al objeto bola
 Ball buildBall(int radius, int x, int y, int posx, int posy, uint64_t cHex){
     Ball ball = myMalloc(sizeof(struct Ball));
 
@@ -230,6 +244,7 @@ Ball buildBall(int radius, int x, int y, int posx, int posy, uint64_t cHex){
     return ball;
 }
 
+//Handler para la tecla ESC
 void pausePong(){
     // Imprimo el menú
     setBuffer(0);
@@ -248,6 +263,7 @@ void pausePong(){
     setBuffer(1);
 }
 
+//Inicializa el juego pong con todos los objetos
 void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, uint64_t p1Color, uint64_t p2Color, int topScore){
     //p1 left     p2 right
     setBuffer(1);
@@ -295,6 +311,7 @@ void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, u
     return;
 }
 
+//Imprime la configuracion del pong
 void printSettings(){
     clearScreen(0);
     setPrintAnywhere(360,MIDDLE_SCREEN-30);
@@ -318,6 +335,7 @@ void printSettings(){
     return;
 }
 
+//Funcion auxiliar para elegir un color en settings
 void getColor(uint64_t * color){
 
     char * aux = myMalloc(sizeof(char)*20);
@@ -344,6 +362,16 @@ void getColor(uint64_t * color){
     }
 }
 
+//Maneja las opciones en el pong, entre ellas:
+/*
+ * ballSpeed -> Velocidad de la pelota
+ * ballRadius -> radio de la pelota
+ * barSpeed -> velocidad de movimiento de la barra
+ * ballColor -> color de la pelota
+ * p1Color -> idem para el jugador1
+ * p2Color -> idem para el jugador2
+ * topScore -> Puntaje necesario para ganar
+ */
 void settings(int * bRad, int * bSpeed, int * barSpeed,uint64_t * ballColor, uint64_t * p1Color, uint64_t * p2Color, int * topScore){
     printSettings();
 
@@ -412,6 +440,7 @@ void settings(int * bRad, int * bSpeed, int * barSpeed,uint64_t * ballColor, uin
     }
 }
 
+//Imprime el menu inicial del Pong
 void printMenu(){
     clearScreen(0);
     setPrintAnywhere(360,MIDDLE_SCREEN-30);
@@ -424,6 +453,7 @@ void printMenu(){
     printf("Press 3 to exit");
 }
 
+//Inicializa el pong y reserva espacio para las variables que se pueden manipular desde settings.
 void menuPong(){
     int * ballRadius = myMalloc(sizeof(int)*2);
     int * ballSpeed = myMalloc(sizeof(int)*2);
@@ -455,17 +485,16 @@ void menuPong(){
                 printMenu();
                 break;
             case '3':
+                myFree(ballRadius);
+                myFree(ballSpeed);
+                myFree(barSpeed);
+                myFree(ballColor);
+                myFree(p1Color);
+                myFree(p2Color);
+                myFree(topScore);
                 return;
             default:
                 break;
         }
     }
-
-    myFree(ballRadius);
-    myFree(ballSpeed);
-    myFree(barSpeed);
-    myFree(ballColor);
-    myFree(p1Color);
-    myFree(p2Color);
-    myFree(topScore);
 }

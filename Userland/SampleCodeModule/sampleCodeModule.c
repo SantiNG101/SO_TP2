@@ -15,9 +15,7 @@ void setDefault(){
 
 int main() {
     setDefault();
-        
-    printf("Welcome to Userland!\n");
-    //  userLandStartTheme();
+            userLandStartTheme();
     unsigned char keepGoing = TRUE;
 
     while(keepGoing){
@@ -33,6 +31,7 @@ int main() {
                 break;
             case '3':
                 keepGoing = FALSE;
+                clearScreen(1);
                 break;
         }
         setDefault();

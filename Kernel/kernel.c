@@ -95,13 +95,6 @@ int divisionBy(int x, int y){
 int main()
 {
     screen_Initialize();
-	print("hola");
-	print("hola 2");
-
-	int aux = 2;
-	int aux2 = 3;
-	int sum = aux + aux2;
-
 	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;
 }
