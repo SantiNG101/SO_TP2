@@ -289,10 +289,10 @@ void playPong(int ballRadius, int ballSpeed, int barSpeed, uint64_t ballColor, u
     setBuffer(0);
     clearScreen(0);
     setPrintAnywhere(383,MIDDLE_SCREEN-30);
-    if(p1->score == 3){
+    if(p1->score == topScore){
         printf("GANADOR JUGADOR 1\n");
         sleep(5000);
-    } else if (p2->score ==3) {
+    } else if (p2->score == topScore) {
         printf("GANADOR JUGADOR 2\n");
         sleep(5000);
     }
