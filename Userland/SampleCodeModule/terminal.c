@@ -90,8 +90,6 @@ int saveCommand(char * current){
     int size =  buffer.data[buffer.readWriteIndex].size = strlen(current);
     strcpy(current, buffer.data[buffer.readWriteIndex].command);        // Guardo el commando.
 
-    memset(current, 0, INSTRUCTION_SIZE);
-
     buffer.readWriteIndex = (buffer.readWriteIndex + 1) % BUFFER_SIZE;  // Cambio la posición en la que leo y guardo.
     return 0;
 }
@@ -143,14 +141,16 @@ int terminalStart(){
         printf("$ ");
 
         getInstruction(ptr);
+        saveCommand(ptr);
 
         char *token = strtok(ptr, " ");     //creo token con cmdline (modificable)
                                             //Process the command and execute actions accordingly
         runCommand(token);
 
-        printf("\n");
+        ptr[0] = 0; // Pongo en 0 el primer char para indicar que no hay ninguna instrucción.
 
-        saveCommand(ptr);
+        printf("\n");
+        
     }
 
     setBackgroundColour(BLACK);
