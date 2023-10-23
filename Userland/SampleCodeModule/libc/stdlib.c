@@ -92,4 +92,12 @@ void myFree(void* ptr) {
     }
 }
 
+uint16_t atoi(char * str){
+    uint16_t res = 0;
+    
+    for(int i = 0; str[i] != '\0'; i++) res = res * 10 + str[i] - '0';
+    
+    return res;
+}
+
 //#-------------------------------------------------------#

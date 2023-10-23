@@ -13,6 +13,8 @@ void setTerminalPrintingMode();
 void scrollScreenUp();
 // limpia la pantalla y la setea a color negro
 void clearScreen(uint8_t);
+// Setea la escala de la escritura del texto.
+void setScale(int newScale);
 
 /*
  * ------------------------------- Printing --------------------------------

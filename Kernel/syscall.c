@@ -59,8 +59,8 @@ void setterBuffer(argumentsStruct args){
     setDoubleBuffer(args->r10);
 }
 
-void printLarge(argumentsStruct args){
-   // futura implementacion
+void setFontSize(argumentsStruct args){
+    setScale(args->r10);
 }
 
 void timer_wait(argumentsStruct args){
@@ -108,7 +108,7 @@ void setPrintAnywhere(argumentsStruct args){
     setPrintingMode(args->r10,args->r9,0);
 }
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, printLarge,
+void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, setFontSize,
  timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
  setPrintAnywhere };
 

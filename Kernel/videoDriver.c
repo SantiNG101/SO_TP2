@@ -99,24 +99,34 @@ void putPixel( uint32_t x, uint32_t y, uint32_t hexColor) {
 	}
 }
 
-
+// TODO: Revisar.
 // hace copia de memoria para cambiar el estado de los pixeles de la pantalla de lugar
-void modifyFrameBuffer( int mode){
+void modifyFrameBuffer(int mode, int scale){
 	// hago mem copy de memoria
-	if ( doubleBuffer ){
-		if (mode){
-		memset(buffer,0,bufferlen);
-		return;
-		}
-		memcpy(buffer,buffer+ CHAR_HEIGHT*1024*3,bufferlen - CHAR_HEIGHT*1024*3 );
-		return;
-	}
-	if (mode){
-		memset(VBE_mode_info->framebuffer,0,bufferlen);
-		return;
-	}
-	memcpy(VBE_mode_info->framebuffer,VBE_mode_info->framebuffer+ CHAR_HEIGHT*1024*3,
-	bufferlen - CHAR_HEIGHT*1024*3 );
+	int charHeight = CHAR_HEIGHT*scale;
+
+	// [0,1] = [no double buffer (mode 0), double buffer (mode 0)]
+	// [2,3] = [no double buffer (mode 1), double buffer (mode 1)]
+	int option = mode * 2 + doubleBuffer; 
+
+	if(option == 0)	return memcpy(VBE_mode_info->framebuffer,VBE_mode_info->framebuffer+ charHeight*1024*3, bufferlen - charHeight*1024*3); 
+	if(option == 1)	return memcpy(buffer,buffer+ charHeight*1024*3,bufferlen - charHeight*1024*3);
+	if(option == 2)	return memset(VBE_mode_info->framebuffer,0,bufferlen);
+	if(option == 3)	return memset(buffer,0,bufferlen);
+
+	// if ( doubleBuffer ){
+	// 	if (mode){
+	// 	memset(buffer,0,bufferlen);
+	// 	return;
+	// 	}
+	// 	memcpy(buffer,buffer+ charHeight*1024*3,bufferlen - charHeight*1024*3);
+	// 	return;
+	// }
+	// if (mode){
+	// 	memset(VBE_mode_info->framebuffer,0,bufferlen);
+	// 	return;
+	// }
+	// memcpy(VBE_mode_info->framebuffer,VBE_mode_info->framebuffer+ charHeight*1024*3, bufferlen - charHeight*1024*3 );
 }
 	
 
@@ -162,7 +172,28 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 		auxy++;
 	}
 }
+// HASTA ACA ESTA TODO BIEN..
+void draw_scalable_char(uint32_t x, uint32_t y, char character, uint32_t fontColor, uint32_t backgroundColor, int scale){
+	if(failBordersCheck(x, y, CHAR_WIDTH*scale, CHAR_HEIGHT*scale)) return;
 
+	uint32_t auxx = x, auxy = y;
+	char pixIsPresent = 0;
+
+	uint8_t* font_char = charBitmap(character);
+	uint32_t scaledWidth = CHAR_WIDTH * scale;
+	uint32_t scaledHeight = CHAR_HEIGHT * scale;
+
+	for(int i = 0; i < scaledHeight; i++){
+		for(int j = 0; j < scaledWidth; j++){
+			pixIsPresent = font_char[(i/scale)] & (1 << (CHAR_WIDTH + 2 - (j/scale)));
+			putPixel(auxx, auxy, pixIsPresent ? fontColor : backgroundColor);
+
+			auxx++;
+		}
+		auxx = x;
+		auxy++;
+	}
+}
 
 int failBordersCheck( uint32_t x, uint32_t y, uint8_t OffsetX, uint8_t OffsetY){
 	//chequeo los limites (es - o / comparando con la cantidad de espacio del char en los bordes)

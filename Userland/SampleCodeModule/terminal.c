@@ -17,6 +17,7 @@ void showDate();
 void help();
 void divZero();
 void beep();
+void setFont();
 
 // struct para definir la lista de comandos a utilizar en la terminal
 typedef struct {
@@ -45,6 +46,7 @@ const commandT commands[] = {
                              {"foreground","Changes foreground to hexColour: ",setForeground},
                              {"div0","Shows how div 0 exception works",divZero},
                              {"opCode","Shows how opCode exception works",opCode},
+                             {"font", "Sets the fontsize", setFont},
                              {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}};
 
 #define BUFFER_SIZE 50
@@ -165,7 +167,7 @@ int terminalStart(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            if(i == 0 || i == 10 || i == 11){
+            if(i == 0 || i == 10 || i == 11 || i == 14){
                 commands[i].function();
                 putChar('\n');
                 return;
@@ -319,11 +321,23 @@ void setForeground(){
     nonExistentColor();
     return;
 }
-/*
- * TOADD
- * showRegisters(); ---> Con interrupcion
- * Rtc();   --> Con interrupcion
- * self cleaning y que escriba en la ultima linea
- * generateXException(); --> genere div 0 y haga un seguimiento ?) y verifica su funcionamiento
- *
- */
+
+void setFont(){
+    char * token = strtok(NULL, " ");
+    char * aux = strtok(NULL, " ");
+
+    if(aux != NULL){
+        printf("Foreground requires only one argument.\n");
+        return;
+    }
+    int size = atoi(token);
+
+    if(size < 0 || size > 100){
+        printf("Font size must be between 0 and 100.\n");
+        return;
+    }
+    printf("Font size set to %d.\n", size);
+    setFontSize(size);
+
+    return;    
+}

@@ -91,6 +91,55 @@ int scanf(const char *format, ...) {
     return 0;
 }
 
+int sscanf(const char * buffer, const char * format, ...){
+     va_list args;
+    va_start(args,format);
+    int flag_error = 0;
+
+    while(*format != '\0' && !flag_error){
+        if(*format == '%'){
+            format++;
+            switch(*format++){
+                case 'd': {
+                    int64_t *int_arg = va_arg(args,int64_t *);
+                    if (scanf_int(int_arg) == -1) {
+                        *int_arg = '\0';
+                        flag_error = 1;
+                        printf("Format error\n");
+                    }
+                    break;
+                }
+                case 'x': {
+                    uint64_t *hex_arg = va_arg(args,uint64_t *);
+                    if (scanf_hex(hex_arg) == -1) {
+                        *hex_arg = '\0';
+                        flag_error = 1;
+                        printf("Format error\n");
+                    }
+                    break;
+                }
+                case 's': {
+                    char *s_arg = va_arg(args, char *);
+                    scanf_str(s_arg);
+                    break;
+                }
+                case 'c': {
+                    char *c_arg = va_arg(args,char *);
+                    *c_arg = getChar();
+                    putChar('\n');
+                    break;
+                }
+                default:
+                    break;
+            }
+        } else {
+            ++format;
+        }
+    }
+    va_end(args);
+    return 0;
+}
+
 //Func aux que procesa un String a Entero
 static int scanf_int(int64_t * value_ptr){
     int64_t value = 0;

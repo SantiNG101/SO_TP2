@@ -23,6 +23,7 @@ extern void updateScreen(void);
 extern void setBuffer(int mode);
 extern int getKeyState(int keyCode);
 extern void clearScreen(int mode);
+extern void setFontSize(int size);
 
 //
 // functionName: setBackgroundColour

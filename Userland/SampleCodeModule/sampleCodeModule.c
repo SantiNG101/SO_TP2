@@ -13,7 +13,7 @@ void setDefault(){
 
 int main() {
     setDefault();
-            userLandStartTheme();
+            // userLandStartTheme();
     unsigned char keepGoing = TRUE;
 
     while(keepGoing){

@@ -9,6 +9,7 @@ GLOBAL setBackgroundColour
 GLOBAL clearScreen
 GLOBAL showRegisters
 GLOBAL setPrintAnywhere
+GLOBAL setFontSize
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -143,6 +144,17 @@ setPrintAnywhere:
 
    leave
    ret
+
+setFontSize:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 4 ; syscall 4
+    int 80h
+
+    leave
+    ret
 
 section .bss
 placeholder resb 1

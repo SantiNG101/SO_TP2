@@ -9,6 +9,7 @@ static uint64_t screenWidth;
 static uint64_t screenHeight;
 static uint32_t current_cursor_pos_x = 0;
 static uint32_t current_cursor_pos_y = 0;
+static int scale = 2;
 
 static char buffer[64] = { '0' };
 static uint32_t foregroundColour = COLOR_LETTER_DEFAULT;
@@ -28,10 +29,14 @@ void setPrintingMode(uint32_t y, uint32_t x ,int bufferMode){
     setDoubleBuffer(bufferMode);
 }
 
+void setScale(int newScale){
+    scale = newScale;
+}
+
 // setea el modo terminal para que imprima en la ultima linea
 void setTerminalPrintingMode(){
     clearScreen(1);
-    setPrintingMode(screenHeight - CHAR_HEIGHT, current_cursor_pos_x,0);
+    setPrintingMode(screenHeight - CHAR_HEIGHT * scale, current_cursor_pos_x,0);
 }
 
 // funcion para el cambio de base
@@ -114,19 +119,19 @@ void putCharScreen( char character ){ putCharScreenFrmt(character, foregroundCol
 void putCharScreenFrmt( char character, uint32_t font_color, uint32_t background_Color ){
     bordersCheck();
     // imprimo el caracter en la pantalla
-    draw_char( current_cursor_pos_x, current_cursor_pos_y, character,
-     font_color, background_Color );
-    current_cursor_pos_x +=CHAR_WIDTH;
+    draw_scalable_char( current_cursor_pos_x, current_cursor_pos_y, character,
+     font_color, background_Color, scale);
+    current_cursor_pos_x +=CHAR_WIDTH*scale;
 }
 
 // retrocede 1 char limpiando su contenido
 void backspace(){
     if ( current_cursor_pos_x == 0 ){
-        current_cursor_pos_y-=CHAR_HEIGHT;
+        current_cursor_pos_y-=CHAR_HEIGHT*scale;
     }
-    current_cursor_pos_x -= CHAR_WIDTH;
+    current_cursor_pos_x -= CHAR_WIDTH*scale;
     putCharScreenFrmt(' ',WHITE,BLACK);
-    current_cursor_pos_x -= CHAR_WIDTH;
+    current_cursor_pos_x -= CHAR_WIDTH*scale;
 }
 
 // imprime 2 char ' ' 
@@ -139,8 +144,8 @@ void tab(){
 
 // pasa a la linea de abajo
 void enter(){
-    if ( current_cursor_pos_y <= screenHeight - 2*2*CHAR_HEIGHT ){
-        current_cursor_pos_y += CHAR_HEIGHT;
+    if ( current_cursor_pos_y <= screenHeight - 2*2*CHAR_HEIGHT*scale ){
+        current_cursor_pos_y += CHAR_HEIGHT*scale;
     }else{
         scrollScreenUp();
     }
@@ -150,36 +155,36 @@ void enter(){
 // funcion que permite mover el texto para arriba para liberar la ultima linea
 void scrollScreenUp(){
     // hago mem copy para modificar el frame buffer y paso si borro info o no
-    modifyFrameBuffer(0);
+    modifyFrameBuffer(0, scale);
     // imprimo en la ult linea espacios
-    for ( int i= 0; i< screenWidth; i+=CHAR_WIDTH ){
-        draw_char( i, screenHeight - CHAR_HEIGHT, ' ',
-         COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT );
+    for ( int i= 0; i< screenWidth; i+=CHAR_WIDTH*scale ){
+        draw_scalable_char( i, screenHeight - CHAR_HEIGHT*scale, ' ',
+         COLOR_LETTER_DEFAULT, COLOR_BACKGROUND_DEFAULT, scale);
     }
     
     current_cursor_pos_x = 0;
-    current_cursor_pos_y = screenHeight - CHAR_HEIGHT;
+    current_cursor_pos_y = screenHeight - CHAR_HEIGHT*scale;
     
 }
 
 // limpia la pantalla 
 void clearScreen(uint8_t val){
     // hago mem copy para modificar el frame buffer y paso si borro info o no
-    modifyFrameBuffer(1);
+    modifyFrameBuffer(1, scale);
     // restauro el cursor al inicio
     current_cursor_pos_x = 0;
-    current_cursor_pos_y = val ? screenHeight - CHAR_HEIGHT : 0;
+    current_cursor_pos_y = val ? screenHeight - CHAR_HEIGHT*scale : 0;
 }
 
 // chequeo de bordes para saber en que estado se ecuentran los current curson para sumarles si queda espacio o liberar el espacio
 // para poder seguir escribiendo
 void bordersCheck() {
-    if (current_cursor_pos_x <= screenWidth - CHAR_WIDTH)
+    if (current_cursor_pos_x <= screenWidth - CHAR_WIDTH*scale)
         return;
 
     current_cursor_pos_x = 0;
-    if (current_cursor_pos_y <= screenHeight - 2 * CHAR_HEIGHT)
-        current_cursor_pos_y += CHAR_HEIGHT;
+    if (current_cursor_pos_y <= screenHeight - 2 * CHAR_HEIGHT*scale)
+        current_cursor_pos_y += CHAR_HEIGHT*scale;
     else
         scrollScreenUp();
 }

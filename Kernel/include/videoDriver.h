@@ -37,11 +37,14 @@ void vd_Initialize();
 void putPixel( uint32_t x, uint32_t y, uint32_t hexColor);
 // hace copia de memoria para cambiar el estado de los pixeles de la pantalla de lugar
 // mode establece si borra o no
-void modifyFrameBuffer( int mode);
+void modifyFrameBuffer(int mode, int scale);
 // dibuja un string en pantalla llamando al draw_char
 void draw_string(uint32_t x, uint32_t y, char* input,uint32_t fontColor, uint32_t backgroundColor);
 // dibuja un char en pantalla basandose en una font e imprimiendo con putpixel
 void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor, uint32_t backgroundColor );
+
+void draw_scalable_char(uint32_t x, uint32_t y, char character, uint32_t fontColor, uint32_t backgroundColor, int scale);
+
 // muestra la cantidad de pixeles que caben horizontalmente
 uint16_t getHorizontalPixelCount();
 // muestra la cantidad de pixeles que entran verticalmente
