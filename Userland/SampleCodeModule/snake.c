@@ -1,42 +1,28 @@
-// TODO: Replace malloc with a custom memory allocator.
 // TODO: Add a random number generator for fruits.
-// TODO: Add textures.
 // TODO: Add a score system.
 // TODO: Add a menu.
-#include <stdio.h>
-#include <time.h>
+#include "snake.h"
 
 /**
 * @brief  Screen definitions
 */
-#define WIDTH           80          // 80 columns of textures
-#define HEIGHT          25          // 25 lines of textures
+#define WIDTH           60         // 120 columns of textures
+#define HEIGHT          40          // 80 lines of textures
 #define REFRESH_RATE    50          // ms
 
 /**
 * @brief  Snake definitions
 */
-#define INITIAL_SIZE    3           // Snake initial size
-#define KEY_UP          0x48
-#define KEY_DOWN        0x50
-#define KEY_LEFT        0x4B
-#define KEY_RIGHT       0x4D
+#define INITIAL_SIZE    15           // Snake initial size
+#define KEY_UP          'w'
+#define KEY_DOWN        's'
+#define KEY_LEFT        'a'
+#define KEY_RIGHT       'd'
 
 /**
 * @brief  Boolean type definition
 */
-typedef enum { false, true } bool
-
-/**
-* @brief  Texture type definition
-*/
-typedef enum { 
-    EMPTY = 0,
-    SNAKE_HEAD,
-    SNAKE_BODY,
-    SNAKE_TAIL,
-    FRUIT,
-} TextureType;
+typedef enum { false = 0, true } boolean;
 
 /**
 * @brief  Direction type definition
@@ -51,6 +37,12 @@ typedef enum {
 /**
 * @brief  Snake type definition
 */
+typedef struct snakeNode {
+    int x, y;
+    
+    struct snakeNode * prev, * next;
+} SnakeNode;
+
 typedef struct {
     SnakeNode * head;
     SnakeNode * tail;
@@ -58,18 +50,20 @@ typedef struct {
     Direction direction;
 } Snake;
 
-typedef struct {
-    int x, y;
-    
-    SnakeNode * next, * prev;
-} SnakeNode;
-
 /**
 * @brief Game variables.
 */
 static TextureType map[WIDTH][HEIGHT];
-static bool GAME_OVER = false;
+static boolean GAME_OVER = false;
 static int EXISTING_FRUITS = 0;
+static int speed = 1;
+
+void drawOnMap(int x, int y, TextureType textureType){
+    map[x][y] = textureType;
+
+    // Draws texture on screen.
+    drawTexture(textureType, x, y);
+}
 
 /**
 * @brief Build a snake with the initial size.
@@ -77,82 +71,86 @@ static int EXISTING_FRUITS = 0;
 Snake * buildSnake(){
     if(WIDTH < INITIAL_SIZE) return NULL;
 
-    Snake * snake = malloc(sizeof(Snake));
+    Snake * snake = (Snake *) myMalloc(sizeof(Snake));
     SnakeNode * snakeBody[INITIAL_SIZE];
 
     // First, we build the snake body.
+    // GREATER THE INDEX, GREATER THE X. (RIGHT) SNAKE HEAD IS AT THE RIGHT.
     for(int i = 0; i < INITIAL_SIZE; i++){
-        snakeBody[i] = malloc(sizeof(SnakeNode));
-        snakeBody[i]->x = i;
-        snakeBody[i]->y = 0;
-        snakeBody[i]->next = NULL;
-        snakeBody[i]->prev = i != 0 ? snakeBody[i - 1] : NULL;
-    }
-
-    // Then, we link the nodes and draw them on the map.
-    for(int i = 0; i < INITIAL_SIZE; i++) { 
-        snakeBody[i]->next = i != INITIAL_SIZE - 1 ? snakeBody[i + 1] : NULL;
+        snakeBody[i] = (SnakeNode *) myMalloc(sizeof(SnakeNode));
+        snakeBody[i]->x = i + WIDTH/2;
+        snakeBody[i]->y = 0 + HEIGHT/2;
         drawOnMap(snakeBody[i]->x, snakeBody[i]->y, i == 0 ? SNAKE_TAIL : i == INITIAL_SIZE - 1 ? SNAKE_HEAD : SNAKE_BODY);
     }
 
+    
+    // Then, we link the nodes
+    for(int i = 0; i < INITIAL_SIZE - 1; i++) snakeBody[i]->next = snakeBody[i + 1];
+    for(int i = INITIAL_SIZE - 1; i > 0; i--) snakeBody[i]->prev = snakeBody[i - 1];
     // Finally, we set the snake head and tail.
     snake->head = snakeBody[INITIAL_SIZE - 1];
     snake->tail = snakeBody[0];
+    snake->direction = RIGHT;
     return snake;
 }
 
 void freeSnake(Snake * snake){
     SnakeNode * current = snake->head;
     while(current != NULL){
-        SnakeNode * next = current->next;
-        free(current);
-        current = next;
+        SnakeNode * prev = current->prev;
+        myFree(current);
+        current = prev;
     }
 
-    free(snake);
+    myFree(snake);
 }
 
 /**
 * @brief Move the snake one position in the current direction.
 */
 void moveSnake(Snake * snake){
-    SnakeNode * newHead = malloc(sizeof(SnakeNode));
-    newHead->x = snake.head->x;
-    newHead->y = snake.head->y;
+    SnakeNode * newHead = (SnakeNode *) myMalloc(sizeof(SnakeNode));
+    newHead->x = snake->head->x;
+    newHead->y = snake->head->y;
 
-    if(snake.direction == UP) newHead->y--;
-    else if(snake.direction == DOWN) newHead->y++;
-    else if(snake.direction == LEFT) newHead->x--;
-    else if(snake.direction == RIGHT) newHead->x++;
+    if(snake->direction == UP) newHead->y--;
+    else if(snake->direction == DOWN) newHead->y++;
+    else if(snake->direction == LEFT) newHead->x--;
+    else if(snake->direction == RIGHT) newHead->x++;
 
-    if(newHead->x > WIDTH || newHead->x < 0 || newHead->y > HEIGHT || newHead->y < 0 || map[newHead->x][newHead->y] == SNAKE_BODY || map[newHead->x][newHead->y] == SNAKE_HEAD) 
-    return GAME_OVER = true;
-    bool hasEaten = map[newHead->x][newHead->y] == FRUIT;
+    if(newHead->x > WIDTH || newHead->x < 0 || newHead->y > HEIGHT || newHead->y < 0){
+        GAME_OVER = true;
+        return;
+    }
+    boolean hasEaten = map[newHead->x][newHead->y] == FRUIT ? true : false;
 
     /**
     * HEAD
     */
-    newHead->next = snake.head;
-    snake.head->prev = newHead;
+    
     drawOnMap(newHead->x, newHead->y, SNAKE_HEAD);
-    drawOnMap(snake.head->x, snake.head->y, SNAKE_BODY);
+    drawOnMap(snake->head->x, snake->head->y, SNAKE_BODY);
 
-    snake.head = newHead;
+    newHead->prev = snake->head;
+    snake->head->next = newHead;
+    snake->head = newHead;
 
     /**
     * TAIL
     */
-    if(hasEaten) EXISTING_FRUITS--;
+    if(hasEaten == true) { EXISTING_FRUITS--; speed++;}
     else {
-        SnakeNode * newTail = snake.tail->prev;
-        newTail->next = NULL;
+        SnakeNode * newTail = snake->tail->next;
+        newTail->prev = NULL;
+        drawOnMap(snake->tail->x, snake->tail->y, EMPTY);
         drawOnMap(newTail->x, newTail->y, SNAKE_TAIL);
-        drawOnMap(snake.tail->x, snake.tail->y, EMPTY);
 
         // Free old tail
-        free(snake.tail);
-        snake.tail = newTail;
+        myFree(snake->tail);
+        snake->tail = newTail;
     }
+
+
 }
 
 void changeDirection(Snake * snake, Direction direction){
@@ -169,30 +167,17 @@ void changeDirection(Snake * snake, Direction direction){
 */
 // TODO: Add random position
 void addFruit(){
-    if(EXISTING_FRUITS > 0) return;
+    // FOR NOW...
+    if(EXISTING_FRUITS > 0 || map[50][30] != EMPTY) return;
     // TODO: Generate random position
-    int x, y;
+    int x = 50, y = 30;
 
     if(map[x][y] != EMPTY) return addFruit();
     drawOnMap(x, y, FRUIT);
     EXISTING_FRUITS++;
 }
 
-void drawOnMap(int x, int y, TextureType textureType){
-    map[x][y] = texture;
 
-    // TODO: Add textures.
-    // Obtains texture from texture type.
-    Texture texture = getTexture(textureType);
-
-    // Draws texture on screen.
-    int screenX = x * TEXTURE_WIDTH;
-    int screenY = y * TEXTURE_HEIGHT;
-
-    for(int i = 0; i < TEXTURE_WIDTH; i++)
-        for(int j = 0; j < TEXTURE_HEIGHT; j++)
-            putPixel(screenX + i, screenY + j, texture[i][j]);
-}
 
 void keyHandler(Snake * snake, int up, int down, int left, int right){
     if(getKeyState(up)) changeDirection(snake, UP);
@@ -202,17 +187,23 @@ void keyHandler(Snake * snake, int up, int down, int left, int right){
 }
 
 void playSnake(){
+    // setBuffer(1);
+    clearScreen(0);
+    GAME_OVER = false;
     Snake * snake = buildSnake();
 
-    while(!GAME_OVER){
-        moveSnake(snake);
 
+    while(GAME_OVER == false){
+        // Sleep for REFRESH_RATE ms, so the game doesn't run too fast.
+        sleep(REFRESH_RATE-speed);
+        
         addFruit();
         keyHandler(snake, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT);
+        moveSnake(snake);
 
-        // Sleep for REFRESH_RATE ms, so the game doesn't run too fast.
-        sleep(REFRESH_RATE); 
+        updateScreen();
     }
 
     freeSnake(snake);
+    // setBuffer(0);
 }
