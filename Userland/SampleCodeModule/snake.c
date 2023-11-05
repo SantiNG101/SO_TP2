@@ -1,5 +1,4 @@
-// TODO: Add a random number generator for fruits.
-// TODO: Add a score system.
+
 // TODO: Add a menu.
 #include "snake.h"
 
@@ -20,6 +19,12 @@
 #define KEY_RIGHT       'd'
 
 /**
+* @brief  Random constant variables
+*/
+#define MULTI 1103515245
+#define PLUS 12345
+#define MODULO 0x7fffffff
+/**
 * @brief  Boolean type definition
 */
 typedef enum { false = 0, true } boolean;
@@ -39,14 +44,14 @@ typedef enum {
 */
 typedef struct snakeNode {
     int x, y;
-    
+
     struct snakeNode * prev, * next;
 } SnakeNode;
 
 typedef struct {
     SnakeNode * head;
     SnakeNode * tail;
-
+    int score;
     Direction direction;
 } Snake;
 
@@ -63,6 +68,21 @@ void drawOnMap(int x, int y, TextureType textureType){
 
     // Draws texture on screen.
     drawTexture(textureType, x, y);
+}
+
+/**
+* @brief My rand function
+*/
+
+
+
+unsigned int mi_rand(unsigned int *seed) {
+    if (*seed == 0) {
+        *seed = 1;
+    }
+    // Operaciones "random"
+    *seed = (*seed * MULTI + PLUS) % MODULO;
+    return *seed;
 }
 
 /**
@@ -83,13 +103,14 @@ Snake * buildSnake(){
         drawOnMap(snakeBody[i]->x, snakeBody[i]->y, i == 0 ? SNAKE_TAIL : i == INITIAL_SIZE - 1 ? SNAKE_HEAD : SNAKE_BODY);
     }
 
-    
+
     // Then, we link the nodes
     for(int i = 0; i < INITIAL_SIZE - 1; i++) snakeBody[i]->next = snakeBody[i + 1];
     for(int i = INITIAL_SIZE - 1; i > 0; i--) snakeBody[i]->prev = snakeBody[i - 1];
     // Finally, we set the snake head and tail.
     snake->head = snakeBody[INITIAL_SIZE - 1];
     snake->tail = snakeBody[0];
+    snake->score = 0;
     snake->direction = RIGHT;
     return snake;
 }
@@ -127,7 +148,7 @@ void moveSnake(Snake * snake){
     /**
     * HEAD
     */
-    
+
     drawOnMap(newHead->x, newHead->y, SNAKE_HEAD);
     drawOnMap(snake->head->x, snake->head->y, SNAKE_BODY);
 
@@ -138,7 +159,7 @@ void moveSnake(Snake * snake){
     /**
     * TAIL
     */
-    if(hasEaten == true) { EXISTING_FRUITS--; speed++;}
+    if(hasEaten == true) { EXISTING_FRUITS--; speed++; snake->score++;}
     else {
         SnakeNode * newTail = snake->tail->next;
         newTail->prev = NULL;
@@ -165,12 +186,14 @@ void changeDirection(Snake * snake, Direction direction){
 /**
 * @brief Add a fruit to the map if necessary.
 */
-// TODO: Add random position
 void addFruit(){
     // FOR NOW...
     if(EXISTING_FRUITS > 0 || map[50][30] != EMPTY) return;
-    // TODO: Generate random position
-    int x = 50, y = 30;
+
+    unsigned int x=50, y=30;
+
+    mi_rand(&x);
+    mi_rand(&y);
 
     if(map[x][y] != EMPTY) return addFruit();
     drawOnMap(x, y, FRUIT);
@@ -196,11 +219,12 @@ void playSnake(){
     while(GAME_OVER == false){
         // Sleep for REFRESH_RATE ms, so the game doesn't run too fast.
         sleep(REFRESH_RATE-speed);
-        
+
         addFruit();
         keyHandler(snake, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT);
         moveSnake(snake);
-
+        draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X-3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,snake->score,COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
+        draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X+3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,snake->score,COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
         updateScreen();
     }
 
