@@ -108,9 +108,20 @@ void setPrintAnywhere(argumentsStruct args){
     setPrintingMode(args->r10,args->r9,0);
 }
 
+
+// Starts a sound. With the given frq
+void startS(argumentsStruct args){
+    playSound(args->r10);
+}
+
+// Stops the sound.
+void stopS(argumentsStruct args){
+    stopSound();
+}
+
 void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, setFontSize,
  timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
- setPrintAnywhere };
+ setPrintAnywhere, startS, stopS };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 

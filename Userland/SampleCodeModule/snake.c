@@ -1,6 +1,7 @@
 
 // TODO: Add a menu.
 #include "snake.h"
+#include "songs.h"
 
 /**
 * @brief  Screen definitions
@@ -12,18 +13,17 @@
 /**
 * @brief  Snake definitions
 */
-#define INITIAL_SIZE    15           // Snake initial size
+#define INITIAL_SIZE    3           // Snake initial size
 #define KEY_UP          'w'
 #define KEY_DOWN        's'
 #define KEY_LEFT        'a'
 #define KEY_RIGHT       'd'
 
-/**
-* @brief  Random constant variables
-*/
-#define MULTI 1103515245
-#define PLUS 12345
-#define MODULO 0x7fffffff
+#define KEY_UP2         'i'
+#define KEY_DOWN2       'k'
+#define KEY_LEFT2       'j'
+#define KEY_RIGHT2      'l'
+
 /**
 * @brief  Boolean type definition
 */
@@ -51,7 +51,8 @@ typedef struct snakeNode {
 typedef struct {
     SnakeNode * head;
     SnakeNode * tail;
-    int score;
+    int score, snakeNumber;
+
     Direction direction;
 } Snake;
 
@@ -59,7 +60,7 @@ typedef struct {
 * @brief Game variables.
 */
 static TextureType map[WIDTH][HEIGHT];
-static boolean GAME_OVER = false;
+static int GAME_OVER = 0;
 static int EXISTING_FRUITS = 0;
 static int speed = 1;
 
@@ -70,25 +71,11 @@ void drawOnMap(int x, int y, TextureType textureType){
     drawTexture(textureType, x, y);
 }
 
-/**
-* @brief My rand function
-*/
-
-
-
-unsigned int mi_rand(unsigned int *seed) {
-    if (*seed == 0) {
-        *seed = 1;
-    }
-    // Operaciones "random"
-    *seed = (*seed * MULTI + PLUS) % MODULO;
-    return *seed;
-}
 
 /**
 * @brief Build a snake with the initial size.
 */
-Snake * buildSnake(){
+Snake * buildSnake(int offsetX, int offsetY, int snakeNumber){
     if(WIDTH < INITIAL_SIZE) return NULL;
 
     Snake * snake = (Snake *) myMalloc(sizeof(Snake));
@@ -98,8 +85,8 @@ Snake * buildSnake(){
     // GREATER THE INDEX, GREATER THE X. (RIGHT) SNAKE HEAD IS AT THE RIGHT.
     for(int i = 0; i < INITIAL_SIZE; i++){
         snakeBody[i] = (SnakeNode *) myMalloc(sizeof(SnakeNode));
-        snakeBody[i]->x = i + WIDTH/2;
-        snakeBody[i]->y = 0 + HEIGHT/2;
+        snakeBody[i]->x = i + WIDTH/2 + offsetX;
+        snakeBody[i]->y = 0 + HEIGHT/2 + offsetY;
         drawOnMap(snakeBody[i]->x, snakeBody[i]->y, i == 0 ? SNAKE_TAIL : i == INITIAL_SIZE - 1 ? SNAKE_HEAD : SNAKE_BODY);
     }
 
@@ -112,6 +99,7 @@ Snake * buildSnake(){
     snake->tail = snakeBody[0];
     snake->score = 0;
     snake->direction = RIGHT;
+    snake->snakeNumber = snakeNumber;
     return snake;
 }
 
@@ -139,10 +127,11 @@ void moveSnake(Snake * snake){
     else if(snake->direction == LEFT) newHead->x--;
     else if(snake->direction == RIGHT) newHead->x++;
 
-    if(newHead->x > WIDTH || newHead->x < 0 || newHead->y > HEIGHT || newHead->y < 0){
-        GAME_OVER = true;
+    if(newHead->x > WIDTH || newHead->x < 0 || newHead->y > HEIGHT || newHead->y < 0 || (map[newHead->x][newHead->y] != EMPTY && map[newHead->x][newHead->y] != FRUIT)){
+        GAME_OVER = snake->snakeNumber;
         return;
     }
+
     boolean hasEaten = map[newHead->x][newHead->y] == FRUIT ? true : false;
 
     /**
@@ -159,7 +148,12 @@ void moveSnake(Snake * snake){
     /**
     * TAIL
     */
-    if(hasEaten == true) { EXISTING_FRUITS--; speed++; snake->score++;}
+    if(hasEaten == true) { 
+        EXISTING_FRUITS--; 
+        speed++; 
+        snake->score++;
+        startSound(440);
+    }
     else {
         SnakeNode * newTail = snake->tail->next;
         newTail->prev = NULL;
@@ -188,12 +182,8 @@ void changeDirection(Snake * snake, Direction direction){
 */
 void addFruit(){
     // FOR NOW...
-    if(EXISTING_FRUITS > 0 || map[50][30] != EMPTY) return;
-
-    unsigned int x=50, y=30;
-
-    mi_rand(&x);
-    mi_rand(&y);
+    if(EXISTING_FRUITS > 0) return;
+    unsigned int x = mi_rand() % WIDTH, y = mi_rand() % HEIGHT;
 
     if(map[x][y] != EMPTY) return addFruit();
     drawOnMap(x, y, FRUIT);
@@ -209,25 +199,105 @@ void keyHandler(Snake * snake, int up, int down, int left, int right){
     else if(getKeyState(right)) changeDirection(snake, RIGHT);
 }
 
-void playSnake(){
-    // setBuffer(1);
+void printMenuSnake(){
+    setPrintAnywhere(360,MIDDLE_SCREEN-30);
+        printf("SNAKE");
+        setPrintAnywhere(360 + NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Press 1 to play\n");
+        setPrintAnywhere(360+2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Press 2 to play 1v1\n");
+        setPrintAnywhere(360+3*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Press 3 to exit");
+}
+
+/**
+* @brief  Play snake.
+*/
+void playSnake(char option){
+    for(int i = 0; i < WIDTH; i++) 
+        for(int j = 0; j < HEIGHT; j++)
+            map[i][j] = EMPTY;
+
+    GAME_OVER = 0;
+    EXISTING_FRUITS = 0;
+    speed = 1;
+    
     clearScreen(0);
-    GAME_OVER = false;
-    Snake * snake = buildSnake();
 
+    Snake * snake = buildSnake(-5,-5, 1);
+    Snake * snake2;
 
-    while(GAME_OVER == false){
+    if(option == '2') {
+        snake2->direction = DOWN;
+        snake2 = buildSnake(5,5, 2);
+    }
+
+    while(GAME_OVER == 0){
         // Sleep for REFRESH_RATE ms, so the game doesn't run too fast.
         sleep(REFRESH_RATE-speed);
+        stopSound();
 
         addFruit();
         keyHandler(snake, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT);
         moveSnake(snake);
-        draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X-3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,snake->score,COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
         draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X+3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,snake->score,COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
+
+        if(option == '2'){
+            keyHandler(snake2, KEY_UP2, KEY_DOWN2, KEY_LEFT2, KEY_RIGHT2);
+            moveSnake(snake2);
+            draw_number(MIDDLE_SCREEN-MARQUER_DISTANCE_X-3*NUMBER_WIDTH,MARQUER_DISTANCE_Y,snake2->score,COLOR_LETTER_DEFAULT,COLOR_BACKGROUND_DEFAULT);
+        }
+
         updateScreen();
     }
 
+    clearScreen(0);
+    setPrintAnywhere(360,MIDDLE_SCREEN-30);
+    printf("GAME OVER");
+    if(option == '2'){
+        setPrintAnywhere(360 + NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Player %d won!", (GAME_OVER%2)+1);
+
+        setPrintAnywhere(360 + 2*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Player 1 score: %d", snake->score);
+        setPrintAnywhere(360 + 3*NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Player 2 score: %d", snake2->score);
+    }
+    else{
+        setPrintAnywhere(360 + NUMBER_HEIGHT,MIDDLE_SCREEN-30);
+        printf("Your score: %d", snake->score);
+    }
+    
+    
+    playSound(330, 100); // Nota E
+    playSound(294, 150); // Nota D#
+    playSound(262, 100); // Nota C#
+    playSound(220, 150); // Nota A
+    playSound(196, 150); // Nota G
+    playSound(175, 100); // Nota F
+    playSound(165, 150); // Nota E
+    playSound(147, 100); // Nota D
+    playSound(330, 100); // Nota E
+    playSound(196, 150); // Nota G
+
+    sleep(3000);
+
     freeSnake(snake);
-    // setBuffer(0);
+}
+
+
+/**
+*  
+*/
+void menuSnake(){
+    clearScreen(0);
+    printMenuSnake();
+    char option;
+
+    while((option = getChar())){
+        if(option == '1' || option == '2') playSnake(option);
+        if(option == '3') return;
+
+        printMenuSnake();
+    }
 }

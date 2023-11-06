@@ -9,5 +9,6 @@ void* myMalloc(size_t size);
 void myFree(void* address);
 
 uint16_t atoi(char * str);
-
+unsigned int mi_rand();
+void srand(unsigned int seed);
 #endif

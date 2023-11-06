@@ -1,4 +1,6 @@
 GLOBAL playSound
+GLOBAL startSound
+GLOBAL stopSound
 
 section .text
 
@@ -7,6 +9,19 @@ playSound:
     mov r10, rdi
     mov r9, rsi
     mov rdi, 6
+    INT 80h
+
+    ret
+
+startSound:
+    mov r10, rdi
+    mov rdi, 15
+    INT 80h
+
+    ret
+    
+stopSound:
+    mov rdi, 16
     INT 80h
 
     ret

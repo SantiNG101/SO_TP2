@@ -24,6 +24,7 @@ extern void setBuffer(int mode);
 extern int getKeyState(int keyCode);
 extern void clearScreen(int mode);
 extern void setFontSize(int size);
+extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
 //
 // functionName: setBackgroundColour

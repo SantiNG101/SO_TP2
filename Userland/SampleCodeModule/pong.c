@@ -27,7 +27,7 @@ const colour2 colors2[]= {{"black",BLACK},{"blue",BLUE},{"green",GREEN},
                         {"lightred",LIGHT_RED},{"lightpurple",LIGHT_PURPLE},{"yellow",YELLOW},
                         {"white",WHITE}};
 
-extern void setPrintAnywhere(uint32_t y, uint32_t x);
+// extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
 static int keepGoing = 1;
 

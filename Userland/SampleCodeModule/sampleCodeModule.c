@@ -26,7 +26,7 @@ int main() {
                 menuPong();
                 break;
             case '2':
-                playSnake();
+                menuSnake();
                 break;
             case '3':
                 terminalStart();

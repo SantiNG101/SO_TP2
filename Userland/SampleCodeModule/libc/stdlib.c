@@ -101,3 +101,26 @@ uint16_t atoi(char * str){
 }
 
 //#-------------------------------------------------------#
+
+/**
+* @brief  Random constant variables
+*/
+#define MULTI 1103515245
+#define PLUS 12345
+#define MODULO 0x7fffffff
+
+/**
+* @brief My rand function
+*/
+static unsigned int seed = 11234;
+
+void srand(unsigned int new_seed) {
+    seed = new_seed;
+}
+
+unsigned int mi_rand() {
+    // Operaciones "random"
+    seed = (seed * MULTI + PLUS) % MODULO;
+    return seed;
+}
+
