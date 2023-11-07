@@ -8,7 +8,7 @@
 */
 #define WIDTH           60         // 120 columns of textures
 #define HEIGHT          40          // 80 lines of textures
-#define REFRESH_RATE    50          // ms
+#define REFRESH_RATE    70          // ms
 
 /**
 * @brief  Snake definitions
@@ -33,10 +33,10 @@ typedef enum { false = 0, true } boolean;
 * @brief  Direction type definition
 */
 typedef enum {
-    UP,
+    RIGHT,
     DOWN,
-    LEFT,
-    RIGHT
+    UP,
+    LEFT
 } Direction;
 
 /**
@@ -52,6 +52,7 @@ typedef struct {
     SnakeNode * head;
     SnakeNode * tail;
     int score, snakeNumber;
+    uint64_t colour;
 
     Direction direction;
 } Snake;
@@ -64,18 +65,18 @@ static int GAME_OVER = 0;
 static int EXISTING_FRUITS = 0;
 static int speed = 1;
 
-void drawOnMap(int x, int y, TextureType textureType){
+void drawOnMap(int x, int y, TextureType textureType, uint64_t colour){
     map[x][y] = textureType;
 
     // Draws texture on screen.
-    drawTexture(textureType, x, y);
+    drawTexture(textureType, x, y, colour);
 }
 
 
 /**
 * @brief Build a snake with the initial size.
 */
-Snake * buildSnake(int offsetX, int offsetY, int snakeNumber){
+Snake * buildSnake(int offsetX, int offsetY, int snakeNumber, uint64_t colour){
     if(WIDTH < INITIAL_SIZE) return NULL;
 
     Snake * snake = (Snake *) myMalloc(sizeof(Snake));
@@ -87,7 +88,7 @@ Snake * buildSnake(int offsetX, int offsetY, int snakeNumber){
         snakeBody[i] = (SnakeNode *) myMalloc(sizeof(SnakeNode));
         snakeBody[i]->x = i + WIDTH/2 + offsetX;
         snakeBody[i]->y = 0 + HEIGHT/2 + offsetY;
-        drawOnMap(snakeBody[i]->x, snakeBody[i]->y, i == 0 ? SNAKE_TAIL : i == INITIAL_SIZE - 1 ? SNAKE_HEAD : SNAKE_BODY);
+        drawOnMap(snakeBody[i]->x, snakeBody[i]->y, i == 0 ? SNAKE_TAIL : i == INITIAL_SIZE - 1 ? SNAKE_HEAD : SNAKE_BODY, colour);
     }
 
 
@@ -100,6 +101,7 @@ Snake * buildSnake(int offsetX, int offsetY, int snakeNumber){
     snake->score = 0;
     snake->direction = RIGHT;
     snake->snakeNumber = snakeNumber;
+    snake->colour = colour;
     return snake;
 }
 
@@ -138,8 +140,9 @@ void moveSnake(Snake * snake){
     * HEAD
     */
 
-    drawOnMap(newHead->x, newHead->y, SNAKE_HEAD);
-    drawOnMap(snake->head->x, snake->head->y, SNAKE_BODY);
+    drawOnMap(newHead->x, newHead->y, SNAKE_HEAD+snake->direction, snake->colour);
+
+    drawOnMap(snake->head->x, snake->head->y, SNAKE_BODY, snake->colour);
 
     newHead->prev = snake->head;
     snake->head->next = newHead;
@@ -157,8 +160,25 @@ void moveSnake(Snake * snake){
     else {
         SnakeNode * newTail = snake->tail->next;
         newTail->prev = NULL;
-        drawOnMap(snake->tail->x, snake->tail->y, EMPTY);
-        drawOnMap(newTail->x, newTail->y, SNAKE_TAIL);
+        drawOnMap(snake->tail->x, snake->tail->y, EMPTY, BLACK);
+        int x = snake->tail->x - newTail->x;
+        int y = snake->tail->y - newTail->y;
+
+        // | x  | y  | texture
+        // | 0  | 1  | SNAKE_TAIL (BODY AT TOP)
+        // | 0  | -1 | SNAKE_TAIL (BODY AT BOTTOM)
+        // | 1  | 0  | SNAKE_TAIL (BODY AT LEFT)
+        // | -1 | 0  | SNAKE_TAIL (BODY AT RIGHT)
+
+        // NOT POSSIBLE, Because the snake can't go back.
+        // | 1  | 1  |
+        // | 1  | -1 |
+        // | -1 | 1  |
+        // | -1 | -1 |
+        if(x == 0 && y == 1) drawOnMap(newTail->x, newTail->y, SNAKE_TAIL+UP, snake->colour);
+        else if(x == 0 && y == -1) drawOnMap(newTail->x, newTail->y, SNAKE_TAIL+DOWN, snake->colour);
+        else if(x == 1 && y == 0) drawOnMap(newTail->x, newTail->y, SNAKE_TAIL+LEFT, snake->colour);
+        else if(x == -1 && y == 0) drawOnMap(newTail->x, newTail->y, SNAKE_TAIL+RIGHT, snake->colour);
 
         // Free old tail
         myFree(snake->tail);
@@ -181,12 +201,11 @@ void changeDirection(Snake * snake, Direction direction){
 * @brief Add a fruit to the map if necessary.
 */
 void addFruit(){
-    // FOR NOW...
     if(EXISTING_FRUITS > 0) return;
     unsigned int x = mi_rand() % WIDTH, y = mi_rand() % HEIGHT;
 
     if(map[x][y] != EMPTY) return addFruit();
-    drawOnMap(x, y, FRUIT);
+    drawOnMap(x, y, FRUIT, RED);
     EXISTING_FRUITS++;
 }
 
@@ -224,12 +243,12 @@ void playSnake(char option){
     
     clearScreen(0);
 
-    Snake * snake = buildSnake(-5,-5, 1);
+    Snake * snake = buildSnake(-5,-5, 1, GREEN);
     Snake * snake2;
 
     if(option == '2') {
         snake2->direction = DOWN;
-        snake2 = buildSnake(5,5, 2);
+        snake2 = buildSnake(5,5, 2, CYAN);
     }
 
     while(GAME_OVER == 0){

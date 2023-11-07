@@ -28,35 +28,34 @@
 /**
 * @brief  Texture type definition
 */
-typedef enum { 
-    EMPTY = 0,
-    SNAKE_HEAD,
-    SNAKE_BODY,
-    SNAKE_TAIL,
-    FRUIT
-} TextureType;
-
 // typedef enum { 
 //     EMPTY = 0,
-//     SNAKE_HEAD = 1,
-//     // SNAKE_HEAD_UP,
-//     // SNAKE_HEAD_DOWN,
-//     // SNAKE_HEAD_LEFT,
-//     // SNAKE_HEAD_RIGHT,
-
+//     SNAKE_HEAD,
 //     SNAKE_BODY,
-//     // SNAKE_BODY_TURN_UP,
-//     // SNAKE_BODY_TURN_DOWN,
-//     // SNAKE_BODY_TURN_LEFT,
-//     // SNAKE_BODY_TURN_RIGHT,
-
 //     SNAKE_TAIL,
-//     // SNAKE_TAIL_UP,
-//     // SNAKE_TAIL_DOWN,
-//     // SNAKE_TAIL_LEFT,
-//     // SNAKE_TAIL_RIGHT,
+//     FRUIT
+// } TextureType;
 
-//  } TextureType;
+typedef enum { 
+    EMPTY = 0,
+
+    // SNAKE_HEAD + DIRECTION
+    SNAKE_HEAD = 1, // RIGHT
+    SNAKE_HEAD_DOWN,
+    SNAKE_HEAD_UP,
+    SNAKE_HEAD_LEFT,
+
+    SNAKE_BODY,
+
+    // IF SNAKE BODY IS VERTICAL OR HORIZONTAL, THEN I KEEP THE SAME TAIL
+    // ELSE I CHANGE IT USING. SNAKE_BODY
+    SNAKE_TAIL, // RIGHT
+    SNAKE_TAIL_DOWN,
+    SNAKE_TAIL_UP,
+    SNAKE_TAIL_LEFT,
+
+    FRUIT,
+ } TextureType;
 
 // DIRECTION:
 // typedef enum {
@@ -70,6 +69,6 @@ typedef enum {
 // EACH ROW HAS 8 BITS (1 BYTE), and each bit represents a pixel (1 if it's on, 0 if it's off)
 typedef uint16_t Texture[TEXTURE_HEIGHT];
 
-void drawTexture(TextureType textureType, int x, int y);
+void drawTexture(TextureType textureType, int x, int y, uint64_t colour);
 
 #endif
