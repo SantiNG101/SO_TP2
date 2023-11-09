@@ -2,12 +2,14 @@
 #define _IRQ_H_
 
 #include <idt/loader.h>
+#include <stdint.h>
+#include <registers.h>
 
 /*
  * La interrupción propiamente armada. Lo que hace el dispatcher es procesar la petición.
  * Y por consiguiente llamar a la propia interrupción.
  */
-void irqDispatcher(uint8_t irqID);
+void irqDispatcher(uint8_t irqID, argumentsStruct args, uint64_t oldRSP);
 
 void _irq00Handler(void);   // timer tick
 void _irq01Handler(void);   // Keyboard

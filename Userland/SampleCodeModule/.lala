@@ -1,0 +1,1 @@
+# $(GCC) $(GCCFLAGS) -T sampleCodeModule.ld _loader.c $(SOURCES) others.a ./libc/libc.a -o ../$(MODULE) -I./libc/include

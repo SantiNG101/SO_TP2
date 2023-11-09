@@ -2,31 +2,37 @@
 //ILLEGAL
 static uint64_t regs[16] = {0};
 
-void showRegisterStatus(){
+void showRegisterStatus(argumentsStruct args, uint64_t oldRSP){
     enter();
-    saveRegisterStatus();
+    saveRegisterStatus(args, oldRSP);
     printRegisterStatus();
     enter();
 }
 
-void saveRegisterStatus(){
-    regs[0] = getCurrentRAX();
-    regs[1] = getCurrentRBX();
-    regs[2] = getCurrentRCX();
-    regs[3] = getCurrentRDX();
-    regs[4] = getCurrentRBP();
-    regs[5] = getCurrentRSI();
-    regs[6] = getCurrentRDI();
-    regs[7] = getCurrentR15();
-    regs[8] = getCurrentR14();
-    regs[9] = getCurrentR13();
-    regs[10] = getCurrentR12();
-    regs[11] = getCurrentR11();
-    regs[12] = getCurrentR10();
-    regs[13] = getCurrentR9();
-    regs[14] = getCurrentR8();
-    regs[15] = getCurrentRSP();
+void saveRegisterStatus(argumentsStruct args, uint64_t oldRSP){
+    regs[0] = args->rax;
+    regs[1] = args->rbx;
+    regs[2] = args->rcx;
+    regs[3] = args->rdx;
+    regs[4] = args->prevRBP;
+    regs[5] = args->rsi;
+    regs[15] = oldRSP;
+    regs[6] = args->rdi;
+    regs[7] = args->r15;
+    regs[8] = args->r14;
+    regs[9] = args->r13;
+    regs[10] = args->r12;
+    regs[11] = args->r11;
+    regs[12] = args->r10;
+    regs[13] = args->r9;
+    regs[14] = args->r8;
 }
+
+// void printRegister(char * str, uint64_t regValue){
+//     print(str);
+//     printHex(regValue);
+//     enter();
+// }
 
 void printRegisterStatus(){
     printRegister("A: ", regs[0]);

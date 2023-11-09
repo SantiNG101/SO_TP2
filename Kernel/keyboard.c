@@ -61,14 +61,14 @@ const unsigned char shftKeyBoard[6][16] = {{ '\0', '\0', '!', '@', '#', '$', '%'
 
 static char currentBuff = 0;
 
-void keyboardHandler(){
+void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
     if((read_port(KEYBOARD_STATUS_PORT) & 0x01) == 0) return;   // Me aseguro que haya dato para leer.
 
     uint8_t data = read_port(KEYBOARD_DATA_PORT);
 
     if(isSpecial(data)){
         if(data == 0x57) {
-            saveRegisterStatus();
+            saveRegisterStatus(args, oldRSP);
         }
         char sp = keyboard[(data >> 4) & 0x07][data & 0x0F];
 

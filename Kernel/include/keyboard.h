@@ -3,6 +3,7 @@
 //
 #ifndef KERNEL_KEYBOARD_HANDLER_H
 #define KERNEL_KEYBOARD_HANDLER_H
+#include <stdint.h>
 #include <naiveConsole.h>
 #include <registers.h>
 #define toMinus(c) (c | 0x20)
@@ -19,6 +20,6 @@ extern unsigned char read_port(unsigned char mode);
 //getC Function
 int getC();
 
-void keyboardHandler();
+void keyboardHandler(argumentsStruct args, uint64_t oldRSP);
 
 #endif //KERNEL_KEYBOARD_HANDLER_H

@@ -8,7 +8,7 @@
 /* Arreglo de excepciones para que sea fácilmente mantenible. */
 static void (* exceptions[])(uint64_t * rip) = { zeroDivisionException, invalidOperationException };
 
-uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
+uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip, argumentsStruct args, uint64_t oldRSP){
     if(ex >= sizeof(exceptions) / sizeof(exceptions[0]))
         return;
 
@@ -17,13 +17,14 @@ uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip){
     print("-------- [ KERNEL EXCEPTION ] - Exception ");
     printDec(ex);
     print(" @ 0x");
+    // This works.
     printHex(rip);
     print(" --------");
     enter();
 
     setForegroundColour(lForeground);
     // Imprimo los registros.
-    showRegisterStatus();
+    showRegisterStatus(args, oldRSP);
     enter();
     setForegroundColour(RED);
 

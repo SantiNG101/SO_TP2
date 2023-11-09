@@ -90,6 +90,8 @@ section .text
     pushState
     
     mov rdi, %1                 ; Paso el parametro
+    mov rsi, rsp                ; Paso la estructura del estado
+    mov rcx, [rbp + 8*4]        ; Paso el rsp viejo
     call irqDispatcher          ; Ejecuto la interrupción correspondiente con irqDispatcher
 
     mov al, 20h                 ; Signal PIC EOI (End of Interrupt)
@@ -107,6 +109,9 @@ section .text
 
     mov rdi, %1                 ; Paso el parametro
     mov rsi, [rbp + 8]
+    mov rdx, rsp                ; Paso la estructura del estado.
+    ; Tengo que pasar el RSP Viejo.
+    mov rcx, [rbp + 32]
     call exceptionDispatcher    ; Ejecuto la excepción correspondiente
     mov [rbp + 8], rax          ; Cambio el RIP
 
