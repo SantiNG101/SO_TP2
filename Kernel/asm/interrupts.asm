@@ -87,17 +87,23 @@ section .text
 %endmacro
 
 %macro irqHandlerMaster 1
+    push rbp
+    mov rbp, rsp            ; Armo el stack frame
+
     pushState
     
     mov rdi, %1                 ; Paso el parametro
     mov rsi, rsp                ; Paso la estructura del estado
-    mov rcx, [rbp + 8*4]        ; Paso el rsp viejo
+    mov rcx, [rbp + 32]         ; Paso el rsp viejo
     call irqDispatcher          ; Ejecuto la interrupción correspondiente con irqDispatcher
 
     mov al, 20h                 ; Signal PIC EOI (End of Interrupt)
     out 20h, al
 
     popState
+
+    mov rsp, rbp            ; Desarmo el StackFrame
+    pop rbp
     iretq
 %endmacro
 
