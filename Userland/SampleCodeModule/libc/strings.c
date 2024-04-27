@@ -23,7 +23,7 @@ char * strcpy(const char * src, char * dest){
     int i = 0;
     while ((dest[i] = src[i])) i++;
     
-    return dest[0];
+    return dest;
 }
 
 char * strcat(const char *src, char * dest){

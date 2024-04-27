@@ -1,4 +1,4 @@
-include Makefile.inc
+include ../../Makefile.inc
 
 SOURCES=$(wildcard *.c)
 SOURCES_ASM=$(wildcard asm/*.asm)

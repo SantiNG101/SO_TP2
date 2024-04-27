@@ -9,8 +9,8 @@ STATICLIBS=./libc/libc.a
 all: stdlib $(MODULE)
 
 $(MODULE): $(SOURCES) others.a
-	$(GCC) $(GCCFLAGS) -T sampleCodeModule.ld _loader.c $(SOURCES) others.a ./libc/libc.a -o ../$(MODULE) -I./libc/include
-	$(GCC) $(GCCFLAGS) -I./libc/include -T sampleCodeModule.ld -Wl,--oformat=elf64-x86-64 _loader.c $(SOURCES) $(OBJECTS_ASM) others.a ./libc/libc.a -o ../$(MODULE) -o ../0000-sampleCodeModule.elf
+	$(GCC) $(GCCFLAGS) -I./libc/include -T sampleCodeModule.ld _loader.c $(SOURCES) others.a ./libc/libc.a -o ../$(MODULE)
+	$(GCC) $(GCCFLAGS) -I./libc/include -T sampleCodeModule.ld -Wl,--oformat=elf64-x86-64,-no-pie _loader.c $(SOURCES) others.a ./libc/libc.a -o ../0000-sampleCodeModule.elf
 	
 %.o: %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

@@ -1,9 +1,9 @@
 #include "include/stdio.h"
-const char buff[255] = {0};
+char buff[255] = {0};
 // Llama solo a getChar() y debe funcionar. 
 char * getString(void){
     char c;
-    char * str = buff;
+    char *str = buff;
 
     while((c = getChar()) != '\n'){
         if(c != '\b' || buff!= str)
@@ -11,7 +11,7 @@ char * getString(void){
         switch(c){
             case '\b':
                 if(str != buff)
-                    *--str;
+                    --str;
                 *str = 0;
                 break;
             default:
