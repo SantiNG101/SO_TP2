@@ -91,7 +91,7 @@ int changeCommand(int insNumber, char * current){
 int saveCommand(char * current){
     buffer.size += buffer.size <= BUFFER_SIZE;                          // Cambio el tamaño del buffer
 
-    int size =  buffer.data[buffer.readWriteIndex].size = strlen(current);
+    buffer.data[buffer.readWriteIndex].size = strlen(current);
     strcpy(current, buffer.data[buffer.readWriteIndex].command);        // Guardo el commando.
 
     buffer.readWriteIndex = (buffer.readWriteIndex + 1) % BUFFER_SIZE;  // Cambio la posición en la que leo y guardo.

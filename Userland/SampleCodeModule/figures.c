@@ -282,7 +282,7 @@ void draw_CircleFilled(int centerX, int centerY, int radius, uint32_t color) {
 }
 
 
-uint8_t * numberBitmap( uint8_t number ){
+const uint8_t * numberBitmap( uint8_t number ){
     return numbersXL[number];
 }
 
@@ -291,7 +291,7 @@ void draw_numberXL(uint32_t x, uint32_t y, char character, uint32_t fontColor,ui
     uint32_t auxx = x, auxy = y;
     char pixIsPresent = 0;
 
-    uint8_t* font_char = numberBitmap(character);
+    const uint8_t* font_char = numberBitmap(character);
 
     for(int i = 0; i < NUMBER_HEIGHT; i++){
         for(int j = 0; j < NUMBER_WIDTH; j++){

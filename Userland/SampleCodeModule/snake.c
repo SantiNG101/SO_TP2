@@ -247,8 +247,8 @@ void playSnake(char option){
     Snake * snake2;
 
     if(option == '2') {
-        snake2->direction = DOWN;
         snake2 = buildSnake(5,5, 2, CYAN);
+        snake2->direction = DOWN;
     }
 
     while(GAME_OVER == 0){

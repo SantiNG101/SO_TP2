@@ -2,17 +2,7 @@
 #include <stdlib.h>
 // tamaño de pantalla
 // 1024 x 768
-#define SIZEOFARR(arr) (sizeof(arr)/sizeof(arr[0]) )
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
-#define GAME_OVER 3
-#define BAR_MOV 10
-#define DEFAULT_BRADIUS 10
-#define DEFAULT_BARSPEED 10
-#define DEFAULT_BALLSPEED 8
-#define DEFAULT_P1C BLUE
-#define DEFAULT_P2C RED
-#define DEFAULT_BC LIGHT_GREEN
+
 
 //Struct de colores para el pong
 typedef struct{
