@@ -21,5 +21,6 @@ extern unsigned char read_port(unsigned char mode);
 int getC();
 
 void keyboardHandler(argumentsStruct args, uint64_t oldRSP);
+int getKeyState(int keyCode);
 
 #endif //KERNEL_KEYBOARD_HANDLER_H

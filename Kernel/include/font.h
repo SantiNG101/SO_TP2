@@ -272,7 +272,7 @@
 #define XXXXXXXX 0xFF
 
 // conseguir la formacion en pixeles del char
-uint8_t * charBitmap(uint8_t character);
+const uint8_t * charBitmap(uint8_t character);
 
 
 #endif

@@ -6,6 +6,8 @@
 
 // inicializa los valores necesarios de la pantalla
 void screen_Initialize();
+
+void setPrintingMode(uint32_t y, uint32_t x ,int bufferMode);
 // void printStrScreenFrmt( char * str, uint32_t font_color, uint32_t background_Color );
 // setea el modo terminal para que imprima en la ultima linea
 void setTerminalPrintingMode();

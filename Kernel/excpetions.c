@@ -4,13 +4,15 @@
 //
 
 #include <idt/exceptions.h>
+#include <keyboard.h>
+void cleanActualRegisters();
 
 /* Arreglo de excepciones para que sea fácilmente mantenible. */
 static void (* exceptions[])(uint64_t * rip) = { zeroDivisionException, invalidOperationException };
 
 uint64_t exceptionDispatcher(uint8_t ex, uint64_t rip, argumentsStruct args, uint64_t oldRSP){
     if(ex >= sizeof(exceptions) / sizeof(exceptions[0]))
-        return;
+        return -1;
 
     uint32_t lForeground = getForegroundColour();
     setForegroundColour(RED);

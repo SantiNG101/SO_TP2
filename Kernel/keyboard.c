@@ -78,7 +78,7 @@ void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
         //
         // En otras palabras, como que el valor de SCR, NUM, CAP es de 4, 5 y 6 respectivamente. Es evidente que tienen
         // El bit de peso 2 activado. Mientras que los otros no lo tienen.
-        if(sp & 0x04 && isReleased(data) || !(sp & 0x04))
+        if((sp & 0x04 && isReleased(data)) || !(sp & 0x04))
             setState(sp);
         return;
     }
@@ -88,7 +88,7 @@ void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
         keyCode = toMayus(keyCode);
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
-    if(keyStates[keyCode] = !isReleased(data))
+    if((keyStates[keyCode] = (!isReleased(data))))
         currentBuff = keyCode;
 
     return;

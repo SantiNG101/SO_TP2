@@ -25,14 +25,14 @@ static void setup_IDT_entry(uint8_t, uint64_t, IRQ_T);
 void load_idt(){
     // Comienzo a agregar los IDTR
     /* INTERRUPCIONES */
-    setup_IDT_entry(0x20, &_irq00Handler, HARDWAR_I);           // Seteo el timerTick en el 20h
-    setup_IDT_entry(0x21, &_irq01Handler, HARDWAR_I);           // Seteo el keyboardHandler en el 21h
+    setup_IDT_entry(0x21, (uint64_t) &_irq01Handler, HARDWAR_I);           // Seteo el keyboardHandler en el 21h
+    setup_IDT_entry(0x20, (uint64_t) &_irq00Handler, HARDWAR_I);           // Seteo el timerTick en el 20h
 
-    setup_IDT_entry(0x80, &_irq02Handler, SYSCALL_I);           // Seteo la syscall.
+    setup_IDT_entry(0x80, (uint64_t) &_irq02Handler, SYSCALL_I);           // Seteo la syscall.
 
     /* Cargo las excepciones */
-    setup_IDT_entry(0x00, &_exception00Handler, EXCEPTI_I);     // Error al dividir
-    setup_IDT_entry(0x06, &_exception01Handler, EXCEPTI_I);     // Operación invalida.
+    setup_IDT_entry(0x00, (uint64_t) &_exception00Handler, EXCEPTI_I);     // Error al dividir
+    setup_IDT_entry(0x06, (uint64_t) &_exception01Handler, EXCEPTI_I);     // Operación invalida.
 
     picMasterMask(0xFC);
     picSlaveMask(0xFF);
