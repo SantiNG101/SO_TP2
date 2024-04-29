@@ -109,10 +109,10 @@ void modifyFrameBuffer(int mode, int scale){
 	// [2,3] = [no double buffer (mode 1), double buffer (mode 1)]
 	int option = mode * 2 + doubleBuffer; 
 
-	if(option == 0)	return memcpy(VBE_mode_info->framebuffer,VBE_mode_info->framebuffer+ charHeight*1024*3, bufferlen - charHeight*1024*3); 
-	if(option == 1)	return memcpy(buffer,buffer+ charHeight*1024*3,bufferlen - charHeight*1024*3);
-	if(option == 2)	return memset(VBE_mode_info->framebuffer,0,bufferlen);
-	if(option == 3)	return memset(buffer,0,bufferlen);
+	if(option == 0) memcpy(VBE_mode_info->framebuffer,VBE_mode_info->framebuffer+ charHeight*1024*3, bufferlen - charHeight*1024*3); 
+	if(option == 1) memcpy(buffer,buffer+ charHeight*1024*3,bufferlen - charHeight*1024*3);
+	if(option == 2)	memset(VBE_mode_info->framebuffer,0,bufferlen);
+	if(option == 3)	memset(buffer,0,bufferlen);
 
 	// if ( doubleBuffer ){
 	// 	if (mode){
@@ -155,7 +155,7 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 	uint32_t auxx = x, auxy = y;
 	char pixIsPresent = 0;
 
-	uint8_t* font_char = charBitmap(character);
+	const uint8_t* font_char = charBitmap(character);
 
 	for(int i = 0; i < CHAR_HEIGHT; i++){
 		for(int j = 0; j < CHAR_WIDTH; j++){
@@ -166,7 +166,7 @@ void draw_char( uint32_t x, uint32_t y, char character, uint32_t fontColor,
 				putPixel( auxx, auxy, fontColor );
 			else
 				putPixel( auxx, auxy, backgroundColor );
-				auxx++;
+			auxx++;
 		}
 		auxx = x;
 		auxy++;
@@ -179,7 +179,7 @@ void draw_scalable_char(uint32_t x, uint32_t y, char character, uint32_t fontCol
 	uint32_t auxx = x, auxy = y;
 	char pixIsPresent = 0;
 
-	uint8_t* font_char = charBitmap(character);
+	const uint8_t* font_char = charBitmap(character);
 	uint32_t scaledWidth = CHAR_WIDTH * scale;
 	uint32_t scaledHeight = CHAR_HEIGHT * scale;
 
