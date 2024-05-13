@@ -2,7 +2,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
-//#include <screen.h>
+#include <process.h>
 #include <speaker.h>
 #include <stdio.h>
 
@@ -21,6 +21,8 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 extern void kernelASM(uint64_t addr);
+extern void haltcpu();
+extern void _cli();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -95,6 +97,15 @@ int divisionBy(int x, int y){
 int main()
 {
     screen_Initialize();
+	process_init();
+	// Activate interruptions
+	_cli();
+
+	while (1)
+	{
+		haltcpu();
+	}
+	
 	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;
 }
