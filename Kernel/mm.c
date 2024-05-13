@@ -22,7 +22,7 @@ void mem_initialize(){
 }
 
 
-void* memalloc(uint64_t size){
+void* memalloc(int size){
     if ( current_mem == stop_mem || current_mem + size > stop_mem )
         return -1; // return cant assign
     char* aux = current_mem;
