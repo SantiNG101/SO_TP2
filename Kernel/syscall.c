@@ -9,6 +9,7 @@
 #include <time.h>
 #include <videoDriver.h>
 #include <registers.h>
+#include <process.h>
 
 
 /*
@@ -123,7 +124,7 @@ void stopS(argumentsStruct args){
 
 // rdi, rsi, rdx, rcx, r8 and r9 in that order
 void execve(argumentsStruct args){
-    create_process(args->rsi, args->rdx, args->rcx, args->r8);
+    process_create(args->rsi, args->rdx, args->rcx, args->r8);
 }
 
 void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, setFontSize,

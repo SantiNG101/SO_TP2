@@ -26,7 +26,7 @@
 typedef struct pcb* pcb_pointer;
 
 void process_init();
-void process_create( __pid_t pidParent, uint64_t rip, int argc, char* argv[] );
-int align_stack( int init);
+void process_create( int pidParent, uint64_t rip, int argc, char* argv[] );
+uint64_t* align_stack( uint64_t* init);
 
 #endif

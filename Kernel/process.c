@@ -11,16 +11,16 @@ struct sch_info{
 };
 
 struct children_info{
-    uint64_t* first;
-    uint64_t* current;
+    struct childern_info* first;
+    struct childern_info* current;
 };
 
 struct children{
-    __pid_t pid;
+    int pid;
 };
 
 typedef struct pcb {
-    __pid_t pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
+    int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
     //uint64_t registers[17];         // 16 registers + RIP (in last position)
     struct sch_info scheduling_info;
     struct children_info childs;
@@ -31,7 +31,7 @@ typedef struct pcb {
                                     // array of fd and devices
 }pcb;
 
-static __pid_t pid =1;
+static int pid =1;
 static pcb processes[1000];
 
 // allocs initial memory structure and creates the init process
@@ -44,7 +44,7 @@ void process_init(){
 }
 
 // for syscall fork => return;
-void process_create( __pid_t pidParent, uint64_t rip, int argc, char* argv[] ){
+void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
 
     pcb_pointer parent;
     if ( pid != 1 )
@@ -98,7 +98,7 @@ void process_create( __pid_t pidParent, uint64_t rip, int argc, char* argv[] ){
     (*stack_current) = rip;                         // Loading the RIP
     stack_current -=sizeof(uint64_t);
 
-    uint64_t regs[16] = getRegisters();
+    uint64_t* regs = getRegisters();
     regs[5] = argc;
     regs[6] = argv;
     
@@ -119,9 +119,11 @@ void process_create( __pid_t pidParent, uint64_t rip, int argc, char* argv[] ){
 }
 
 
-int align_stack( int init){
-    while( (init%8) != 0 )
-        init-1;
+uint64_t* align_stack( uint64_t* init){
+    while( ((int)init%8) != 0 ){
+        init= init-1;
+    }
+        
     return init;
 }
 

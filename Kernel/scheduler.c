@@ -21,7 +21,7 @@ void initialize_scheduler(){
     current_dir += (int) scheduling_table_dir + sizeof(entry*);
 }
 
-
+/*
 void* schedule( char* actual_pointer){
 
     int chose = 0;
@@ -39,6 +39,8 @@ void* schedule( char* actual_pointer){
         }
         local_mem = scheduling_table_dir;
     }
+    
     // no busywaiting, tengo un proceso siempre ready que en caso de que esten todos bloqueados 
     // => elijo este que hace en un while 1 hlt => para esperar una interrupcion
 }
+*/

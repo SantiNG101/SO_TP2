@@ -99,13 +99,20 @@ int main()
     screen_Initialize();
 	process_init();
 	// Activate interruptions
+	print("hola mundo");
+	int i = 0;
+	
+	while(i < 100000000000000000000000000){
+		i++;
+	}
+	/*
 	_cli();
 
 	while (1)
 	{
 		haltcpu();
 	}
-	
+	*/
 	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;
 }
