@@ -9,6 +9,8 @@
 #include <time.h>
 #include <videoDriver.h>
 #include <registers.h>
+
+
 /*
  *  Arguementos de una función de SYSCALL
  */
@@ -119,9 +121,14 @@ void stopS(argumentsStruct args){
     stopSound();
 }
 
+// rdi, rsi, rdx, rcx, r8 and r9 in that order
+void execve(argumentsStruct args){
+    create_process(args->rsi, args->rdx, args->rcx, args->r8);
+}
+
 void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, setFontSize,
  timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
- setPrintAnywhere, startS, stopS };
+ setPrintAnywhere, startS, stopS, execve };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
