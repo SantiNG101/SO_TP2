@@ -12,7 +12,13 @@ int _start() {
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
 
-	return main();
+	// syscall getpid()
+	// bin => array de punteros a funciones
+	// char* argv[] =  bin[0].argv;
+	//execve(1,bin[0].func, 1, argv)
+
+	//return main();
+	return 0;
 
 }
 

@@ -10,6 +10,7 @@ GLOBAL clearScreen
 GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 GLOBAL setFontSize
+GLOBAL execve
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -151,6 +152,20 @@ setFontSize:
 
     mov r10, rdi
     mov rdi, 4 ; syscall 4
+    int 80h
+
+    leave
+    ret
+
+execve:
+    push rbp
+    mov rbp, rsp
+
+    mov r8, rcx
+    mov rcx, rdx
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, 17  ; execve
     int 80h
 
     leave
