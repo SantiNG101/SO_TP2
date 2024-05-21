@@ -1,14 +1,8 @@
 
 #include <process.h>
 
+// chequeo en cada timer si se paso del fin del stack para verificar que no haya stack overflow
 
-struct sch_info{
-    int p_state;
-    int priority;
-    uint64_t* pqueue;                //pointer to scheduling queue
-    uint16_t CPU_time;
-                                    // posible other characteristics that are going to be used by the scheduler to determine its priority
-};
 
 struct children_info{
     struct childern_info* first;
@@ -21,6 +15,8 @@ struct children{
 
 typedef struct pcb {
     int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
+    int stdin;
+    int stdout;
     //uint64_t registers[17];         // 16 registers + RIP (in last position)
     struct sch_info scheduling_info;
     struct children_info childs;
@@ -37,9 +33,15 @@ static pcb processes[1000];
 // allocs initial memory structure and creates the init process
 void process_init(){
 
+    ncPrint("Initializing process init");
+    ncNewline();
     char* argv[] = {"init"};
+    // initialiaze scheduler
+    initialize_scheduler();
     // Creation of process init.
     process_create(0x0, 0x4000, 1 ,argv );          // rip = start text segment of the userland          
+    
+    
 
 }
 
@@ -60,7 +62,10 @@ void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
     
     process->parent = parent;
     process->scheduling_info.p_state = READY;
-    process->scheduling_info.priority = MOSTIMP;
+    if ( pid == 1 )
+        process->scheduling_info.priority = ALWAYSACTIVE;
+    else
+        process->scheduling_info.priority = MOSTIMP;
     process->scheduling_info.CPU_time = 0;
 
     if (pid != 1){
@@ -115,15 +120,19 @@ void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
     process->stack_end = stack_end;
     process->stack_current = stack_current;          // At last, we asign the RSP to the registers
 
+    addProcessToScheduling(pid, &processes[pid-1].scheduling_info,rip);
+
     return;
 }
 
+uint64_t* getSchedulingInfo(int pid){
+    return &processes[pid].scheduling_info;
+}
 
 uint64_t* align_stack( uint64_t* init){
     while( ((int)init%8) != 0 ){
         init= init-1;
     }
-        
     return init;
 }
 

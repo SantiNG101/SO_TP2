@@ -1,9 +1,12 @@
 /* _loader.c */
 #include <stdint.h>
+#include <binaries.h>
 
 extern char bss;
 extern char endOfBinary;
 
+extern void execve(int pid, void (*)(), int argc, char* argv[]);
+extern void haltcpu();
 int main();
 
 void * memset(void * destiny, int32_t c, uint64_t length);
@@ -13,10 +16,13 @@ int _start() {
 	memset(&bss, 0, &endOfBinary - &bss);
 
 	// syscall getpid()
-	// bin => array de punteros a funciones
-	// char* argv[] =  bin[0].argv;
-	//execve(1,bin[0].func, 1, argv)
+	
+	//char* argv[] =  {"./shell"};
+	// exceve(padre, funcion, cant args, args);
+	//execve(1,&shell, 1, argv);
 
+	//while(1)			// making the wait process
+	//	haltcpu();
 	return main();
 	//return 0;
 

@@ -11,6 +11,7 @@ GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 GLOBAL setFontSize
 GLOBAL execve
+GLOBAL haltcpu
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -170,6 +171,11 @@ execve:
 
     leave
     ret
+
+haltcpu:
+	cli
+	hlt
+	ret
 
 section .bss
 placeholder resb 1

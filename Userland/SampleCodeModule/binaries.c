@@ -1,14 +1,20 @@
-/* sampleCodeModule.c */
+
 #include "binaries.h"
-#include <stdio.h>
 #include "terminal.h"
 #include "songs.h"
 #include "pong.h"
 #include "snake.h"
 
-int main() {
-    setDefault();        // userLandStartTheme();
-    unsigned char keepGoing = TRUE;
+void setDefault(){
+    clearScreen(0);
+    setBackgroundColour(BLACK);
+    setForegroundColour(WHITE);
+}
+
+void shell(){
+    setDefault();
+            // userLandStartTheme();
+    unsigned char keepGoing = 1;
 
     while(keepGoing){
 
@@ -25,11 +31,31 @@ int main() {
                 terminalStart();
                 break;
             case '4':
-                keepGoing = FALSE;
+                keepGoing = 0;
                 break;
         }
         setDefault();
     }
 
-	return 0;
+	return;
 }
+
+void filosophers(){
+
+}
+
+
+/*
+
+void (* functions[]) () = { shell, filosophers };
+
+//
+#define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
+
+void functionDispatcher(char* function){
+    enum { shell, filosophers };
+    switch(function)
+    
+    // Ejecuta la syscall
+    functions[args->rdi]((argumentsStruct) args);
+}*/

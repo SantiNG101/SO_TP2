@@ -3,7 +3,7 @@
 #include <keyboard.h>
 #include <idt/irq.h>
 #include <registers.h>
-
+#include <scheduler.h>
 #include <syscall.h>
 
 /* LISTA DE INTERRUPCIONES */
@@ -17,5 +17,6 @@ void irqDispatcher(uint8_t irqID, argumentsStruct args, uint64_t oldRSP){
         return;
 
     if(irqID == KEYBOARD_IRQ) return keyboardHandler(args, oldRSP);
+    if(irqID == TICK_IRQ) return from_tick(args->rdi);
     irq[irqID]();
 }
