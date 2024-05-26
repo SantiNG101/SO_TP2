@@ -1,8 +1,8 @@
 #include <semaphore.h>
-#include <MemoryManager.h>
+#include <mm.h>
 #include <lib.h>
-#include <interrupts.h>
-#include <sync.h>
+#include <irq.h>
+#include "include/sync.h"
 #include <scheduler.h>
 
 #define MAX_NAME_LENGTH 40

@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <string.h>
-#include "sharedMem.h"
+#include "include/sharedMem.h"
 
 #define MAX_NAME_LENGTH 20
 #define MAX_SHARED_MEMS 20
