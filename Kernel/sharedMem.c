@@ -28,7 +28,8 @@ shared_mem_ptr get_shared_mem_by_name(char *name) {
 void *open_shared_mem(char *name, int size) {
     shared_mem_ptr new_shared_mem = get_shared_mem_by_name(name);
     if (new_shared_mem == NULL) {
-        for (int i = last_shared_mem_made + 1; i != last_shared_mem_created; i++) {
+        int i;
+        for (i = last_shared_mem_created + 1; i != last_shared_mem_created; i++) {
             if (i == MAX_SHARED_MEMS) {
                 i = 0;
                 if (i == last_shared_mem_created) break;

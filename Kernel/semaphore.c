@@ -1,7 +1,8 @@
 #include <semaphore.h>
 #include <mm.h>
 #include <lib.h>
-#include <irq.h>
+#include "include/lib.h"
+#include "include/idt/irq.h"
 #include "include/sync.h"
 #include <scheduler.h>
 
@@ -16,7 +17,7 @@ typedef struct semaphore {
 // Function to create a semaphore
 semaphore_ptr create_semaphore(char *name, int value) {
     semaphore_ptr sem = myMalloc(sizeof(semaphore_t));
-    memcpy(sem->name, name, MAX_SEM_NAME_LENGTH - 1);
+    memcpy(sem->name, name, MAX_NAME_LENGTH - 1);
     sem->name[MAX_NAME_LENGTH - 1] = '\0'; // Ensure null-termination
     sem->value = value;
     sem->lock = 0;
@@ -28,7 +29,7 @@ void semaphore_wait(semaphore_ptr sem) {
     enterRegion(&sem->lock);
     while (1) {
         if (sem->value == 0) {
-            blockRunningProcess(BLOCKBYSYNC, WAITING, &sem->lock);
+            //blockRunningProcess function
             enterRegion(&sem->lock);
         } else {
             break;
@@ -43,12 +44,12 @@ void semaphore_post(semaphore_ptr sem) {
     enterRegion(&sem->lock);
     sem->value++;
     leaveRegion(&sem->lock, MUTEX);
-    tryToUnlockSem(&sem->lock, WAITING);
+    //tryToUnlockSemaphore function;
 }
 
 // Function to destroy a semaphore
 void destroy_semaphore(semaphore_ptr sem) {
-    freeMemory(sem);
+    myFree(sem);
 }
 
 // Function to get the name of a semaphore
