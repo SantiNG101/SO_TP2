@@ -94,7 +94,7 @@ section .text
     
     mov rdi, %1                 ; Paso el parametro
     mov rsi, rsp                ; Paso la estructura del estado
-    mov rcx, [rbp + 32]         ; Paso el rsp viejo
+    mov rcx, [rbp + 32]         ; Paso el rsp viejo cambiar
     call irqDispatcher          ; Ejecuto la interrupción correspondiente con irqDispatcher
     mov rsp,rax                 ; Actualizo mi puntero del stack
 

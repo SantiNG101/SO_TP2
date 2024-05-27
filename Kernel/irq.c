@@ -17,6 +17,6 @@ void irqDispatcher(uint8_t irqID, argumentsStruct args, uint64_t oldRSP){
         return;
 
     if(irqID == KEYBOARD_IRQ) return keyboardHandler(args, oldRSP);
-    if(irqID == TICK_IRQ) return from_tick(args->rdi);
+    if(irqID == TICK_IRQ) return from_tick(args->rdi); // pasar sin desreferenciar es el RSP
     irq[irqID]();
 }

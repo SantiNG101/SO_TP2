@@ -5,8 +5,8 @@
 
 
 struct children_info{
-    struct childern_info* first;
-    struct childern_info* current;
+    struct childern* first;
+    struct childern* current;
 };
 
 struct children{
@@ -14,6 +14,7 @@ struct children{
 };
 
 typedef struct pcb {
+    char* name;                     // respresentative Name
     int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
     int stdin;
     int stdout;
@@ -39,14 +40,14 @@ void process_init(){
     // initialiaze scheduler
     initialize_scheduler();
     // Creation of process init.
-    process_create(0x0, 0x4000, 1 ,argv );          // rip = start text segment of the userland          
+    process_create(0x0, 0x400000, 1 ,argv );          // rip = start text segment of the userland          
     
     
 
 }
 
 // for syscall fork => return;
-void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
+int process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
 
     pcb_pointer parent;
     if ( pid != 1 )
@@ -120,14 +121,16 @@ void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
     process->stack_end = stack_end;
     process->stack_current = stack_current;          // At last, we asign the RSP to the registers
 
-    addProcessToScheduling(pid, &processes[pid-1].scheduling_info,rip);
+    addProcessToScheduling(pid, &processes[pid-1].scheduling_info,stack_current);
 
-    return;
+    // llamo al timer tick
+
+    return pid;
 }
-
+/*
 uint64_t* getSchedulingInfo(int pid){
     return &processes[pid].scheduling_info;
-}
+}*/
 
 uint64_t* align_stack( uint64_t* init){
     while( ((int)init%8) != 0 ){

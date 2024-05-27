@@ -33,12 +33,12 @@ void initialize_scheduler(){
 
 }
 
-void addProcessToScheduling( int pid, struct sch_info * process_info, uint64_t rip){
+void addProcessToScheduling( int pid, struct sch_info * process_info, uint64_t rsp){
 
 
     p_list process = memalloc(sizeof( struct list ));
     process->pid = pid;
-    process->stack_pointer = rip;
+    process->stack_pointer = rsp;               
     process->process_info = process_info;
 
     // null checks
@@ -95,18 +95,20 @@ uint64_t* schedule( uint64_t* actual_pointer){
 
 
 // A blocking function call this function to change the process for it to wait
+// recibes an actual poiner and a pd
 void blocking( uint64_t* actual_pointer ){
     p_list running = getRunning();
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
         running->process_info->p_state = BLOCKED;
-        schedule( actual_pointer );
     }
-    schedule( actual_pointer );
+    
+    //call timertick
+    //return schedule( actual_pointer );
 }
 
 // function called by timer tick to get rid of a running process
-void from_tick( uint64_t* actual_pointer ){
+uint64_t* from_tick( uint64_t* actual_pointer ){
     p_list running = getRunning();
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
@@ -114,7 +116,7 @@ void from_tick( uint64_t* actual_pointer ){
         running->process_info->p_state = READY;
         schedule( actual_pointer );
     }
-    schedule( actual_pointer );
+    return schedule( actual_pointer );
 }
 
 p_list getRunning(){

@@ -23,6 +23,7 @@ typedef int (*EntryPoint)();
 extern void kernelASM(uint64_t addr);
 extern void haltcpu();
 extern void _cli();
+extern void _sti();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -97,11 +98,11 @@ int divisionBy(int x, int y){
 int main()
 {
     screen_Initialize();
-	//process_init();
+	process_init();
 	// Activate interruptions
 	
 	/*
-	_cli();
+	_sti();
 
 	while (1)
 	{
