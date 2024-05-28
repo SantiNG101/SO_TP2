@@ -20,7 +20,7 @@ void dateToStr(char * dest);
 uint64_t getTime();
 
 /* ------- TICK ------- */
-void tick(void);
+void tick();
 int getTicks();
 int getElapsedMilliseconds();
 int getElapsedSeconds();

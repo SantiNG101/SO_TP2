@@ -7,7 +7,7 @@
 #include <scheduler.h>
 #include <naiveConsole.h>
 
-#define NULL 0
+#define NULL ((void *)0)
 
 // Process states
 #define BLOCKED 0
@@ -23,7 +23,7 @@
 #define LESSIMP 2
 #define ALWAYSACTIVE 3
 
-#define STACK_MEM 0x1000       // 4K of mem
+#define STACK_MEM 4096       // 4K of mem
 #define PROCESS_MEM 0x100000  // 1M of mem
 
 struct sch_info{
@@ -40,7 +40,7 @@ typedef struct pcb* pcb_pointer;
 extern uint8_t* prepare_process(uint8_t* stack, uint8_t* rip, int argc, char* argv[]);
 
 void process_init();
-int process_create( int pidParent, uint8_t rip, int argc, char* argv[] );
+int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] );
 uint8_t* align_stack( uint8_t* init);
 
 #endif

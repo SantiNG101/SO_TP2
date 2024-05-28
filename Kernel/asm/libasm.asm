@@ -11,7 +11,7 @@ GLOBAL getCurrentRSP
 GLOBAL getCurrentRDI
 GLOBAL getCurrentRSI
 GLOBAL cleanActualRegisters
-GLOBAL prepare_process
+
 
 section .text
 ;Hay que pasar a parte de ah y al para escribir los bytes con x color
@@ -115,38 +115,3 @@ cleanActualRegisters:		; limpiamos todos los registros
 	mov r15, 0
 	ret
 
-get_ip:
-    mov rax, [rbp + 8]
-    ret
-
-prepare_process:
-    push rbp
-    mov rbp, rsp
-    mov rsp, rdi
-
-    push dword 0x0      ;SS
-    push rdi            ;RSP
-    push qword 0x202    ;RFLAGS
-    push dword 0x8      ;CS
-    push rsi            ;RIP
-    push qword 0x14     ;R15
-    push qword 0x13     ;R14
-    push qword 0x12     ;R13
-    push qword 0x11     ;R12
-    push qword 0x10     ;R11
-    push qword 0x9      ;R10
-    push qword 0x8      ;R9
-    push qword 0x7      ;R8
-    push rcx            ;RSI
-    push rdx            ;RDI
-    push rdi            ;RBP
-    push qword 0x3      ;RDX
-    push qword 0x2      ;RCX
-    push qword 0x1      ;RBX
-    push qword 0x0      ;RAX
-
-    mov rax, rsp
-
-    mov rsp, rbp
-    pop rbp
-    ret

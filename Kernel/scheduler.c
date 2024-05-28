@@ -29,6 +29,7 @@ void initialize_scheduler(){
     priority[1].running = NULL;
     priority[2].first = NULL;
     priority[2].running = NULL;
+    priority[3].first = NULL;
     priority[3].running = NULL;
 
 }
@@ -46,15 +47,16 @@ void addProcessToScheduling( int pid, struct sch_info * process_info, uint8_t* r
     p_list aux = priority[process_info->priority].first;
     // if there is no first process next points to itself
     if ( aux == NULL ){
-        aux = process;
+        priority[process_info->priority].first = process;
         process->next = process;
         return;
     }
 
     while( aux->next != priority[process_info->priority].first ){
-            aux = aux->next;
+        aux = aux->next;
     }
     aux->next = process;
+
     process->next = priority[process_info->priority].first;
     return;
 
@@ -67,6 +69,14 @@ void deleteProcessScheduling( int pid ){
 
 
 uint8_t* schedule( uint8_t* actual_pointer){
+
+    p_list running = getRunning();
+    if ( running != NULL ){
+        running->stack_pointer = actual_pointer;
+        running->process_info->CPU_time++;
+        running->process_info->p_state = READY;
+    }
+
     /*
     if ( is_first){
         p_list init = priority[3].first;
@@ -76,8 +86,8 @@ uint8_t* schedule( uint8_t* actual_pointer){
         return init->stack_pointer;
     }
     */
-
-    p_list priority1 = priority[0].running;
+    // 
+    //p_list priority1 = priority[0].running;
     /*
     if ( priority1 != NULL ){
         if ( priority1->next == priority[ priority1->process_info->priority ].first ){
@@ -86,6 +96,8 @@ uint8_t* schedule( uint8_t* actual_pointer){
     }
     */
     p_list toRun = getReadyToRun();
+    if ( toRun == NULL )
+        return actual_pointer;
     toRun->process_info->p_state=RUNNING;
     priority[toRun->process_info->priority].running = toRun;
 
@@ -124,7 +136,7 @@ p_list getRunning(){
     if ( priority[2].running && ( priority[2].running->process_info->p_state == RUNNING) )
         return priority[2].running;
     if ( priority[3].running && ( priority[3].running->process_info->p_state == RUNNING) )
-    return priority[3].running;
+        return priority[3].running;
     return NULL;
 }
 

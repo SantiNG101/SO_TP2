@@ -30,6 +30,7 @@ GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
 GLOBAL _hlt
+GLOBAL prepare_process
 
 GLOBAL _irq00Handler        ;   TIMER TICK
 GLOBAL _irq01Handler        ;   KEYBOARD
@@ -45,6 +46,7 @@ EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN syscallDispatcher
 EXTERN getStackBase
+EXTERN schedule
 
 section .text
 
@@ -163,10 +165,61 @@ picSlaveMask:
     pop     rbp
     retn
 
+get_ip:
+    mov rax, [rbp + 8]
+    ret
+
+prepare_process:
+    push rbp
+    mov rbp, rsp
+    mov rsp, rdi
+
+    push dword 0x0      ;SS
+    push rdi            ;RSP
+    push qword 0x202    ;RFLAGS
+    push dword 0x8      ;CS
+    push rsi            ;RIP
+    push qword 0x14     ;R15
+    push qword 0x13     ;R14
+    push qword 0x12     ;R13
+    push qword 0x11     ;R12
+    push qword 0x10     ;R11
+    push qword 0x9      ;R10
+    push qword 0x8      ;R9
+    push qword 0x7      ;R8
+    push rcx            ;RSI
+    push rdx            ;RDI
+    push rdi            ;RBP
+    push qword 0x3      ;RDX
+    push qword 0x2      ;RCX
+    push qword 0x1      ;RBX
+    push qword 0x0      ;RAX
+
+    mov rax, rsp
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
 ; ------ STARTS IRQ ------ ;
 
-_irq00Handler:
-    irqHandlerMaster 0          ; TIMER TICK
+_irq00Handler:; TIMER TICK
+    pushState
+    cli
+	mov rdi, 0 ; pasaje de parametro
+    mov rsi, rsp                ; Paso la estructura del estado
+    mov rcx, [rbp + 32] 
+	call irqDispatcher
+
+	mov rdi, rsp
+	call schedule
+	mov rsp, rax
+
+	mov al, 20h
+	out 20h, al
+    sti
+	popState
+	iretq
 
 _irq01Handler:
     irqHandlerMaster 1          ; KEYBOARD

@@ -21,11 +21,14 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 extern void kernelASM(uint64_t addr);
-void _cli(void);
+int init_process(int argc, char* argv[]);
+extern void _cli(void);
 
-void _sti(void);
+extern void _sti(void);
 
-void _hlt(void);
+extern void _hlt(void);
+
+extern void _irq00Handler();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -87,11 +90,9 @@ void * initializeKernelBinary()
 	ncNewline();
 
 	screen_Initialize();
-	process_init();
-
-	load_idt();
-
-	return main();
+	initialize_scheduler();
+	//process_init();
+	return getStackBase();
 }
 
 int divisionBy(int x, int y){
@@ -102,13 +103,25 @@ int divisionBy(int x, int y){
 
 int main()
 {
-	// Activate interruptions
-
-	while (1)
-	{
-		_hlt();
-	}
 	
-	((EntryPoint) sampleCodeModuleAddress)();
+	// to change
+	mem_initialize();
+	load_idt();
+	 // Activate interruptions
+	char* argInit[2] = {"./init", NULL};
+	process_create(0,&init_process,1,argInit);
+	
+	while(1)
+		_hlt();
+	return 0;
+}
+
+int init_process(int argc, char* argv[]){
+
+	char* argShell[2] = {"./shell", NULL};
+	
+	process_create(1,((EntryPoint) sampleCodeModuleAddress)(),1,argShell);
+	while(1)
+		_hlt();
 	return 0;
 }

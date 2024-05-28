@@ -19,9 +19,9 @@ typedef struct pcb {
     int stdout;
     struct sch_info scheduling_info;
     struct children_info childs;
-    uint8_t stack_current;
-    uint8_t stack_end;             // where memory ends
-    uint8_t stack_start;           // where memory starts
+    uint8_t* stack_current;
+    uint8_t* stack_end;             // where memory ends
+    uint8_t* stack_start;           // where memory starts
     pcb_pointer parent;             // pointer to the information of the parent
                                     // array of fd and devices
 }pcb;
@@ -44,7 +44,7 @@ void process_init(){
 }
 
 // for syscall fork => return;
-int process_create( int pidParent, uint8_t rip, int argc, char* argv[] ){
+int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] ){
 
     pcb_pointer parent;
     if ( pid != 1 )
@@ -55,12 +55,12 @@ int process_create( int pidParent, uint8_t rip, int argc, char* argv[] ){
     pcb_pointer process = &processes[pid-1];
 
     // setting the pcb of the new process
-    process->pid = pid++;
+    process->pid = pid;
     processes->parent = parent;
     
     process->parent = parent;
     process->scheduling_info.p_state = READY;
-    if ( pid == 1 )
+    if ( process->pid == 1 )
         process->scheduling_info.priority = ALWAYSACTIVE;
     else
         process->scheduling_info.priority = MOSTIMP;
@@ -80,15 +80,21 @@ int process_create( int pidParent, uint8_t rip, int argc, char* argv[] ){
     
                                                     // starts from behind
     uint8_t* stack_end = memalloc(STACK_MEM);      // Saving space for the process' stack
+    if ( stack_end == -1 )
+        return -1; 
     uint8_t* stack_start = stack_end + STACK_MEM;  // Going to the start of the stack
 
     process->stack_start = stack_start;
     process->stack_end = stack_end;
     process->stack_current = prepare_process(stack_start, rip, argc, argv);          // At last, we asign the RSP to the registers
 
-    addProcessToScheduling(pid, &processes[pid-1].scheduling_info,process->stack_current);
+    addProcessToScheduling(process->pid, &processes[(process->pid)-1].scheduling_info,process->stack_current);
 
-    return pid;
+    _hlt();
+
+    pid++;
+    
+    return process->pid;
 }
 
 uint8_t* getSchedulingInfo(int pid){
