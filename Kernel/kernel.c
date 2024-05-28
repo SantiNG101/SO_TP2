@@ -21,8 +21,11 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 extern void kernelASM(uint64_t addr);
-extern void haltcpu();
-extern void _cli();
+void _cli(void);
+
+void _sti(void);
+
+void _hlt(void);
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -83,9 +86,12 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 
+	screen_Initialize();
+	process_init();
+
 	load_idt();
 
-	return getStackBase();
+	return main();
 }
 
 int divisionBy(int x, int y){
@@ -96,23 +102,13 @@ int divisionBy(int x, int y){
 
 int main()
 {
-    screen_Initialize();
-	process_init();
 	// Activate interruptions
-	print("hola mundo");
-	int i = 0;
-	
-	while(i < 100000000000000000000000000){
-		i++;
-	}
-	/*
-	_cli();
 
 	while (1)
 	{
-		haltcpu();
+		_hlt();
 	}
-	*/
+	
 	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;
 }

@@ -1,14 +1,8 @@
 
 #include <process.h>
 
+// chequeo en cada timer si se paso del fin del stack para verificar que no haya stack overflow
 
-struct sch_info{
-    int p_state;
-    int priority;
-    uint64_t* pqueue;                //pointer to scheduling queue
-    uint16_t CPU_time;
-                                    // posible other characteristics that are going to be used by the scheduler to determine its priority
-};
 
 struct children_info{
     struct childern_info* first;
@@ -21,12 +15,13 @@ struct children{
 
 typedef struct pcb {
     int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
-    //uint64_t registers[17];         // 16 registers + RIP (in last position)
+    int stdin;
+    int stdout;
     struct sch_info scheduling_info;
     struct children_info childs;
-    uint64_t stack_current;
-    uint64_t stack_end;             // where memory ends
-    uint64_t stack_start;           // where memory starts
+    uint8_t stack_current;
+    uint8_t stack_end;             // where memory ends
+    uint8_t stack_start;           // where memory starts
     pcb_pointer parent;             // pointer to the information of the parent
                                     // array of fd and devices
 }pcb;
@@ -37,14 +32,19 @@ static pcb processes[1000];
 // allocs initial memory structure and creates the init process
 void process_init(){
 
+    ncPrint("Initializing process init");
+    ncNewline();
     char* argv[] = {"init"};
+    // initialiaze scheduler
+    initialize_scheduler();
     // Creation of process init.
-    process_create(0x0, 0x4000, 1 ,argv );          // rip = start text segment of the userland          
+    int hola = process_create(0x0, 0x400000, 1 ,argv );          // rip = start text segment of the userland          
+    ncPrintDec(hola);
 
 }
 
 // for syscall fork => return;
-void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
+int process_create( int pidParent, uint8_t rip, int argc, char* argv[] ){
 
     pcb_pointer parent;
     if ( pid != 1 )
@@ -60,7 +60,10 @@ void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
     
     process->parent = parent;
     process->scheduling_info.p_state = READY;
-    process->scheduling_info.priority = MOSTIMP;
+    if ( pid == 1 )
+        process->scheduling_info.priority = ALWAYSACTIVE;
+    else
+        process->scheduling_info.priority = MOSTIMP;
     process->scheduling_info.CPU_time = 0;
 
     if (pid != 1){
@@ -76,55 +79,25 @@ void process_create( int pidParent, uint64_t rip, int argc, char* argv[] ){
     process->childs.current = NULL;                    
     
                                                     // starts from behind
-    uint64_t* stack_end = memalloc(STACK_MEM);      // Saving space for the process' stack
-    uint64_t* stack_start = stack_end + STACK_MEM;  // Going to the start of the stack
-
-    stack_start = align_stack(stack_start);         // Aligning stack
-    uint64_t* stack_current = stack_start;          // Setting RSP
-    stack_current -=sizeof(uint64_t);               // Setting usable stack
-
-    (*stack_current) = 0x0;                         // Loading the SS
-    stack_current -=sizeof(uint64_t);
-
-    (*stack_current) = stack_current;               // Loading the RSP 
-    stack_current -=sizeof(uint64_t);
-
-    (*stack_current) = 0x202;                       // Loading RFLAGS
-    stack_current -=sizeof(uint64_t);
-
-    (*stack_current) = 0x8;                         // Loading CS
-    stack_current -=sizeof(uint64_t);
-
-    (*stack_current) = rip;                         // Loading the RIP
-    stack_current -=sizeof(uint64_t);
-
-    uint64_t* regs = getRegisters();
-    regs[5] = argc;
-    regs[6] = argv;
-    
-    for ( int i=0; i< 16; i++ ){
-        (*stack_current) = regs[i];                 // saving first RAX and last RSP
-        stack_current -=sizeof(uint64_t);       
-    }
-
-    stack_current +=sizeof(uint64_t); 
-    (*stack_current) = stack_current;              // Loading the registers, un for seguramente            
-
+    uint8_t* stack_end = memalloc(STACK_MEM);      // Saving space for the process' stack
+    uint8_t* stack_start = stack_end + STACK_MEM;  // Going to the start of the stack
 
     process->stack_start = stack_start;
     process->stack_end = stack_end;
-    process->stack_current = stack_current;          // At last, we asign the RSP to the registers
+    process->stack_current = prepare_process(stack_start, rip, argc, argv);          // At last, we asign the RSP to the registers
 
-    return;
+    addProcessToScheduling(pid, &processes[pid-1].scheduling_info,process->stack_current);
+
+    return pid;
 }
 
+uint8_t* getSchedulingInfo(int pid){
+    return &processes[pid].scheduling_info;
+}
 
-uint64_t* align_stack( uint64_t* init){
+uint8_t* align_stack( uint8_t* init){
     while( ((int)init%8) != 0 ){
         init= init-1;
     }
-        
     return init;
 }
-
-
