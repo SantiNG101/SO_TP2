@@ -1,7 +1,7 @@
 #include <semaphore.h>
 #include <mm.h>
 #include <lib.h>
-#include "include/lib.h"
+#include <stdlib.h>
 #include "include/idt/irq.h"
 #include "include/sync.h"
 #include <scheduler.h>

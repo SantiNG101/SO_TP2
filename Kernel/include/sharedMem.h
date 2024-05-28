@@ -7,4 +7,5 @@
 #include "lib.h"
 void *open_shared_mem(char *name, int size);
 
+
 #endif //SO_TP2_SHAREDMEM_H
