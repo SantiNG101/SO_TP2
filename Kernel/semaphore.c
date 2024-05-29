@@ -1,18 +1,11 @@
 #include <semaphore.h>
+#include <semaphores.h>
 #include <mm.h>
 #include <lib.h>
 #include <stdlib.h>
 #include "include/idt/irq.h"
 #include "include/sync.h"
 #include <scheduler.h>
-
-#define MAX_NAME_LENGTH 40
-
-typedef struct semaphore {
-    int lock;
-    int value;
-    char name[MAX_NAME_LENGTH];
-} semaphore_t, *semaphore_ptr;
 
 // Function to create a semaphore
 semaphore_ptr create_semaphore(char *name, int value) {
@@ -27,8 +20,10 @@ semaphore_ptr create_semaphore(char *name, int value) {
 // Function to wait (decrement) on a semaphore
 void semaphore_wait(semaphore_ptr sem) {
     enterRegion(&sem->lock);
-    while (1) {
+    while (1) { //Sugerencia: El enterRegion ya haría la parte del loop
         if (sem->value == 0) {
+            sem->blockedProcesses[sem->amountBlocked++];//TODO = getcurrentpid;
+            leaveRegion(&sem->lock, MUTEX);
             //blockRunningProcess function
             enterRegion(&sem->lock);
         } else {
@@ -42,7 +37,9 @@ void semaphore_wait(semaphore_ptr sem) {
 // Function to post (increment) on a semaphore
 void semaphore_post(semaphore_ptr sem) {
     enterRegion(&sem->lock);
-    sem->value++;
+    if(sem->value==0) {
+        sem->value++;
+    }
     leaveRegion(&sem->lock, MUTEX);
     //tryToUnlockSemaphore function;
 }
