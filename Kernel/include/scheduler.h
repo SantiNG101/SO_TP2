@@ -7,7 +7,7 @@ typedef struct list* p_list;
 
 void initialize_scheduler();
 
-void addProcessToScheduling( int pid, struct sch_info * process_info, uint8_t* rsp);
+void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t* rsp);
 
 void deleteProcessScheduling( int pid );
 

@@ -11,6 +11,7 @@ GLOBAL getCurrentRSP
 GLOBAL getCurrentRDI
 GLOBAL getCurrentRSI
 GLOBAL cleanActualRegisters
+GLOBAL forceTimerTick
 
 
 section .text
@@ -97,6 +98,10 @@ read_port:
 	mov rsp, rbp
 	pop rbp
 	ret
+
+forceTimerTick:
+    int 0x20
+    ret
 
 cleanActualRegisters:		; limpiamos todos los registros
 	mov rax, 0

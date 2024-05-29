@@ -32,22 +32,23 @@ typedef struct{
 }colour;
 
 const commandT commands[] = {
-                             {"help", "Provides a command list.", help},
-                             {"time","Shows the current time in GMT-3",showTime},
-                             {"clear","clears screen and resets position",terminalSetter},
-                             {"date","Displays current date.",showDate},
-                             {"exit","Exits the bash",exit},
-                             {"bell","Outputs a Beep", beep},
-                             {"66","Displays imperial march for starwars fans", imperialMarch},
-                             {"mario","Displays mario bros theme song",marioTheme},
-                             {"tetris","Displays tetris song",tetris},
-                             {"storm","Displays song of storms zelda",songOfStorms},
-                             {"background","Changes background to hexColour: ",setBackground},
-                             {"foreground","Changes foreground to hexColour: ",setForeground},
-                             {"div0","Shows how div 0 exception works",divZero},
-                             {"opCode","Shows how opCode exception works",opCode},
-{"font", "Sets the fontsize", setFont},
-                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}};
+                            {"help", "Provides a command list.", help},
+                            {"time","Shows the current time in GMT-3",showTime},
+                            {"clear","clears screen and resets position",terminalSetter},
+                            {"date","Displays current date.",showDate},
+                            {"exit","Exits the bash",exit},
+                            {"bell","Outputs a Beep", beep},
+                            {"66","Displays imperial march for starwars fans", imperialMarch},
+                            {"mario","Displays mario bros theme song",marioTheme},
+                            {"tetris","Displays tetris song",tetris},
+                            {"storm","Displays song of storms zelda",songOfStorms},
+                            {"background","Changes background to hexColour: ",setBackground},
+                            {"foreground","Changes foreground to hexColour: ",setForeground},
+                            {"div0","Shows how div 0 exception works",divZero},
+                            {"opCode","Shows how opCode exception works",opCode},
+                            {"font", "Sets the fontsize", setFont},
+                            {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}
+                            };
 
 #define BUFFER_SIZE 50
 #define INSTRUCTION_SIZE 240    

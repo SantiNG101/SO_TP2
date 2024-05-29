@@ -6,6 +6,7 @@
 #include <registers.h>
 #include <scheduler.h>
 #include <naiveConsole.h>
+#include <screen.h>
 
 #define NULL ((void *)0)
 
@@ -16,6 +17,11 @@
 #define EMBRYO 3
 #define ZOMBIE 4
 
+// Process Fd
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
+
 // Process Priority
 
 #define MOSTIMP 0
@@ -25,6 +31,7 @@
 
 #define STACK_MEM 4096       // 4K of mem
 #define PROCESS_MEM 0x100000  // 1M of mem
+#define MAX_PROCESSES_SUPPORTED 1000
 
 struct sch_info{
     int p_state;
@@ -38,9 +45,17 @@ struct sch_info{
 typedef struct pcb* pcb_pointer;
 
 extern uint8_t* prepare_process(uint8_t* stack, uint8_t* rip, int argc, char* argv[]);
+extern void forceTimerTick();
+extern void _cli(void);
+
+extern void _sti(void);
+
+extern void _hlt(void);
 
 void process_init();
 int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] );
 uint8_t* align_stack( uint8_t* init);
+void show_processes();
+void change_rsp_process( int pid, uint8_t* rsp )
 
 #endif

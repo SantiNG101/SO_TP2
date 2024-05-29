@@ -14,20 +14,24 @@ struct children{
 };
 
 typedef struct pcb {
+    char* name;
     int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
     int stdin;
     int stdout;
+    int stderr;
     struct sch_info scheduling_info;
     struct children_info childs;
     uint8_t* stack_current;
     uint8_t* stack_end;             // where memory ends
     uint8_t* stack_start;           // where memory starts
     pcb_pointer parent;             // pointer to the information of the parent
-                                    // array of fd and devices
+    int alive;                               
+    int active;
+    // array of fd and devices
 }pcb;
 
 static int pid =1;
-static pcb processes[1000];
+static pcb processes[MAX_PROCESSES_SUPPORTED];
 
 // allocs initial memory structure and creates the init process
 void process_init(){
@@ -55,8 +59,14 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] ){
     pcb_pointer process = &processes[pid-1];
 
     // setting the pcb of the new process
+    process->name=argv[0];
     process->pid = pid;
     processes->parent = parent;
+    process->active = 1;            // not active = zombie
+    process->alive = 1;
+    process->stdin = STDIN;
+    process->stdout = STDOUT;
+    process->stderr = STDERR;
     
     process->parent = parent;
     process->scheduling_info.p_state = READY;
@@ -88,13 +98,65 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] ){
     process->stack_end = stack_end;
     process->stack_current = prepare_process(stack_start, rip, argc, argv);          // At last, we asign the RSP to the registers
 
-    addProcessToScheduling(process->pid, &processes[(process->pid)-1].scheduling_info,process->stack_current);
-
-    _hlt();
-
+    add_process_to_scheduling(process->pid, &processes[(process->pid)-1].scheduling_info,process->stack_current);
     pid++;
+    forceTimerTick();
     
     return process->pid;
+}
+
+void change_rsp_process( int pid, uint8_t* rsp ){
+    processes[pid].stack_current = rsp;
+}
+
+int set_status( int _pid, int newState){
+
+    if ( _pid > pid || _pid < 2 || _pid == 1  )
+        return -1;
+    pcb process = processes[_pid];
+    if ( process.alive ){
+        if ( newState == process.scheduling_info.p_state )
+            return newState;
+        if ( newState == BLOCKED ){
+            remove_from_scheduling();
+            process.scheduling_info.p_state = BLOCKED;
+            add_to_blocked();
+        }else if ( process.scheduling_info.p_state == BLOCKED ){
+            remove_from_blocked();
+            process.scheduling_info.p_state = newState;
+            process.scheduling_info.priority = MOSTIMP;
+            add_to_scheduling();
+        }
+        return newState;
+    }
+
+    return -1;
+
+}
+
+
+void show_processes(){
+
+    _cli();
+
+
+    for( int i=0; i < pid-1; i++ ){
+        pcb process = processes[i];
+
+        // futuramente imprimir stdin y stdout
+        print("PID \t\t NAME \t\t STACK \t\t BASEPOINTER \t\t FOREGROUND\n");
+        printDec(process.pid);
+        print(" \t\t ");
+        print(process.name);
+        print(" \t\t ");
+        printHex(process.stack_current);
+        print(" \t\t ");
+        printHex(process.stack_start);
+        print("\n");
+    }
+
+    _sti();
+
 }
 
 uint8_t* getSchedulingInfo(int pid){

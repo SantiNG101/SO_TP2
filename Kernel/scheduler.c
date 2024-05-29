@@ -4,7 +4,6 @@
 
 typedef struct listHeader{
     p_list first;
-    p_list running;
 }listHeader;
 
 typedef struct list{
@@ -18,23 +17,20 @@ typedef struct list{
 
 static listHeader priority[4];
 static int is_first = 1;
+static p_list running = NULL;
 
 void initialize_scheduler(){
 
     ncPrint("Initializing scheduler:");
     ncNewline();
     priority[0].first = NULL;
-    priority[0].running = NULL;
     priority[1].first = NULL;
-    priority[1].running = NULL;
     priority[2].first = NULL;
-    priority[2].running = NULL;
     priority[3].first = NULL;
-    priority[3].running = NULL;
 
 }
 
-void addProcessToScheduling( int pid, struct sch_info * process_info, uint8_t* rsp){
+void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t* rsp){
 
 
     p_list process = memalloc(sizeof( struct list ));
@@ -70,7 +66,6 @@ void deleteProcessScheduling( int pid ){
 
 uint8_t* schedule( uint8_t* actual_pointer){
 
-    p_list running = getRunning();
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
         running->process_info->CPU_time++;
@@ -99,15 +94,19 @@ uint8_t* schedule( uint8_t* actual_pointer){
     if ( toRun == NULL )
         return actual_pointer;
     toRun->process_info->p_state=RUNNING;
-    priority[toRun->process_info->priority].running = toRun;
+    running = toRun;
 
     return toRun->stack_pointer;
     
 }
 
 
+
+
+
 // A blocking function call this function to change the process for it to wait
-void blocking( uint8_t* actual_pointer ){
+void blocking_process( int pid , int newState){
+    /*
     p_list running = getRunning();
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
@@ -115,6 +114,11 @@ void blocking( uint8_t* actual_pointer ){
         schedule( actual_pointer );
     }
     schedule( actual_pointer );
+    */
+}
+
+void unblock_process( int pid ){
+
 }
 
 // function called by timer tick to get rid of a running process
@@ -127,7 +131,7 @@ uint8_t* from_tick( uint8_t* actual_pointer ){
     }
     return schedule( actual_pointer );
 }
-
+/*
 p_list getRunning(){
     if ( priority[0].running && (priority[0].running->process_info->p_state == RUNNING) )
         return priority[0].running;
@@ -138,38 +142,109 @@ p_list getRunning(){
     if ( priority[3].running && ( priority[3].running->process_info->p_state == RUNNING) )
         return priority[3].running;
     return NULL;
-}
+}*/
 
 p_list getReadyToRun(){
-    p_list starter =  priority[0].running;
-    if (starter != NULL ){
-        p_list current =  starter->next;
-        while( starter != current ){
-            if ( current->process_info->p_state == READY )
-                return current;
-            current = current->next;
-        }
+    
+    if ( running == NULL ){
+        return NULL;
     }
 
-    starter = priority[1].running;
+    int prio_lvl = running->process_info->priority;
+
+    switch (prio_lvl){
+        case 0:
+        return search_from_0();
+        case 1:
+        return search_from_1();
+        case 2: 
+        return search_from_2();
+        default:
+        return search_from_top();
+    }
+}
+
+p_list look_in_list ( int lvl , p_list from ){
+    p_list starter = NULL;
+    int around = 0;
+
+    if ( from != NULL ){
+        starter = from;
+    } else {
+        starter = priority[lvl].first;
+    }
     if ( starter != NULL ){
-        p_list current =  starter->next;
-        while( starter != current ){
+        p_list current = starter->next;
+        while( current != NULL && !around ){
             if ( current->process_info->p_state == READY )
                 return current;
             current = current->next;
+            if ( current == starter )
+                around++;
         }
     }
+    
+    return NULL;
+}
 
-    starter = priority[2].running;
-    if ( starter != NULL ){
-        p_list current =  starter->next;
-        while( starter != current ){
-            if ( current->process_info->p_state == READY )
-                return current;
-            current = current->next;
-        }
-    }
+p_list search_from_0(){
 
-    return priority[3].first;
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, running);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+
+}
+
+p_list search_from_1(){
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, running);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+}
+
+p_list search_from_2(){
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, running);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+}
+
+p_list search_from_top(){
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
 }
