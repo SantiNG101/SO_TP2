@@ -20,8 +20,6 @@
 
 #define MAX_SEMAPHORES 100
 
-static semaphore_ptr semaphores[MAX_SEMAPHORES];
-static int sem_count = 0;
 /*
  *  Argumentos de una función de SYSCALL
  */

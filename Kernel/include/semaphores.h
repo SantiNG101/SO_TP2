@@ -7,6 +7,9 @@
 
 #define MAX_NAME_LENGTH 40
 #define MAX_PROCESS_AMOUNT 10
+#define MAX_NAME_LENGTH 40
+#define MAX_PROCESS_AMOUNT 10
+#define MAX_SEMAPHORES 100
 
 typedef struct semaphore {
     int lock;

@@ -7,9 +7,12 @@
 #include "include/sync.h"
 #include <scheduler.h>
 
+static semaphore_ptr semaphores[MAX_SEMAPHORES];
+static int sem_count = 0;
+
 // Function to create a semaphore
 semaphore_ptr create_semaphore(char *name, int value) {
-    semaphore_ptr sem = myMalloc(sizeof(semaphore_t));
+    semaphore_ptr sem = memalloc(sizeof(semaphore_t));
     memcpy(sem->name, name, MAX_NAME_LENGTH - 1);
     sem->name[MAX_NAME_LENGTH - 1] = '\0'; // Ensure null-termination
     sem->value = value;
