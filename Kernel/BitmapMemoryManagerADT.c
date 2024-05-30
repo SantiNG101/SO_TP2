@@ -59,8 +59,12 @@ memManagerADT mem_initialize()
     }
 
     // first chunks -> memory manager with the list of chunks
-    mem_alloc(mem_manager, sizeof(memManagerCDT) + sizeof(memChunkCDT) * MAX_CHUNKS); // esta bien alocar memoria asi para el memory manager?
-
+    int chunks_needed = (sizeof(memManagerCDT) + sizeof(memChunkCDT) * MAX_CHUNKS) / CHUNK_SIZE;
+    for (int i = 0; i < chunks_needed; i++)
+    {
+        mem_manager->chunks[i]->used = TRUE;
+        mem_manager->chunks[i]->length = sizeof(memManagerCDT) + sizeof(memChunkCDT) * MAX_CHUNKS;
+    }
     return mem_manager;
 }
 
@@ -80,7 +84,6 @@ void *mem_alloc(memManagerADT mem_manager, int size)
 
     char * direction;
 
-    // TODO: alignment?
     while (int i = 0; i < MAX_CHUNKS; i++)
     {
 
