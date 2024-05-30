@@ -23,7 +23,7 @@
 static semaphore_ptr semaphores[MAX_SEMAPHORES];
 static int sem_count = 0;
 /*
- *  Arguementos de una función de SYSCALL
+ *  Argumentos de una función de SYSCALL
  */
 
 void read(argumentsStruct args){
@@ -148,6 +148,12 @@ int syscall_create_semaphore(char *name, int value) {
     return 0; // Success
 }
 
+void syscall_create_semaphore_wrapper(argumentsStruct args) {
+    char *name = (char *) args->r10;
+    int value = (int) args->r9;
+    args->r10 = syscall_create_semaphore(name, value);
+}
+
 semaphore_ptr syscall_open_semaphore(char *name) {
     for (int i = 0; i < sem_count; i++) {
         if (strcmp(semaphores[i]->name, name) == 0) {
@@ -155,6 +161,11 @@ semaphore_ptr syscall_open_semaphore(char *name) {
         }
     }
     return NULL; // Semaphore not found
+}
+
+void syscall_open_semaphore_wrapper(argumentsStruct args) {
+    char *name = (char *) args->r10;
+    args->r10 = (uint64_t) syscall_open_semaphore(name);
 }
 
 void syscall_close_semaphore(semaphore_ptr sem) {
@@ -171,28 +182,13 @@ void syscall_close_semaphore(semaphore_ptr sem) {
     }
 }
 
-void syscall_semaphore_wait(semaphore_ptr sem) {
-    semaphore_wait(sem);
-}
-
-void syscall_semaphore_post(semaphore_ptr sem) {
-    semaphore_post(sem);
-}
-
-void syscall_create_semaphore_wrapper(argumentsStruct args) {
-    char *name = (char *) args->r10;
-    int value = (int) args->r9;
-    args->r10 = syscall_create_semaphore(name, value);
-}
-
-void syscall_open_semaphore_wrapper(argumentsStruct args) {
-    char *name = (char *) args->r10;
-    args->r10 = (uint64_t) syscall_open_semaphore(name);
-}
-
 void syscall_close_semaphore_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_close_semaphore(sem);
+}
+
+void syscall_semaphore_wait(semaphore_ptr sem) {
+    semaphore_wait(sem);
 }
 
 void syscall_semaphore_wait_wrapper(argumentsStruct args) {
@@ -200,10 +196,15 @@ void syscall_semaphore_wait_wrapper(argumentsStruct args) {
     syscall_semaphore_wait(sem);
 }
 
+void syscall_semaphore_post(semaphore_ptr sem) {
+    semaphore_post(sem);
+}
+
 void syscall_semaphore_post_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_semaphore_post(sem);
 }
+
 
 // Array of syscall function pointers
 void (* syscalls[]) (argumentsStruct args) = {
