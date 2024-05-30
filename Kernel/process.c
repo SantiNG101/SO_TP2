@@ -109,6 +109,8 @@ void change_rsp_process( int pid, uint8_t* rsp ){
     processes[pid].stack_current = rsp;
 }
 
+
+// after calling this function must be made a tick interruption
 int set_status( int _pid, int newState){
 
     if ( _pid > pid || _pid < 2 || _pid == 1  )
@@ -118,14 +120,15 @@ int set_status( int _pid, int newState){
         if ( newState == process.scheduling_info.p_state )
             return newState;
         if ( newState == BLOCKED ){
-            remove_from_scheduling();
             process.scheduling_info.p_state = BLOCKED;
-            add_to_blocked();
+            int result = scheduling_to_blocked();
+            if ( result )
+                return -1;
+            
         }else if ( process.scheduling_info.p_state == BLOCKED ){
-            remove_from_blocked();
             process.scheduling_info.p_state = newState;
             process.scheduling_info.priority = MOSTIMP;
-            add_to_scheduling();
+            blocked_to_scheduling(_pid);
         }
         return newState;
     }
@@ -144,15 +147,16 @@ void show_processes(){
         pcb process = processes[i];
 
         // futuramente imprimir stdin y stdout
-        print("PID \t\t NAME \t\t STACK \t\t BASEPOINTER \t\t FOREGROUND\n");
+        print("PID    NAME    STACK    BASEPR    FOREGROUND");
+        enter();
         printDec(process.pid);
-        print(" \t\t ");
+        tab();
         print(process.name);
-        print(" \t\t ");
+        tab();
         printHex(process.stack_current);
-        print(" \t\t ");
+        tab();
         printHex(process.stack_start);
-        print("\n");
+        enter();
     }
 
     _sti();
@@ -168,4 +172,13 @@ uint8_t* align_stack( uint8_t* init){
         init= init-1;
     }
     return init;
+}
+
+int get_pid_parent(){
+    int _pid = get_pid();
+    pcb process = processes[_pid];
+    if ( process.alive ){
+        return process.parent->pid;
+    }
+    return -1;
 }

@@ -9,20 +9,16 @@ void initialize_scheduler();
 
 void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t* rsp);
 
-void deleteProcessScheduling( int pid );
-
+void delete_process_scheduling( int pid );
 
 uint8_t* schedule( uint8_t* actual_pointer);
 
-
-// A blocking function call this function to change the process for it to wait
-void blocking( uint8_t* actual_pointer );
-
-// function called by timer tick to get rid of a running process
-uint8_t* from_tick( uint8_t* actual_pointer );
-
-p_list getRunning();
-
 p_list getReadyToRun();
+
+int get_pid();
+
+int blocked_to_scheduling( int _pid);
+
+int scheduling_to_blocked();
 
 #endif

@@ -18,6 +18,7 @@ typedef struct list{
 static listHeader priority[4];
 static int is_first = 1;
 static p_list running = NULL;
+static listHeader blocked;
 
 void initialize_scheduler(){
 
@@ -58,7 +59,7 @@ void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t
 
 }
 
-void deleteProcessScheduling( int pid ){
+void delete_process_scheduling( int pid ){
     p_list aux;
 
 }
@@ -68,8 +69,10 @@ uint8_t* schedule( uint8_t* actual_pointer){
 
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
+        change_rsp_process(running->pid,actual_pointer);
         running->process_info->CPU_time++;
-        running->process_info->p_state = READY;
+        if ( running->process_info->p_state == RUNNING )
+            running->process_info->p_state = READY;
     }
 
     /*
@@ -98,70 +101,6 @@ uint8_t* schedule( uint8_t* actual_pointer){
 
     return toRun->stack_pointer;
     
-}
-
-
-
-
-
-// A blocking function call this function to change the process for it to wait
-void blocking_process( int pid , int newState){
-    /*
-    p_list running = getRunning();
-    if ( running != NULL ){
-        running->stack_pointer = actual_pointer;
-        running->process_info->p_state = BLOCKED;
-        schedule( actual_pointer );
-    }
-    schedule( actual_pointer );
-    */
-}
-
-void unblock_process( int pid ){
-
-}
-
-// function called by timer tick to get rid of a running process
-uint8_t* from_tick( uint8_t* actual_pointer ){
-    p_list running = getRunning();
-    if ( running != NULL ){
-        running->stack_pointer = actual_pointer;
-        running->process_info->CPU_time++;
-        running->process_info->p_state = READY;
-    }
-    return schedule( actual_pointer );
-}
-/*
-p_list getRunning(){
-    if ( priority[0].running && (priority[0].running->process_info->p_state == RUNNING) )
-        return priority[0].running;
-    if ( priority[1].running && (priority[1].running->process_info->p_state == RUNNING) )
-        return priority[1].running;
-    if ( priority[2].running && ( priority[2].running->process_info->p_state == RUNNING) )
-        return priority[2].running;
-    if ( priority[3].running && ( priority[3].running->process_info->p_state == RUNNING) )
-        return priority[3].running;
-    return NULL;
-}*/
-
-p_list getReadyToRun(){
-    
-    if ( running == NULL ){
-        return NULL;
-    }
-
-    int prio_lvl = running->process_info->priority;
-
-    switch (prio_lvl){
-        case 0:
-        return search_from_0();
-        case 1:
-        return search_from_1();
-        case 2: 
-        return search_from_2();
-        default:
-        return search_from_top();
-    }
 }
 
 p_list look_in_list ( int lvl , p_list from ){
@@ -247,4 +186,104 @@ p_list search_from_top(){
     if ( toReturn != NULL )
         return toReturn;
     return priority[ALWAYSACTIVE].first;
+}
+
+p_list getReadyToRun(){
+    
+    if ( running == NULL ){
+        return priority[3].first;
+    }
+
+    int prio_lvl = running->process_info->priority;
+
+    switch (prio_lvl){
+        case 0:
+        return search_from_0();
+        case 1:
+        return search_from_1();
+        case 2: 
+        return search_from_2();
+        default:
+        return search_from_top();
+    }
+}
+
+// returns 1 in error and 0 in success
+int scheduling_to_blocked(){
+    if ( running == NULL ){
+        return 1;
+    }
+    int lvl = running->process_info->priority;
+
+
+    p_list current = priority[lvl].first;
+    if ( current == NULL )
+        return 1;
+    if ( current == running && (current->next == NULL || current->next == current) ){
+        priority[lvl].first = NULL;
+    } else {
+        while( current->next != running ){
+            current = current->next;
+        }
+        current->next = running->next;
+    }
+    
+    // add blocked programs
+    if ( blocked.first == NULL ){
+        blocked.first = running;
+    }else{
+        p_list current_blocked = blocked.first;
+        while( current_blocked->next != NULL ){
+            current_blocked = current_blocked->next;
+        }
+        current_blocked->next = running;
+    }
+    return 0;
+}
+
+// returns 1 in error and 0 in success
+int blocked_to_scheduling( int _pid){
+    if ( blocked.first == NULL ){
+        return 1;
+    }
+    p_list current = blocked.first;
+    p_list aux = current;
+    if ( current->pid == _pid ){
+        blocked.first = NULL;
+    }else {
+        while ( current->next == NULL || current->next->pid != _pid ){
+            current = current->next;
+        }
+        aux = current;
+        if ( current ->next == NULL )
+            return 1;
+        current->next = current->next->next;
+    }
+
+    // move to the scheduling table
+    int lvl = aux->process_info->priority;
+
+    p_list aux2 = priority[lvl].first;
+    // if there is no first process next points to itself
+    if ( aux2 == NULL ){
+        priority[lvl].first = aux;
+        aux->next = aux;
+        return 0;
+    }
+
+    while( aux2->next != priority[lvl].first ){
+        aux2 = aux2->next;
+    }
+    aux2->next = aux;
+    aux->next = priority[lvl].first;
+
+    return 0;
+}
+
+
+int get_pid(){
+    if ( running == NULL )
+        return -1;
+    else
+        return running->pid;
 }
