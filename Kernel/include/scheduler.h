@@ -3,7 +3,13 @@
 
 #include "process.h"
 
+
 typedef struct list* p_list;
+
+#define BLOCKBYSYNC 5
+#define MUTEX 0
+#define WAITING 1
+
 
 void initialize_scheduler();
 

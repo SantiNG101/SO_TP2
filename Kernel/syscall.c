@@ -10,10 +10,20 @@
 #include <videoDriver.h>
 #include <registers.h>
 #include <process.h>
+#include <semaphore.h>
+#include <semaphores.h>
+#include <lib.h>
+#include <stdlib.h>
+#include "include/idt/irq.h"
+#include "include/sync.h"
+#include <syscall.h>
 
+#define MAX_SEMAPHORES 100
 
+static semaphore_ptr semaphores[MAX_SEMAPHORES];
+static int sem_count = 0;
 /*
- *  Arguementos de una función de SYSCALL
+ *  Argumentos de una función de SYSCALL
  */
 
 void read(argumentsStruct args){
@@ -127,16 +137,89 @@ void execve(argumentsStruct args){
     process_create(args->rsi, args->rdx, args->rcx, args->r8);
 }
 
-void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, setFontSize,
- timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
- setPrintAnywhere, startS, stopS, execve };
+int syscall_create_semaphore(char *name, int value) {
+    if (sem_count >= MAX_SEMAPHORES) {
+        return -1; // No more semaphores available
+    }
+
+    semaphore_ptr sem = create_semaphore(name, value);
+    semaphores[sem_count++] = sem;
+
+    return 0; // Success
+}
+
+void syscall_create_semaphore_wrapper(argumentsStruct args) {
+    char *name = (char *) args->r10;
+    int value = (int) args->r9;
+    args->r10 = syscall_create_semaphore(name, value);
+}
+
+semaphore_ptr syscall_open_semaphore(char *name) {
+    for (int i = 0; i < sem_count; i++) {
+        if (strcmp(semaphores[i]->name, name) == 0) {
+            return semaphores[i];
+        }
+    }
+    return NULL; // Semaphore not found
+}
+
+void syscall_open_semaphore_wrapper(argumentsStruct args) {
+    char *name = (char *) args->r10;
+    args->r10 = (uint64_t) syscall_open_semaphore(name);
+}
+
+void syscall_close_semaphore(semaphore_ptr sem) {
+    for (int i = 0; i < sem_count; i++) {
+        if (semaphores[i] == sem) {
+            destroy_semaphore(sem);
+            // Shift the remaining semaphores
+            for (int j = i; j < sem_count - 1; j++) {
+                semaphores[j] = semaphores[j + 1];
+            }
+            sem_count--;
+            return;
+        }
+    }
+}
+
+void syscall_close_semaphore_wrapper(argumentsStruct args) {
+    semaphore_ptr sem = (semaphore_ptr) args->r10;
+    syscall_close_semaphore(sem);
+}
+
+void syscall_semaphore_wait(semaphore_ptr sem) {
+    semaphore_wait(sem);
+}
+
+void syscall_semaphore_wait_wrapper(argumentsStruct args) {
+    semaphore_ptr sem = (semaphore_ptr) args->r10;
+    syscall_semaphore_wait(sem);
+}
+
+void syscall_semaphore_post(semaphore_ptr sem) {
+    semaphore_post(sem);
+}
+
+void syscall_semaphore_post_wrapper(argumentsStruct args) {
+    semaphore_ptr sem = (semaphore_ptr) args->r10;
+    syscall_semaphore_post(sem);
+}
+
+
+// Array of syscall function pointers
+void (* syscalls[]) (argumentsStruct args) = {
+        write, read, clean, setterBuffer, setFontSize,
+        timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState, showRegisters,
+        setPrintAnywhere, startS, stopS, execve,
+        syscall_create_semaphore_wrapper, syscall_open_semaphore_wrapper, syscall_close_semaphore_wrapper, syscall_semaphore_wait_wrapper, syscall_semaphore_post_wrapper
+};
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
-void syscallDispatcher(argumentsStruct args){
-    if(args->rdi > sizeofArr(syscalls)){
+void syscallDispatcher(argumentsStruct args) {
+    if (args->rdi >= sizeofArr(syscalls)) {
         return;
     }
     // Ejecuta la syscall
-    syscalls[args->rdi]((argumentsStruct) args);
+    syscalls[args->rdi](args);
 }

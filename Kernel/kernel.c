@@ -100,7 +100,6 @@ int divisionBy(int x, int y){
 
 int main()
 {
-
 	// to change
 	mem_initialize();
 	load_idt();
