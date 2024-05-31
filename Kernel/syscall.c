@@ -134,7 +134,7 @@ void stopS(argumentsStruct args){
 
 // rdi, rsi, rdx, rcx, r8 and r9 in that order
 void execve(argumentsStruct args){
-    process_create(args->rsi, args->rdx, args->rcx, args->r8);
+    process_create(args->rsi, args->rdx, args->rcx, args->r8,1);
 }
 
 int syscall_create_semaphore(char *name, int value) {

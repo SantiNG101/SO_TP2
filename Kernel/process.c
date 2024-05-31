@@ -16,59 +16,46 @@ struct children{
 typedef struct pcb {
     char* name;
     int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
-    int stdin;
-    int stdout;
-    int stderr;
+    char stdin;
+    char stdout;
+    char stderr;
     struct sch_info scheduling_info;
     struct children_info childs;
     uint8_t* stack_current;
     uint8_t* stack_end;             // where memory ends
     uint8_t* stack_start;           // where memory starts
-    pcb_pointer parent;             // pointer to the information of the parent
-    int alive;                               
-    int active;
+    int parent;             // pointer to the information of the parent
+    char foreground;
+    char alive;                               
+    char active;
     // array of fd and devices
 }pcb;
 
 static int pid =1;
 static pcb processes[MAX_PROCESSES_SUPPORTED];
 
-// allocs initial memory structure and creates the init process
-void process_init(){
-
-    ncPrint("Initializing process init");
-    ncNewline();
-    char* argv[] = {"init"};
-    // initialiaze scheduler
-    initialize_scheduler();
-    // Creation of process init.
-    int hola = process_create(0x0, 0x400000, 1 ,argv );          // rip = start text segment of the userland          
-    ncPrintDec(hola);
-
-}
-
 // for syscall fork => return;
-int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] ){
-
+int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int foreground ){
+    /*
     pcb_pointer parent;
     if ( pid != 1 )
         parent = &processes[pidParent];
     else
         parent = NULL;
-
+    */
     pcb_pointer process = &processes[pid-1];
 
     // setting the pcb of the new process
     process->name=argv[0];
     process->pid = pid;
-    processes->parent = parent;
     process->active = 1;            // not active = zombie
     process->alive = 1;
     process->stdin = STDIN;
     process->stdout = STDOUT;
     process->stderr = STDERR;
-    
-    process->parent = parent;
+    process->foreground = foreground;
+
+    process->parent = pidParent;
     process->scheduling_info.p_state = READY;
     if ( process->pid == 1 )
         process->scheduling_info.priority = ALWAYSACTIVE;
@@ -76,13 +63,15 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] ){
         process->scheduling_info.priority = MOSTIMP;
     process->scheduling_info.CPU_time = 0;
 
+    // TODO: correct
     if (pid != 1){
+        pcb parent = processes[pidParent];
         struct children child;
         child.pid = pid;
-        if ( parent->childs.first == NULL ){
-            parent->childs.first = &child;
+        if ( parent.childs.first == NULL ){
+            parent.childs.first = &child;
         }
-        parent->childs.current = &child;
+        parent.childs.current = &child;
     }
 
     process->childs.first = NULL;
@@ -114,26 +103,28 @@ void change_rsp_process( int pid, uint8_t* rsp ){
 int set_status( int _pid, int newState){
 
     if ( _pid > pid || _pid < 2 || _pid == 1  )
-        return -1;
+        return ERROR;
     pcb process = processes[_pid];
     if ( process.alive ){
         if ( newState == process.scheduling_info.p_state )
             return newState;
         if ( newState == BLOCKED ){
             process.scheduling_info.p_state = BLOCKED;
-            int result = scheduling_to_blocked();
+            int result = scheduling_to_blocked(_pid);
             if ( result )
-                return -1;
+                return ERROR;
             
         }else if ( process.scheduling_info.p_state == BLOCKED ){
             process.scheduling_info.p_state = newState;
             process.scheduling_info.priority = MOSTIMP;
-            blocked_to_scheduling(_pid);
+            int result = blocked_to_scheduling(_pid);
+            if ( result )
+                return ERROR;
         }
         return newState;
     }
 
-    return -1;
+    return ERROR;
 
 }
 
@@ -141,7 +132,6 @@ int set_status( int _pid, int newState){
 void show_processes(){
 
     _cli();
-
 
     for( int i=0; i < pid-1; i++ ){
         pcb process = processes[i];
@@ -156,6 +146,8 @@ void show_processes(){
         printHex(process.stack_current);
         tab();
         printHex(process.stack_start);
+        tab();
+        printDec(process.foreground);
         enter();
     }
 
@@ -178,7 +170,18 @@ int get_pid_parent(){
     int _pid = get_pid();
     pcb process = processes[_pid];
     if ( process.alive ){
-        return process.parent->pid;
+        return process.parent;
     }
     return -1;
+}
+
+// returns 0 if eliminated correctly, 1 if error and -1 if not found
+int kill_process(int _pid){
+    if ( _pid < 0 || _pid > pid )
+        return 1;
+    
+    processes[_pid].alive = 0;
+    processes[_pid].active = 0;
+
+    return delete_process_scheduling(_pid);
 }

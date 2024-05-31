@@ -9,6 +9,9 @@
 #include <screen.h>
 
 #define NULL ((void *)0)
+#define SUCCESS 0
+#define ERROR 1
+#define NOTFOUND -1
 
 // Process states
 #define BLOCKED 0
@@ -53,7 +56,7 @@ extern void _sti(void);
 extern void _hlt(void);
 
 void process_init();
-int process_create( int pidParent, uint8_t* rip, int argc, char* argv[] );
+int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int foreground );
 uint8_t* align_stack( uint8_t* init);
 void show_processes();
 void change_rsp_process( int pid, uint8_t* rsp );

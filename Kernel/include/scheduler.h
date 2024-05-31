@@ -15,7 +15,7 @@ void initialize_scheduler();
 
 void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t* rsp);
 
-void delete_process_scheduling( int pid );
+int delete_process_scheduling( int _pid );
 
 uint8_t* schedule( uint8_t* actual_pointer);
 
@@ -25,6 +25,8 @@ int get_pid();
 
 int blocked_to_scheduling( int _pid);
 
-int scheduling_to_blocked();
+int scheduling_to_blocked(int _pid);
+
+int change_priority( int _pid, int new_priority );
 
 #endif

@@ -88,6 +88,15 @@ void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
         keyCode = toMayus(keyCode);
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
+    if(getState(CTR)){
+        if ( keyCode == keyboard[2][0] )
+        return;
+            //end_of_file();
+        if ( keyCode == keyboard[2][14] )
+        return;
+            //kill_foreground();
+
+    }
     if((keyStates[keyCode] = (!isReleased(data))))
         currentBuff = keyCode;
 

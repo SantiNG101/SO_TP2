@@ -105,15 +105,14 @@ int main()
 	load_idt();
 	 // Activate interruptions
 	char* argInit[2] = {"./init", NULL};
-	process_create(0,&init_process,1,argInit);
+	process_create(0,&init_process,1,argInit,0);
 	return 0;
 }
 
 int init_process(int argc, char* argv[]){
 
 	char* argShell[2] = {"./shell", NULL};
-	show_processes();
-	process_create(1,sampleCodeModuleAddress,1,argShell);
+	process_create(1,sampleCodeModuleAddress,1,argShell,1);
 	_sti();
 	while(1)
 		_hlt();
