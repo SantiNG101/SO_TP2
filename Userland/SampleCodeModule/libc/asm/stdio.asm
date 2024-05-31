@@ -171,5 +171,70 @@ execve:
     leave
     ret
 
+get_pid:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 24  ; get_pid
+    int 80h
+
+    leave
+    ret
+
+get_pid_parent:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 25  ; get_pid_parent
+    int 80h
+
+    leave
+    ret
+
+set_status:
+    push rbp
+    mov rbp, rsp
+
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, 26  ; set_status
+    int 80h
+
+    leave
+    ret
+
+kill_process:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, 28  ; kill_process
+    int 80h
+
+    leave
+    ret
+
+show_processes:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 23  ; show_processes
+    int 80h
+
+    leave
+    ret
+
+change_priority:
+    push rbp
+    mov rbp, rsp
+
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, 27  ; change_priority
+    int 80h
+
+    leave
+    ret
+
 section .bss
 placeholder resb 1

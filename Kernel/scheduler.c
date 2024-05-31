@@ -62,6 +62,8 @@ void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t
 
 uint8_t* schedule( uint8_t* actual_pointer){
 
+    _cli();
+
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
         change_rsp_process(running->pid,actual_pointer);
@@ -90,10 +92,14 @@ uint8_t* schedule( uint8_t* actual_pointer){
     }
     */
     p_list toRun = getReadyToRun();
-    if ( toRun == NULL )
+    if ( toRun == NULL ){
         return actual_pointer;
+    }
+        
     toRun->process_info->p_state=RUNNING;
     running = toRun;
+
+    _sti();
 
     return toRun->stack_pointer;
     
@@ -214,12 +220,12 @@ p_list remove_in_scheduling_by_level( int _pid, int lvl ){
             toReturn = current;
             priority[lvl].first = current->next;
             p_list aux = current->next;
-            while( current == aux->next ){
+            while( current != aux->next ){
                 aux = aux->next;
             }
             aux->next = priority[lvl].first;
         }else{
-            while(current->next == NULL || current->next->pid == _pid){
+            while(current->next != NULL || current->next->pid == _pid){
                 current = current->next;
             }
             if ( current->next->pid == _pid ){
@@ -313,7 +319,7 @@ int blocked_to_scheduling( int _pid){
     if ( current->pid == _pid ){
         blocked.first = NULL;
     }else {
-        while ( current->next == NULL || current->next->pid != _pid ){
+        while ( current->next != NULL || current->next->pid != _pid ){
             current = current->next;
         }
         aux = current;

@@ -5,12 +5,13 @@
 
 
 struct children_info{
-    struct childern_info* first;
-    struct childern_info* current;
+    struct childern* first;
+    struct childern* last;
 };
 
 struct children{
     int pid;
+    struct children * next;
 };
 
 typedef struct pcb {
@@ -26,8 +27,7 @@ typedef struct pcb {
     uint8_t* stack_start;           // where memory starts
     int parent;             // pointer to the information of the parent
     char foreground;
-    char alive;                               
-    char active;
+    char alive;
     // array of fd and devices
 }pcb;
 
@@ -36,6 +36,7 @@ static pcb processes[MAX_PROCESSES_SUPPORTED];
 
 // for syscall fork => return;
 int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int foreground ){
+    _cli();
     /*
     pcb_pointer parent;
     if ( pid != 1 )
@@ -48,35 +49,43 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
     // setting the pcb of the new process
     process->name=argv[0];
     process->pid = pid;
-    process->active = 1;            // not active = zombie
     process->alive = 1;
     process->stdin = STDIN;
     process->stdout = STDOUT;
     process->stderr = STDERR;
     process->foreground = foreground;
 
+    // adding scheduling info
     process->parent = pidParent;
     process->scheduling_info.p_state = READY;
+    process->scheduling_info.CPU_time = 0;
     if ( process->pid == 1 )
         process->scheduling_info.priority = ALWAYSACTIVE;
     else
         process->scheduling_info.priority = MOSTIMP;
-    process->scheduling_info.CPU_time = 0;
+    
 
     // TODO: correct
     if (pid != 1){
         pcb parent = processes[pidParent];
         struct children child;
         child.pid = pid;
+        child.next = NULL;
         if ( parent.childs.first == NULL ){
             parent.childs.first = &child;
+            parent.childs.last = &child;
+        }else{
+            struct children * current = parent.childs.first;
+            while ( current->next != NULL ){
+                current = current->next;
+            }
+            current->next = &child;
+            parent.childs.last = &child;
         }
-        parent.childs.current = &child;
+    }else {
+        process->childs.first = NULL;
+        process->childs.last = NULL;  
     }
-
-    process->childs.first = NULL;
-    process->childs.current = NULL;                    
-    
                                                     // starts from behind
     uint8_t* stack_end = memalloc(STACK_MEM);      // Saving space for the process' stack
     if ( stack_end == -1 )
@@ -89,6 +98,7 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
 
     add_process_to_scheduling(process->pid, &processes[(process->pid)-1].scheduling_info,process->stack_current);
     pid++;
+    _sti();
     forceTimerTick();
     
     return process->pid;
@@ -101,6 +111,8 @@ void change_rsp_process( int pid, uint8_t* rsp ){
 
 // after calling this function must be made a tick interruption
 int set_status( int _pid, int newState){
+
+    _cli();
 
     if ( _pid > pid || _pid < 2 || _pid == 1  )
         return ERROR;
@@ -123,6 +135,8 @@ int set_status( int _pid, int newState){
         }
         return newState;
     }
+
+    _sti();
 
     return ERROR;
 
@@ -181,7 +195,5 @@ int kill_process(int _pid){
         return 1;
     
     processes[_pid].alive = 0;
-    processes[_pid].active = 0;
-
     return delete_process_scheduling(_pid);
 }

@@ -10,6 +10,7 @@
 #include <videoDriver.h>
 #include <registers.h>
 #include <process.h>
+#include <scheduler.h>
 #include <semaphore.h>
 #include <semaphores.h>
 #include <lib.h>
@@ -205,13 +206,61 @@ void syscall_semaphore_post_wrapper(argumentsStruct args) {
     syscall_semaphore_post(sem);
 }
 
+void pid(argumentsStruct args){
+    get_pid();
+}
+
+void pid_parent(argumentsStruct args){
+    get_pid_parent();
+}
+
+void set_status_syscall(argumentsStruct args){
+    set_status(args->rsi,args->rdx);
+}
+
+void change_priority_syscall(argumentsStruct args){
+    change_priority(args->rsi, args->rdx);
+}
+
+void kill_process_syscall(argumentsStruct args){
+    kill_process(args->rsi);
+}
+
+void show_all_processes(argumentsStruct args){
+    show_processes();
+}
 
 // Array of syscall function pointers
 void (* syscalls[]) (argumentsStruct args) = {
-        write, read, clean, setterBuffer, setFontSize,
-        timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState, showRegisters,
-        setPrintAnywhere, startS, stopS, execve,
-        syscall_create_semaphore_wrapper, syscall_open_semaphore_wrapper, syscall_close_semaphore_wrapper, syscall_semaphore_wait_wrapper, syscall_semaphore_post_wrapper
+        write,
+        read,
+        clean,
+        setterBuffer,
+        setFontSize,
+        timer_wait,
+        speaker_playSound,
+        timeNow,
+        putPix,
+        updtScreen,
+        foreGround,
+        backGround,
+        keyState,
+        showRegisters,
+        setPrintAnywhere,
+        startS,
+        stopS,
+        execve,
+        syscall_create_semaphore_wrapper,
+        syscall_open_semaphore_wrapper,
+        syscall_close_semaphore_wrapper,
+        syscall_semaphore_wait_wrapper,
+        syscall_semaphore_post_wrapper,
+        show_all_processes,
+        pid,
+        pid_parent,
+        set_status_syscall,
+        change_priority_syscall,
+        kill_process_syscall
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
