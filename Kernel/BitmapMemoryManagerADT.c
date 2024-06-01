@@ -17,10 +17,10 @@ char memarray[521142272] = {0};
 
 typedef struct memManagerCDT
 {
-    char *start;
-    char *end;
-    int chunk_size;
-    int occupied;
+    unsigned int start;
+    unsigned int end;
+    unsigned int chunk_size;
+    unsigned int occupied;
     memChunkADT chunks[MAX_CHUNKS]; // list of all possible chunks
 } memManagerCDT;
 
@@ -29,16 +29,17 @@ typedef struct memManagerCDT *memManagerADT;
 typedef struct memChunkCDT
 {
     int used;
-    char *starts_at;
+    unsigned int starts_at;
     int length; // length seria la longitud total de la direccion memoria pedida a la que pertenece el chunk, me sirve para iterar en el free
 } memChunkCDT;
 
 typedef struct memChunkCDT *memChunkADT;
 
+// Returns NULL if the memory manager can't be initialized
 memManagerADT mem_initialize()
 {
     if (CHUNK_SIZE < 1 || (MEM_END - MEM_START) < CHUNK_SIZE)
-        return ERROR;
+        return NULL;
 
     memManagerADT mem_manager = (memManagerADT)MEM_START;
 
@@ -50,9 +51,9 @@ memManagerADT mem_initialize()
     // initialize all posible chunks
     for (int i = 0; i < MAX_CHUNKS; i++)
     {
-        memChunkADT new_chunk = (memChunkADT)(MEM_START + sizeof(memManager) + (i * CHUNK_SIZE));
+        memChunkADT new_chunk = (memChunkADT)(MEM_START + sizeof(memManagerCDT) + (i * CHUNK_SIZE));
         new_chunk->used = FALSE;
-        new_chunk->starts_at = MEM_START + sizeof(memManager) + (i * CHUNK_SIZE) + 1;
+        new_chunk->starts_at = MEM_START + sizeof(memManagerCDT) + (i * CHUNK_SIZE) + 1;
         new_chunk->length = 0;
 
         mem_manager->chunks[i] = new_chunk;
@@ -68,7 +69,8 @@ memManagerADT mem_initialize()
     return mem_manager;
 }
 
-void *mem_alloc(memManagerADT mem_manager, int size)
+// Returns ERROR if the memory can't be allocated
+int mem_alloc(memManagerADT mem_manager, int size)
 {
     if (mem_manager->occupied == MAX_CHUNKS || size < 1 || size > (MEM_END - MEM_START))
         return ERROR;
@@ -82,9 +84,9 @@ void *mem_alloc(memManagerADT mem_manager, int size)
 
     mem_manager->occupied += chunks_needed;
 
-    char * direction;
+    unsigned int direction;
 
-    while (int i = 0; i < MAX_CHUNKS; i++)
+    for (int i = 0; i < MAX_CHUNKS; i++)
     {
 
         if (mem_manager->chunks[i]->used == TRUE)
@@ -111,13 +113,13 @@ void *mem_alloc(memManagerADT mem_manager, int size)
     return direction;
 }
 
-void *free(memManagerADT mem_manager, void *allocated_memory)
+int free(memManagerADT mem_manager, unsigned int allocated_memory)
 {
 
-    if (allocated_memory == NULL || allocated_memory < MEM_START || allocated_memory > MEM_END)
+    if (allocated_memory < MEM_START || allocated_memory > MEM_END)
         return ERROR;
 
-    for (int i = 0; i < MAX_CHUNKS : i++)
+    for (int i = 0; i < MAX_CHUNKS; i++)
     {
         if (mem_manager->chunks[i]->starts_at == allocated_memory)
         {
@@ -127,7 +129,7 @@ void *free(memManagerADT mem_manager, void *allocated_memory)
                 mem_manager->chunks[i + j]->used = FALSE;
                 mem_manager->chunks[i + j]->length = 0;
             }
-            return;
+            return SUCCESS;
         }
     }
     return ERROR;
