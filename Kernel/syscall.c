@@ -265,10 +265,10 @@ void* (* syscalls[]) (argumentsStruct args) = {
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
-void syscallDispatcher(argumentsStruct args) {
+void* syscallDispatcher(argumentsStruct args) {
     if (args->rdi >= sizeofArr(syscalls)) {
-        return;
+        return NULL;
     }
     // Ejecuta la syscall
-    syscalls[args->rdi](args);
+    return syscalls[args->rdi](args);
 }
