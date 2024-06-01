@@ -187,6 +187,7 @@ get_pid_parent:
 
     mov rdi, 25  ; get_pid_parent
     int 80h
+    
 
     leave
     ret

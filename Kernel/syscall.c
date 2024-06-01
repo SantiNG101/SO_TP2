@@ -206,24 +206,24 @@ void syscall_semaphore_post_wrapper(argumentsStruct args) {
     syscall_semaphore_post(sem);
 }
 
-void pid(argumentsStruct args){
-    get_pid();
+int pid(argumentsStruct args){
+    return get_pid();
 }
 
-void pid_parent(argumentsStruct args){
-    get_pid_parent();
+int pid_parent(argumentsStruct args){
+    return get_pid_parent();
 }
 
-void set_status_syscall(argumentsStruct args){
-    set_status(args->rsi,args->rdx);
+int set_status_syscall(argumentsStruct args){
+    return set_status(args->rsi,args->rdx);
 }
 
-void change_priority_syscall(argumentsStruct args){
-    change_priority(args->rsi, args->rdx);
+int change_priority_syscall(argumentsStruct args){
+    return change_priority(args->rsi, args->rdx);
 }
 
-void kill_process_syscall(argumentsStruct args){
-    kill_process(args->rsi);
+int kill_process_syscall(argumentsStruct args){
+    return kill_process(args->rsi);
 }
 
 void show_all_processes(argumentsStruct args){
@@ -231,7 +231,7 @@ void show_all_processes(argumentsStruct args){
 }
 
 // Array of syscall function pointers
-void (* syscalls[]) (argumentsStruct args) = {
+void* (* syscalls[]) (argumentsStruct args) = {
         write,
         read,
         clean,

@@ -26,6 +26,14 @@ extern void clearScreen(int mode);
 extern void setFontSize(int size);
 extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
+extern void change_priority(int pid, int new_priority);
+extern void get_pid(int pid, int dummy );
+//extern void execve( int parent_pid, void* (*) () function, int argc, char* argv[] );
+extern void get_pid_parent( int pid,  int dummy  );
+extern void set_status( int pid, int newStatus );
+extern void kill_process( int pid, int dummy );
+extern void show_processes();
+
 //
 // functionName: setBackgroundColour
 // Description: Cambia el color del fondo.

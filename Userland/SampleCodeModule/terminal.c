@@ -19,12 +19,24 @@ void divZero();
 void beep();
 void setFont();
 
+void setDefault(){
+    clearScreen(0);
+    setBackgroundColour(BLACK);
+    setForegroundColour(WHITE);
+}
+
 // struct para definir la lista de comandos a utilizar en la terminal
 typedef struct {
     char name[20];
     char description[150];
     void (*function)(void);
 } commandT;
+
+typedef struct {
+    char name[20];
+    char description[150];
+    void* (*function)(void*);
+} commandArgs;
 
 typedef struct{
     char color[15];
@@ -47,7 +59,18 @@ const commandT commands[] = {
                             {"div0","Shows how div 0 exception works",divZero},
                             {"opCode","Shows how opCode exception works",opCode},
                             {"font", "Sets the fontsize", setFont},
-                            {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}
+                            {"ps", "show all processes active in the system", show_processes},
+                            {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
+                            {"pong", "Opens de menu to play pong", menuPong},
+                            {"snake", "Opens de menu to play snake", menuSnake}
+                            };
+
+const commandArgs commands_args[] = {
+                            {"pid", "Obtain the actual process pid", get_pid},
+                            {"parentPid", "Obtain partents pid", get_pid_parent},
+                            {"setStatus", "Change a process status ( BLOCKED=0 / READY=1 )", set_status},
+                            {"kill", "kill an active process in the system", kill_process},
+                            {"changePriority","change the priority of a process in the scheduling schema", change_priority}
                             };
 
 #define BUFFER_SIZE 50
@@ -137,8 +160,9 @@ char * getInstruction(char * ptr){
 }
 
 
-int terminalStart(){
+int shell(){
     static char ptr[INSTRUCTION_SIZE] = { 0 };
+    setDefault();
     keepGoing = TRUE;
     // llamado de syscall para setear al modo terminal pasandole el 0 que indica este modo
     terminalSetter();
@@ -155,11 +179,10 @@ int terminalStart(){
         ptr[0] = 0; // Pongo en 0 el primer char para indicar que no hay ninguna instrucción.
 
         printf("\n");
-        
     }
 
-    setBackgroundColour(BLACK);
-    setForegroundColour(WHITE);
+    setDefault();
+
     return 0;
 }
 
@@ -168,7 +191,7 @@ int terminalStart(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            if(i == 0 || i == 10 || i == 11 || i == 14){
+            if(i == 0 || (i < 9 && i < 20) ){
                 commands[i].function();
                 putChar('\n');
                 return;

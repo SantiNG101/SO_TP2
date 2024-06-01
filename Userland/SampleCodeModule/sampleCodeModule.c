@@ -5,7 +5,6 @@
 #include "songs.h"
 #include "pong.h"
 #include "snake.h"
-#include "binaries.h"
 
 int main() {
 

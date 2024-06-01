@@ -15,6 +15,9 @@
 #include <stdlib.h>
 #include "songs.h"
 #include "figures.h"
+#include "pong.h"
+#include "snake.h"
+
 #define TRUE 1
 #define FALSE 0
 //HashCodes (obtained from hashing in range)
@@ -27,7 +30,7 @@
 //Las unicas 2 funciones visibles
 
 //Arranca el bash
-int terminalStart();
+int shell();
 int64_t hashInRange(const char* str, uint64_t start, uint64_t end);
 /*
  * Formato de comandos aceptados por la terminal:
