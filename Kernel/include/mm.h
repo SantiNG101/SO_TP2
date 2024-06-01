@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdarg.h>
+#include <lib.h>
 
 #define MEM_START 0x50000;
 #define MEM_STOP 0x9FFFF;

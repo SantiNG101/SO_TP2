@@ -88,7 +88,7 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
     }
                                                     // starts from behind
     uint8_t* stack_end = memalloc(STACK_MEM);      // Saving space for the process' stack
-    if ( stack_end == -1 )
+    if ( stack_end == NULL )
         return -1; 
     uint8_t* stack_start = stack_end + STACK_MEM;  // Going to the start of the stack
 
@@ -115,7 +115,7 @@ int set_status( int _pid, int newState){
     _cli();
 
     if ( _pid > pid || _pid < 2 || _pid == 1  )
-        return ERROR;
+        return -1;
     pcb process = processes[_pid];
     if ( process.alive ){
         if ( newState == process.scheduling_info.p_state )
@@ -124,21 +124,21 @@ int set_status( int _pid, int newState){
             process.scheduling_info.p_state = BLOCKED;
             int result = scheduling_to_blocked(_pid);
             if ( result )
-                return ERROR;
+                return -1;
             
         }else if ( process.scheduling_info.p_state == BLOCKED ){
             process.scheduling_info.p_state = newState;
             process.scheduling_info.priority = MOSTIMP;
             int result = blocked_to_scheduling(_pid);
             if ( result )
-                return ERROR;
+                return -1;
         }
         return newState;
     }
 
     _sti();
 
-    return ERROR;
+    return-1;
 
 }
 
@@ -173,12 +173,6 @@ uint8_t* getSchedulingInfo(int pid){
     return &processes[pid].scheduling_info;
 }
 
-uint8_t* align_stack( uint8_t* init){
-    while( ((int)init%8) != 0 ){
-        init= init-1;
-    }
-    return init;
-}
 
 int get_pid_parent(){
     int _pid = get_pid();

@@ -36,6 +36,8 @@
 #define PROCESS_MEM 0x100000  // 1M of mem
 #define MAX_PROCESSES_SUPPORTED 1000
 
+typedef uint8_t (*Function)();
+
 struct sch_info{
     int p_state;
     int priority;
@@ -55,9 +57,8 @@ extern void _sti(void);
 
 extern void _hlt(void);
 
-void process_init();
+
 int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int foreground );
-uint8_t* align_stack( uint8_t* init);
 void show_processes();
 void change_rsp_process( int pid, uint8_t* rsp );
 int get_pid_parent();

@@ -18,10 +18,10 @@ static const uint64_t PageSize = 0x1000;
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
-typedef int (*EntryPoint)();
+typedef uint8_t (*Function)();
 
 extern void kernelASM(uint64_t addr);
-int init_process(int argc, char* argv[]);
+int init_process();
 extern void _cli(void);
 
 extern void _sti(void);
@@ -109,10 +109,10 @@ int main()
 	return 0;
 }
 
-int init_process(int argc, char* argv[]){
+int init_process(){
 
 	char* argShell[2] = {"./shell", NULL};
-	process_create(1,sampleCodeModuleAddress,1,argShell,1);
+	process_create(1,(Function) sampleCodeModuleAddress,1,argShell,1);
 	_sti();
 	while(1)
 		_hlt();
