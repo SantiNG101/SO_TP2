@@ -361,3 +361,119 @@ make all
 make all
 make all
 exit
+cd root
+l
+ls
+cd Toolchain/
+make all
+cd ..
+make all
+make all
+clear
+make all
+make all
+clear
+make all
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear make all
+clear
+make all
+make all
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+cd root
+ls
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+clear
+make all
+./run.sh 
+exit
