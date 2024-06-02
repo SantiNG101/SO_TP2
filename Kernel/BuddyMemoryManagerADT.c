@@ -1,34 +1,41 @@
 #ifndef BUDDY
 
-#include "BuddyMemoryManagerADT.h"
+#include "MemoryManager.h"
 
-typedef struct MemBlockCDT
+typedef struct memChunkCDT
 {
     unsigned char free;
     int status;
-    MemBlockADT next;
+    memChunkADT next;
     unsigned int size;
-} MemBlockCDT;
+} memChunkCDT;
 
-typedef struct MemBlockCDT *MemBlockADT;
+typedef struct memChunkCDT *memChunkADT;
 
-typedef struct BuddyMemoryManagmentCDT
+typedef struct memManagerCDT
 {
-    MemBlockADT root;
-    MemBlockADT last_node;
+    memChunkADT root;
+    memChunkADT last_node;
     unsigned int free_bytes_left;
     unsigned int block_struct_size;
-} BuddyMemoryManagmentCDT;
+} memManagerCDT;
 
-typedef struct BuddyMemoryManagmentCDT *BuddyMemoryManagmentADT;
+typedef struct memManagerCDT *memManagerADT;
 
-static int remove_from_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block);
-static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int merge);  
-void *buddy_alloc(BuddyMemoryManagmentADT buddy, unsigned int size);
 
+static memManagerADT get_mem_manager();
+static int remove_from_freelist(memManagerADT buddy, memChunkADT block);
+static int add_to_freelist(memManagerADT buddy, memChunkADT block, int merge);  
+void * mem_alloc(unsigned int size);
+
+
+static memManagerADT get_mem_manager()
+{
+    return (memManagerADT)MEM_START;
+}
 
 // Returns ERROR if there is an error adding the block to the freelist
-static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int merge)
+static int add_to_freelist(memManagerADT buddy, memChunkADT block, int merge)
 {
     // Case: the block is the whole memory
     if (block->size == (MEM_END - MEM_START))
@@ -39,7 +46,7 @@ static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int
         return SUCCESS;
     }
 
-    MemBlockADT buddy_block = NULL;
+    memChunkADT buddy_block = NULL;
     int aux_to_merge = 0;
 
     if (merge)
@@ -47,7 +54,7 @@ static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int
         if ((block->status & 0x1) == 1)
         {
             // right block -> least significant bit is 1
-            buddy_block = (MemBlockADT)(((uint64_t)block) - block->size);
+            buddy_block = (memChunkADT)(((uint64_t)block) - block->size);
             if (buddy_block->free && buddy_block->size == block->size)
             {
                 buddy_block->size *= 2;
@@ -58,7 +65,7 @@ static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int
         else
         {
             // left block
-            buddy_block = (MemBlockADT)(((uint64_t)block) + block->size);
+            buddy_block = (memChunkADT)(((uint64_t)block) + block->size);
             if (buddy_block->free && buddy_block->size == block->size)
             {
                 buddy_block->size *= 2;
@@ -79,7 +86,7 @@ static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int
         return add_to_freelist(buddy, block, TRUE);
     }
 
-    MemBlockADT current = buddy->root;
+    memChunkADT current = buddy->root;
 
     while (current->next->size < block->size)
     {
@@ -94,7 +101,7 @@ static int add_to_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block, int
 }
 
 // Return ERROR if it's not possible to delete the block
-static int remove_from_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block)
+static int remove_from_freelist(memManagerADT buddy, memChunkADT block)
 {
 
     if (block == NULL)
@@ -102,7 +109,7 @@ static int remove_from_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block
         return ERROR;
     }
 
-    MemBlockADT current = buddy->root;
+    memChunkADT current = buddy->root;
 
     while (current->next != block && current != NULL)
     {
@@ -121,16 +128,16 @@ static int remove_from_freelist(BuddyMemoryManagmentADT buddy, MemBlockADT block
 }
 
 
-BuddyMemoryManagmentADT buddy_initialize()
+memManagerADT mem_initialize()
 {
 
-    BuddyMemoryManagmentADT buddy = (BuddyMemoryManagmentADT)MEM_START;
+    memManagerADT buddy = (memManagerADT)MEM_START;
 
     buddy->free_bytes_left = (MEM_END - MEM_START) + 1;
-    buddy->block_struct_size = ((sizeof(MemBlockCDT) + (BYTE_ALIGMENT - 1)) & ~MASK_BYTE_ALIGMENT);
+    buddy->block_struct_size = ((sizeof(memChunkCDT) + (BYTE_ALIGMENT - 1)) & ~MASK_BYTE_ALIGMENT);
 
 
-    MemBlockADT root = (MemBlockADT)(MEM_START + sizeof(BuddyMemoryManagmentCDT) + 1);
+    memChunkADT root = (memChunkADT)(MEM_START + sizeof(memManagerCDT) + 1);
     buddy->root->next = (void *) root;
     buddy->root->size = 0;
     buddy->last_node->next = NULL;
@@ -143,16 +150,18 @@ BuddyMemoryManagmentADT buddy_initialize()
     return buddy;
 }
 
-// Returns NULL if there is an error when allocating memory
-void *buddy_alloc(BuddyMemoryManagmentADT buddy, unsigned int size)
+// Returns ERROR if there is an error when allocating memory
+void * mem_alloc(unsigned int size)
 {
+
+    memManagerADT buddy = get_mem_manager();
 
     if (size == 0)
     {
-        return NULL;
+        return ERROR;
     }
 
-    MemBlockADT current, prev;
+    memChunkADT current, prev;
     void *allocated_memory = NULL;
 
     size += buddy->block_struct_size;
@@ -164,7 +173,7 @@ void *buddy_alloc(BuddyMemoryManagmentADT buddy, unsigned int size)
 
     if (size > buddy->free_bytes_left)
     {
-        return NULL;
+        return ERROR;
     }
 
     prev = buddy->root;
@@ -178,7 +187,7 @@ void *buddy_alloc(BuddyMemoryManagmentADT buddy, unsigned int size)
 
     if (current == buddy->last_node)
     {
-        return NULL;
+        return ERROR;
     }
 
     allocated_memory = (void *)(((uint8_t *)prev->next) + buddy->block_struct_size);
@@ -189,7 +198,7 @@ void *buddy_alloc(BuddyMemoryManagmentADT buddy, unsigned int size)
     {
         current->size /= 2;
         current->status = current->status << 1;
-        MemBlockADT new = (void *)(((uint64_t)current) + current->size);
+        memChunkADT new = (void *)(((uint64_t)current) + current->size);
         new->size = current->size;
         new->free = TRUE;
         new->status = current->status | 0x1;
@@ -202,22 +211,25 @@ void *buddy_alloc(BuddyMemoryManagmentADT buddy, unsigned int size)
     return allocated_memory;
 }
 
-void buddy_free(BuddyMemoryManagmentADT buddy, void *allocated_memory)
+int free(unsigned int allocated_memory)
 {
+
+    memManagerADT buddy = get_mem_manager();
 
     if (allocated_memory == NULL)
     {
-        return;
+        return ERROR;
     }
     uint8_t *mem_to_free = ((uint8_t *)allocated_memory) - buddy->block_struct_size;
-    MemBlockADT block_to_free = (void *)mem_to_free;
+    memChunkADT block_to_free = (void *)mem_to_free;
 
     int freed_bytes = block_to_free->size;
 
     add_to_freelist(buddy, block_to_free, TRUE);
 
     buddy->free_bytes_left += freed_bytes;
-}
 
+    return SUCCESS;
+}
 
 #endif

@@ -1,6 +1,6 @@
 #ifndef BITMAP
 
-#include <BitmapMemoryManagerADT.h>
+#include "MemoryManager.h"
 
 /*
 typedef struct mem_block{
@@ -30,10 +30,15 @@ typedef struct memChunkCDT
 {
     int used;
     unsigned int starts_at;
-    int length; // length seria la longitud total de la direccion memoria pedida a la que pertenece el chunk, me sirve para iterar en el free
+    int length; // length of the memory requested
 } memChunkCDT;
 
 typedef struct memChunkCDT *memChunkADT;
+
+static memManagerADT get_mem_manager() {
+    return (memManagerADT)MEM_START;
+
+}
 
 // Returns NULL if the memory manager can't be initialized
 memManagerADT mem_initialize()
@@ -70,17 +75,19 @@ memManagerADT mem_initialize()
 }
 
 // Returns ERROR if the memory can't be allocated
-int mem_alloc(memManagerADT mem_manager, int size)
+void * mem_alloc(unsigned int size)
 {
+    memManagerADT mem_manager = get_mem_manager();
+
     if (mem_manager->occupied == MAX_CHUNKS || size < 1 || size > (MEM_END - MEM_START))
-        return ERROR;
+        return (void *) ERROR;
 
     int chunks_needed = size / mem_manager->chunk_size;
     if (size % mem_manager->chunk_size != 0)
         chunks_needed++;
     
     if (mem_manager->occupied + chunks_needed > MAX_CHUNKS)
-        return ERROR;
+        return (void *) ERROR;
 
     mem_manager->occupied += chunks_needed;
 
@@ -102,7 +109,7 @@ int mem_alloc(memManagerADT mem_manager, int size)
 
         if (j == chunks_needed)
             // found a chunk that fits from [i, i+j)
-            direction = mem_manager->chunks[i]->starts_at;
+            direction = (unsigned int) mem_manager->chunks[i]->starts_at;
 
         for (int k = i; k < chunks_needed; k++)
         {
@@ -110,11 +117,13 @@ int mem_alloc(memManagerADT mem_manager, int size)
             mem_manager->chunks[i + k]->length = size;
         }
     }
-    return direction;
+    return (void *) (uintptr_t) direction;
 }
 
-int free(memManagerADT mem_manager, unsigned int allocated_memory)
+int free(unsigned int allocated_memory)
 {
+
+    memManagerADT mem_manager = get_mem_manager();
 
     if (allocated_memory < MEM_START || allocated_memory > MEM_END)
         return ERROR;
