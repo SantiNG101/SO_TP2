@@ -1,4 +1,4 @@
-#ifndef BITMAP
+#ifdef BITMAP
 
 #include "MemoryManager.h"
 
