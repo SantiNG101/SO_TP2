@@ -230,6 +230,10 @@ void show_all_processes(argumentsStruct args){
     show_processes();
 }
 
+void yield_syscall(argumentsStruct args){
+    yield();
+}
+
 // Array of syscall function pointers
 void* (* syscalls[]) (argumentsStruct args) = {
         write,
@@ -260,7 +264,8 @@ void* (* syscalls[]) (argumentsStruct args) = {
         pid_parent,
         set_status_syscall,
         change_priority_syscall,
-        kill_process_syscall
+        kill_process_syscall,
+        yield_syscall
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

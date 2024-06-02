@@ -35,7 +35,7 @@ typedef struct {
 typedef struct {
     char name[20];
     char description[150];
-    void* (*function)(void*);
+    void* (*function)(int, int);
 } commandArgs;
 
 typedef struct{
@@ -191,7 +191,7 @@ int shell(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            if(i == 0 || (i < 9 && i < 20) ){
+            if(i == 0 || (i > 9 && i < 15) ){
                 commands[i].function();
                 putChar('\n');
                 return;
@@ -209,9 +209,14 @@ void runCommand(char * cmd){
         }
 
     }
+
+    for ( int i=0; i < SIZEOFARR(commands_args); i++ ){
+        if ( !strcmp(cmd, commands_args[i].name) ){
+            
+        }
+    }
+
         printf("Command not found.\n");
-
-
     return;
 }
 

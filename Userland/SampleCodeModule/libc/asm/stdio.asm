@@ -237,5 +237,15 @@ change_priority:
     leave
     ret
 
+yield:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 29 ; yield
+    int 80h
+
+    leave
+    ret
+
 section .bss
 placeholder resb 1

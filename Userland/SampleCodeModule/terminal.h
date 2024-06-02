@@ -17,6 +17,7 @@
 #include "figures.h"
 #include "pong.h"
 #include "snake.h"
+#include "libc/include/stdio.h"
 
 #define TRUE 1
 #define FALSE 0

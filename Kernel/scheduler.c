@@ -355,3 +355,7 @@ int get_pid(){
     else
         return running->pid;
 }
+
+void yield(){
+    forceTimerTick();
+}

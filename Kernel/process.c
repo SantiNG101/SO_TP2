@@ -16,19 +16,16 @@ struct children{
 
 typedef struct pcb {
     char* name;
-    int pid;                    // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
-    char stdin;
-    char stdout;
-    char stderr;
-    struct sch_info scheduling_info;
-    struct children_info childs;
+    int pid;                        // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
+    char fd[3];
+    struct sch_info scheduling_info;    // cambiar a puntero
+    struct children_info childs;        // cambiar a puntero para sacar el warning, implica asignar mem
     uint8_t* stack_current;
     uint8_t* stack_end;             // where memory ends
     uint8_t* stack_start;           // where memory starts
-    int parent;             // pointer to the information of the parent
+    int parent;                     // pointer to the information of the parent
     char foreground;
     char alive;
-    // array of fd and devices
 }pcb;
 
 static int pid =1;
@@ -37,6 +34,9 @@ static pcb processes[MAX_PROCESSES_SUPPORTED];
 // for syscall fork => return;
 int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int foreground ){
     _cli();
+
+    if ( pid > MAX_PROCESSES_SUPPORTED )
+        return -1;
     /*
     pcb_pointer parent;
     if ( pid != 1 )
@@ -50,9 +50,9 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
     process->name=argv[0];
     process->pid = pid;
     process->alive = 1;
-    process->stdin = STDIN;
-    process->stdout = STDOUT;
-    process->stderr = STDERR;
+    process->fd[STDIN] = STDIN;
+    process->fd[STDOUT] = STDOUT;
+    process->fd[STDERR] = STDERR;
     process->foreground = foreground;
 
     // adding scheduling info
@@ -65,7 +65,7 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
         process->scheduling_info.priority = MOSTIMP;
     
 
-    // TODO: correct
+    
     if (pid != 1){
         pcb parent = processes[pidParent];
         struct children child;
@@ -142,6 +142,14 @@ int set_status( int _pid, int newState){
 
 }
 
+int set_fd( int _pid, int new_fd, char pos ){
+    
+    if ( pos < 0 || pos > 2 || _pid > pid || _pid < 2)
+        return ERROR;
+    processes[_pid].fd[pos]=new_fd;
+    return SUCCESS;
+}
+
 
 void show_processes(){
 
@@ -185,9 +193,18 @@ int get_pid_parent(){
 
 // returns 0 if eliminated correctly, 1 if error and -1 if not found
 int kill_process(int _pid){
-    if ( _pid < 0 || _pid > pid )
+    if ( _pid < 1 || _pid > pid )
         return 1;
-    
+    free(processes[_pid].stack_end);
     processes[_pid].alive = 0;
     return delete_process_scheduling(_pid);
+}
+
+void ending_free(){
+    for ( int i=0; i < pid; i++ ){
+        pcb process = processes[i];
+        if ( process.alive ){
+            free(process.stack_end);
+        }
+    }
 }

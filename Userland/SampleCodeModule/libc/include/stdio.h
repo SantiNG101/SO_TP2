@@ -14,6 +14,7 @@
  */
 #define isdigit(c) (c >= '0' && c <= '9')
 #define isspace(c) (c == ' ')
+//#define NULL ((void *)0)
 
 // calls to syscall Read/write.
 extern char getChar(void);
