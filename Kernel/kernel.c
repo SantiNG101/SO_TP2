@@ -87,6 +87,8 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 
+	// to change
+	mem_initialize();
 	screen_Initialize();
 	initialize_scheduler();
 	return getStackBase();
@@ -100,8 +102,7 @@ int divisionBy(int x, int y){
 
 int main()
 {
-	// to change
-	mem_initialize();
+	
 	load_idt();
 	 // Activate interruptions
 	char* argInit[2] = {"./init", NULL};

@@ -64,14 +64,14 @@ const commandT commands[] = {
                             {"pong", "Opens de menu to play pong", menuPong},
                             {"snake", "Opens de menu to play snake", menuSnake}
                             };
-
+/*
 const commandArgs commands_args[] = {
                             {"pid", "Obtain the actual process pid", get_pid},
                             {"parentPid", "Obtain partents pid", get_pid_parent},
                             {"setStatus", "Change a process status ( BLOCKED=0 / READY=1 )", set_status},
                             {"kill", "kill an active process in the system", kill_process},
                             {"changePriority","change the priority of a process in the scheduling schema", change_priority}
-                            };
+                            };*/
 
 #define BUFFER_SIZE 50
 #define INSTRUCTION_SIZE 240    
@@ -209,12 +209,12 @@ void runCommand(char * cmd){
         }
 
     }
-
+/*
     for ( int i=0; i < SIZEOFARR(commands_args); i++ ){
         if ( !strcmp(cmd, commands_args[i].name) ){
             
         }
-    }
+    }*/
 
         printf("Command not found.\n");
     return;

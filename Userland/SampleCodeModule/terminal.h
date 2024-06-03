@@ -9,7 +9,6 @@
  * Librerías requeridas para el correcto funcionamiento de la terminal.
  */
 #include <stdint.h>
-#include <stdio.h>
 #include <strings.h>
 #include <time.h>
 #include <stdlib.h>

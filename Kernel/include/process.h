@@ -57,10 +57,13 @@ extern void _sti(void);
 
 extern void _hlt(void);
 
-
+int set_status( int _pid, int newState);
+int set_fd( int _pid, int new_fd, char pos );
 int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int foreground );
 void show_processes();
 void change_rsp_process( int pid, uint8_t* rsp );
 int get_pid_parent();
+void ending_free();
+int kill_process(int _pid);
 
 #endif

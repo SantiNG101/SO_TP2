@@ -11,6 +11,13 @@ GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 GLOBAL setFontSize
 GLOBAL execve
+GLOBAL get_pid
+GLOBAL get_pid_parent
+GLOBAL set_status
+GLOBAL kill_process
+GLOBAL show_processes
+GLOBAL change_priorityt
+GLOBAL yield
 
 section .text
 ; realiza la llamada a la syscall de read

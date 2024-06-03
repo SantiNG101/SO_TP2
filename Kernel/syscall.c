@@ -34,7 +34,12 @@ void read(argumentsStruct args){
     char    c;
 
     while(len){
-        while((c = getC()) == 0);
+
+        while ((c = getC()) == 0){
+            
+            set_status( get_pid(), BLOCKED );
+            yield();
+        }
         *data++ = c;
         len--;
     }
