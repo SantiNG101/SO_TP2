@@ -27,6 +27,7 @@ void semaphore_wait(semaphore_ptr sem) {
             sem->blocked_processes[sem->blocked_qty++]=pid;
             leaveRegion(&sem->lock, MUTEX);
             set_status(pid, BLOCKED);
+            yield();
             enterRegion(&sem->lock);
         } else {
             break;
@@ -49,6 +50,7 @@ void semaphore_post(semaphore_ptr sem) {
 void unblock_all_p(semaphore_ptr sem){
     for (int i=0; i<sem->blocked_qty; i++){
         set_status(sem->blocked_processes[i], READY);
+        yield();
     }
     sem->blocked_qty = 0;
 }
