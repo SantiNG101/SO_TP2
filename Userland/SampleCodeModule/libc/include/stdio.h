@@ -25,6 +25,9 @@ extern int getKeyState(int keyCode);
 extern void clearScreen(int mode);
 extern void setFontSize(int size);
 extern void setPrintAnywhere(uint32_t y, uint32_t x);
+extern void mem_initialize();
+extern void malloc(uint64_t size);
+extern void free(void * ptr);
 
 //
 // functionName: setBackgroundColour
@@ -50,6 +53,8 @@ int scanf(const char * fmt, ...);
 //Screen painting functions
 int puts(const char * str);
 int printf(const char * fmt, ...);
+
+
 
 
 

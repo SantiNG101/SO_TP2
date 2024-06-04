@@ -306,4 +306,11 @@ int printf(const char * format, ...){
     va_end(args);
     return 0;
 }
-//#########################################
+
+uint32_t malloc(uint32_t size) {
+    malloc(size);
+}
+
+void free(uint32_t address) {
+    free(address);
+}

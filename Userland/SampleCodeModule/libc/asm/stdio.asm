@@ -10,6 +10,9 @@ GLOBAL clearScreen
 GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 GLOBAL setFontSize
+GLOBAL mem_initialize
+GLOBAL malloc
+GLOBAL free
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -151,6 +154,38 @@ setFontSize:
 
     mov r10, rdi
     mov rdi, 4 ; syscall 4
+    int 80h
+
+    leave
+    ret
+
+mem_initialize:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 17 ; syscall 17
+    int 80h
+
+    leave
+    ret
+
+malloc:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 18 ; syscall 18
+    int 80h
+
+    leave
+    ret
+
+free:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi
+    mov rdi, 19 ; syscall 19
     int 80h
 
     leave
