@@ -29,5 +29,6 @@ int scheduling_to_blocked(int _pid);
 
 int change_priority( int _pid, int new_priority );
 void yield();
+void arrange_priorities();
 
 #endif

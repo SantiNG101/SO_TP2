@@ -73,24 +73,8 @@ uint8_t* schedule( uint8_t* actual_pointer){
         }
     }
 
-    /*
-    if ( is_first){
-        p_list init = priority[3].first;
-        init->process_info->p_state = RUNNING;
-        init->stack_pointer = actual_pointer;
-        is_first--;
-        return init->stack_pointer;
-    }
-    */
-    // 
-    //p_list priority1 = priority[0].running;
-    /*
-    if ( priority1 != NULL ){
-        if ( priority1->next == priority[ priority1->process_info->priority ].first ){
-        rearrangePriorities();
-        }
-    }
-    */
+    arrange_priorities();
+    
     p_list toRun = getReadyToRun();
     if ( toRun == NULL ){
         return actual_pointer;
@@ -126,6 +110,36 @@ p_list look_in_list ( int lvl , p_list from ){
     }
     
     return NULL;
+}
+
+void arrange_priorities(){
+
+    if ( running == NULL || running->process_info->priority == 3)
+        return;
+
+    p_list current = running;
+    int lvl = current->process_info->priority;
+    if ( current->process_info->CPU_time >= 5 ){
+        current->process_info->CPU_time = 0;
+        current->process_info->priority++;
+        // if the process is already in the lowest priority
+        if ( current->process_info->priority > 2 ){
+            current->process_info->priority = 2;
+        }
+        p_list aux = priority[lvl].first;
+        // if there is only one process in the list
+        if ( aux->next == aux ){
+            priority[lvl].first = NULL;
+        }else{
+            // checks if it is in the middle
+            while( aux->next != current ){
+                aux = aux->next;
+            }
+            aux->next = current->next;
+        }
+        add_to_priority_list(current);
+    }
+
 }
 
 p_list search_from_0(){
@@ -216,6 +230,11 @@ p_list remove_in_scheduling_by_level( int _pid, int lvl ){
         return toReturn;
     p_list current = priority[lvl].first;
     if ( current != NULL ) {
+        if ( current->pid == _pid && current->next == current ){
+            toReturn = current;
+            priority[lvl].first = NULL;
+            return toReturn;
+        }
         if ( current->pid == _pid ){
             toReturn = current;
             priority[lvl].first = current->next;
@@ -295,7 +314,7 @@ int delete_process_scheduling( int _pid ){
 // returns 1 in error and 0 in success
 int scheduling_to_blocked(int _pid){
     p_list process = find_with_remove(_pid);
-    
+    process->process_info->CPU_time = 0;
     // add blocked programs
     if ( blocked.first == NULL ){
         blocked.first = process;
