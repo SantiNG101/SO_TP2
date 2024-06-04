@@ -9,11 +9,11 @@
 #define MAX_PROCESS_AMOUNT 10
 
 typedef struct semaphore {
-    int lock = 0;
+    int lock;
     int value;
     char name[MAX_NAME_LENGTH];
     int blocked_processes[MAX_PROCESS_AMOUNT];
-    int blocked_qty = 0;
+    int blocked_qty;
     //arreglo de procesos  bloqueados por el semáforo
 } semaphore_t, *semaphore_ptr;
 

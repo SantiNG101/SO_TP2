@@ -10,11 +10,12 @@
 
 // Function to create a semaphore
 semaphore_ptr create_semaphore(char *name, int value) {
-    semaphore_ptr sem = myMalloc(sizeof(semaphore_t));
+    semaphore_ptr sem = memalloc(sizeof(semaphore_t));
     memcpy(sem->name, name, MAX_NAME_LENGTH - 1);
     sem->name[MAX_NAME_LENGTH - 1] = '\0'; // Ensure null-termination
     sem->value = value;
     sem->lock = 0;
+    sem->blocked_qty = 0;
     return sem;
 }
 
@@ -57,7 +58,7 @@ void unblock_all_p(semaphore_ptr sem){
 
 // Function to destroy a semaphore
 void destroy_semaphore(semaphore_ptr sem) {
-    myFree(sem);
+    free(sem);
 }
 
 // Function to get the name of a semaphore
