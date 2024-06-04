@@ -5,8 +5,8 @@
 
 
 struct children_info{
-    struct childern* first;
-    struct childern* last;
+    struct children* first;
+    struct children* last;
 };
 
 typedef struct children{
@@ -118,16 +118,19 @@ int set_status( int _pid, int newState){
 
     _cli();
 
-    if ( _pid > pid || _pid < 2 || _pid == 1  )
+    if ( _pid > pid || _pid < 2 )
         return -1;
     pcb_pointer process = processes[_pid-1];
     if ( process->alive ){
-        if ( newState == process->scheduling_info->p_state )
+        if ( newState == process->scheduling_info->p_state ) {
+            _sti();
             return newState;
+        }
         if ( newState == BLOCKED ){
             process->scheduling_info->p_state = BLOCKED;
             int result = scheduling_to_blocked(_pid);
             if ( result )
+                _sti();
                 return -1;
             
         }else if ( process->scheduling_info->p_state == BLOCKED ){
@@ -135,8 +138,11 @@ int set_status( int _pid, int newState){
             process->scheduling_info->priority = MOSTIMP;
             int result = blocked_to_scheduling(_pid);
             if ( result )
+                _sti();
                 return -1;
         }
+
+        _sti();
         return newState;
     }
 

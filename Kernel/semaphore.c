@@ -6,6 +6,7 @@
 #include "include/idt/irq.h"
 #include "include/sync.h"
 #include <scheduler.h>
+#include <process.h>
 
 // Function to create a semaphore
 semaphore_ptr create_semaphore(char *name, int value) {
@@ -20,11 +21,12 @@ semaphore_ptr create_semaphore(char *name, int value) {
 // Function to wait (decrement) on a semaphore
 void semaphore_wait(semaphore_ptr sem) {
     enterRegion(&sem->lock);
+    int pid = get_pid();
     while (1) { //Sugerencia: El enterRegion ya haría la parte del loop
         if (sem->value == 0) {
-            sem->blockedProcesses[sem->amountBlocked++];//TODO = getcurrentpid;
+            sem->blocked_processes[sem->blocked_qty++]=pid;
             leaveRegion(&sem->lock, MUTEX);
-            //blockRunningProcess function
+            set_status(pid, BLOCKED);
             enterRegion(&sem->lock);
         } else {
             break;
@@ -37,11 +39,18 @@ void semaphore_wait(semaphore_ptr sem) {
 // Function to post (increment) on a semaphore
 void semaphore_post(semaphore_ptr sem) {
     enterRegion(&sem->lock);
+    unblock_all_p(sem);
     if(sem->value==0) {
         sem->value++;
     }
     leaveRegion(&sem->lock, MUTEX);
-    //tryToUnlockSemaphore function;
+}
+
+void unblock_all_p(semaphore_ptr sem){
+    for (int i=0; i<sem->blocked_qty; i++){
+        set_status(sem->blocked_processes[i], READY);
+    }
+    sem->blocked_qty = 0;
 }
 
 // Function to destroy a semaphore
