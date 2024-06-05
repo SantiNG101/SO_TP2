@@ -24,8 +24,8 @@
 typedef struct memManagerCDT *memManagerADT;
 typedef struct memChunkCDT *memChunkADT;
 
-memManagerADT mem_initialize();
+void mem_initialize();
 void * mem_alloc(unsigned int size);
-int free(unsigned int allocated_memory);
+void free(unsigned int allocated_memory);
 
 #endif

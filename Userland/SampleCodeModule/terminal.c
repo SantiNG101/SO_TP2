@@ -46,8 +46,10 @@ const commandT commands[] = {
                              {"foreground","Changes foreground to hexColour: ",setForeground},
                              {"div0","Shows how div 0 exception works",divZero},
                              {"opCode","Shows how opCode exception works",opCode},
-{"font", "Sets the fontsize", setFont},
-                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}};
+                             {"font", "Sets the fontsize", setFont},
+                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
+                             {"testMM", "Tests the Memory Manager", test_mm},
+                            };
 
 #define BUFFER_SIZE 50
 #define INSTRUCTION_SIZE 240    

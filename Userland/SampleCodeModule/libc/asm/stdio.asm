@@ -11,8 +11,8 @@ GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 GLOBAL setFontSize
 GLOBAL mem_initialize
-GLOBAL malloc
-GLOBAL free
+GLOBAL sys_malloc
+GLOBAL sys_free
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -169,7 +169,7 @@ mem_initialize:
     leave
     ret
 
-malloc:
+sys_malloc:
     push rbp
     mov rbp, rsp
 
@@ -180,7 +180,7 @@ malloc:
     leave
     ret
 
-free:
+sys_free:
     push rbp
     mov rbp, rsp
 

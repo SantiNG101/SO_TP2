@@ -128,14 +128,13 @@ static int remove_from_freelist(memManagerADT buddy, memChunkADT block)
 }
 
 
-memManagerADT mem_initialize()
+void mem_initialize()
 {
 
     memManagerADT buddy = (memManagerADT)MEM_START;
 
     buddy->free_bytes_left = (MEM_END - MEM_START) + 1;
     buddy->block_struct_size = ((sizeof(memChunkCDT) + (BYTE_ALIGMENT - 1)) & ~MASK_BYTE_ALIGMENT);
-
 
     memChunkADT root = (memChunkADT)(MEM_START + sizeof(memManagerCDT) + 1);
     buddy->root->next = (void *) root;
@@ -147,7 +146,6 @@ memManagerADT mem_initialize()
     root->free = TRUE;
     root->status = 0;
 
-    return buddy;
 }
 
 // Returns ERROR if there is an error when allocating memory
@@ -218,7 +216,7 @@ int free(unsigned int allocated_memory)
 
     if (allocated_memory == NULL)
     {
-        return ERROR;
+        return;
     }
     uint8_t *mem_to_free = ((uint8_t *)allocated_memory) - buddy->block_struct_size;
     memChunkADT block_to_free = (void *)mem_to_free;
@@ -229,7 +227,7 @@ int free(unsigned int allocated_memory)
 
     buddy->free_bytes_left += freed_bytes;
 
-    return SUCCESS;
+    return;
 }
 
 #endif

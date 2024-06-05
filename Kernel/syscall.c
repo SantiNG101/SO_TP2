@@ -140,25 +140,20 @@ void stopS(argumentsStruct args)
     stopSound();
 }
 
-void *mem_initialize(argumentsStruct args)
-{
-    return mem_initialize();
-}
-
-void *malloc(argumentsStruct args)
+void *sys_malloc(argumentsStruct args)
 {
     return mem_alloc(args->r10);
 }
 
-void *free(argumentsStruct args)
+void *sys_free(argumentsStruct args)
 {
-    mem_free(args->r10);
+    free(args->r10);
 }
 
 void (*syscalls[])(argumentsStruct args) = {
     write, read, clean, setterBuffer, setFontSize, timer_wait, speaker_playSound, 
     timeNow, putPix, updtScreen, foreGround, backGround, keyState, showRegisters,
-    setPrintAnywhere, startS, stopS, mem_initialize, mem_alloc, mem_free
+    setPrintAnywhere, startS, stopS, sys_malloc, sys_free
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

@@ -41,10 +41,10 @@ static memManagerADT get_mem_manager() {
 }
 
 // Returns NULL if the memory manager can't be initialized
-memManagerADT mem_initialize()
+void mem_initialize()
 {
     if (CHUNK_SIZE < 1 || (MEM_END - MEM_START) < CHUNK_SIZE)
-        return NULL;
+        return;
 
     memManagerADT mem_manager = (memManagerADT)MEM_START;
 
@@ -71,7 +71,6 @@ memManagerADT mem_initialize()
         mem_manager->chunks[i]->used = TRUE;
         mem_manager->chunks[i]->length = sizeof(memManagerCDT) + sizeof(memChunkCDT) * MAX_CHUNKS;
     }
-    return mem_manager;
 }
 
 // Returns ERROR if the memory can't be allocated
@@ -120,13 +119,13 @@ void * mem_alloc(unsigned int size)
     return (void *) (uintptr_t) direction;
 }
 
-int free(unsigned int allocated_memory)
+void free(unsigned int allocated_memory)
 {
 
     memManagerADT mem_manager = get_mem_manager();
 
     if (allocated_memory < MEM_START || allocated_memory > MEM_END)
-        return ERROR;
+        return;
 
     for (int i = 0; i < MAX_CHUNKS; i++)
     {
@@ -138,10 +137,10 @@ int free(unsigned int allocated_memory)
                 mem_manager->chunks[i + j]->used = FALSE;
                 mem_manager->chunks[i + j]->length = 0;
             }
-            return SUCCESS;
+            return;
         }
     }
-    return ERROR;
+    return;
 }
 
 #endif

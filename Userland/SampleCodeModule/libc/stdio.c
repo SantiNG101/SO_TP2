@@ -307,10 +307,10 @@ int printf(const char * format, ...){
     return 0;
 }
 
-uint32_t malloc(uint32_t size) {
-    malloc(size);
+void * malloc(uint32_t size) {
+    return sys_malloc(size);
 }
 
-void free(uint32_t address) {
-    free(address);
+void free(void * address) {
+    sys_free(address);
 }

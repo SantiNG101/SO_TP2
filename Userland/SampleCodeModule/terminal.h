@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include "songs.h"
 #include "figures.h"
+#include <test_mm.h>
+
 #define TRUE 1
 #define FALSE 0
 //HashCodes (obtained from hashing in range)

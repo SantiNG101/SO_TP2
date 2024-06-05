@@ -5,6 +5,7 @@
 //#include <screen.h>
 #include <speaker.h>
 #include <stdio.h>
+#include <MemoryManager.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -94,6 +95,7 @@ int divisionBy(int x, int y){
 
 int main()
 {
+	mem_initialize();
     screen_Initialize();
 	((EntryPoint) sampleCodeModuleAddress)();
 	return 0;

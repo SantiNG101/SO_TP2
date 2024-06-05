@@ -1,8 +1,4 @@
-#include "stdio.h"
-#include "test_util.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <test_mm.h>
 
 #define MAX_BLOCKS 128
 
