@@ -17,6 +17,7 @@
 #include "pong.h"
 #include "snake.h"
 #include "libc/include/stdio.h"
+#include "tests.h"
 
 #define TRUE 1
 #define FALSE 0

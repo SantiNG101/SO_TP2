@@ -28,12 +28,13 @@ extern void setFontSize(int size);
 extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
 extern void change_priority(int pid, int new_priority);
-extern void get_pid(int pid, int dummy );
-//extern void execve( int parent_pid, void* (*) () function, int argc, char* argv[] );
-extern void get_pid_parent( int pid,  int dummy  );
-extern void set_status( int pid, int newStatus );
-extern void kill_process( int pid, int dummy );
+extern int getpid();
+extern uint64_t execve( int parent_pid, uint64_t* rip, int argc, char* argv[] );
+extern int get_pid_parent( int pid,  int dummy  );
+extern int set_status( int pid, int newStatus );
+extern int kill_process( int pid, int dummy );
 extern void show_processes();
+extern void exit_process( int result );
 
 //
 // functionName: setBackgroundColour
@@ -60,6 +61,9 @@ int scanf(const char * fmt, ...);
 int puts(const char * str);
 int printf(const char * fmt, ...);
 
+
+
+void test_prio();
 
 
 #endif

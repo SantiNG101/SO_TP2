@@ -27,7 +27,7 @@ static int sem_count = 0;
  *  Argumentos de una función de SYSCALL
  */
 
-void read(argumentsStruct args){
+int64_t read(argumentsStruct args){
     // This might read from keyboard buffer, print it and return it into the r10 Register.
     char*   data = (char *) args->r10;
     uint64_t len = (uint64_t) args->r9;
@@ -43,9 +43,10 @@ void read(argumentsStruct args){
         *data++ = c;
         len--;
     }
+    return 0;
 }
 
-void write(argumentsStruct args){
+int64_t write(argumentsStruct args){
     char * c = (char *) args->r10;
     for(int i = 0; i < args->r9; i++){
         switch(*c){
@@ -72,78 +73,89 @@ void write(argumentsStruct args){
 
         c++;
     }
+    return 0;
 }
 
-void setterBuffer(argumentsStruct args){
+int64_t setterBuffer(argumentsStruct args){
     setDoubleBuffer(args->r10);
 }
 
-void setFontSize(argumentsStruct args){
+int64_t setFontSize(argumentsStruct args){
     setScale(args->r10);
+    return 0;
 }
 
-void timer_wait(argumentsStruct args){
+int64_t timer_wait(argumentsStruct args){
     wait(args->r10);
+    return 0;
 }
 
-void speaker_playSound(argumentsStruct args){
+int64_t speaker_playSound(argumentsStruct args){
     beepCustom(args->r10, args->r9);
+    return 0;
 }
 
-void timeNow(argumentsStruct args){
+int64_t timeNow(argumentsStruct args){
     args->r10 = getTime();
+    return 0;
 }
 
-void clean(argumentsStruct args){
+int64_t clean(argumentsStruct args){
     clearScreen(args->r10);
+    return 0;
 }
 
 //r10 x r9 y r8 color
-void putPix(argumentsStruct args){
+int64_t putPix(argumentsStruct args){
     putPixel(args->r10,args->r9,args->r8);
+    return 0;
 }
 
-void updtScreen(argumentsStruct args){
+int64_t updtScreen(argumentsStruct args){
     updateScreen();
+    return 0;
 }
 
-void foreGround(argumentsStruct args){
+int64_t foreGround(argumentsStruct args){
     setForegroundColour(args->r10);
+    return 0;
 }
 
-void backGround(argumentsStruct args){
+int64_t backGround(argumentsStruct args){
     setBackgroundColour(args->r10);
+    return 0;
 }
 
-void keyState(argumentsStruct args){
+int64_t keyState(argumentsStruct args){
     args->rsi = getKeyState(args->r10);
+    return 0;
 }
 
-void showRegisters(argumentsStruct args){
+int64_t showRegisters(argumentsStruct args){
     printRegisterStatus();
+    return 0;
 }
 
-void setPrintAnywhere(argumentsStruct args){
+int64_t setPrintAnywhere(argumentsStruct args){
     setPrintingMode(args->r10,args->r9,0);
+    return 0;
 }
 
 
 // Starts a sound. With the given frq
-void startS(argumentsStruct args){
+int64_t startS(argumentsStruct args){
     playSound(args->r10);
+    return 0;
 }
 
 // Stops the sound.
-void stopS(argumentsStruct args){
+int64_t stopS(argumentsStruct args){
     stopSound();
+    return 0;
 }
 
-// rdi, rsi, rdx, rcx, r8 and r9 in that order
-void execve(argumentsStruct args){
-    process_create(args->rsi, args->rdx, args->rcx, args->r8,1);
-}
 
-int syscall_create_semaphore(char *name, int value) {
+int64_t syscall_create_semaphore(char *name, int value) {
     if (sem_count >= MAX_SEMAPHORES) {
         return -1; // No more semaphores available
     }
@@ -154,10 +166,11 @@ int syscall_create_semaphore(char *name, int value) {
     return 0; // Success
 }
 
-void syscall_create_semaphore_wrapper(argumentsStruct args) {
+int64_t syscall_create_semaphore_wrapper(argumentsStruct args) {
     char *name = (char *) args->r10;
     int value = (int) args->r9;
     args->r10 = syscall_create_semaphore(name, value);
+    return 0;
 }
 
 semaphore_ptr syscall_open_semaphore(char *name) {
@@ -169,12 +182,12 @@ semaphore_ptr syscall_open_semaphore(char *name) {
     return NULL; // Semaphore not found
 }
 
-void syscall_open_semaphore_wrapper(argumentsStruct args) {
+int64_t syscall_open_semaphore_wrapper(argumentsStruct args) {
     char *name = (char *) args->r10;
     args->r10 = (uint64_t) syscall_open_semaphore(name);
 }
 
-void syscall_close_semaphore(semaphore_ptr sem) {
+int64_t syscall_close_semaphore(semaphore_ptr sem) {
     for (int i = 0; i < sem_count; i++) {
         if (semaphores[i] == sem) {
             destroy_semaphore(sem);
@@ -183,64 +196,85 @@ void syscall_close_semaphore(semaphore_ptr sem) {
                 semaphores[j] = semaphores[j + 1];
             }
             sem_count--;
-            return;
+            return 0;
         }
     }
+    return -1; // Semaphore not found
 }
 
-void syscall_close_semaphore_wrapper(argumentsStruct args) {
+int64_t syscall_close_semaphore_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_close_semaphore(sem);
 }
 
-void syscall_semaphore_wait(semaphore_ptr sem) {
+int64_t syscall_semaphore_wait(semaphore_ptr sem) {
     semaphore_wait(sem);
 }
 
-void syscall_semaphore_wait_wrapper(argumentsStruct args) {
+int64_t syscall_semaphore_wait_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_semaphore_wait(sem);
 }
 
-void syscall_semaphore_post(semaphore_ptr sem) {
+int64_t syscall_semaphore_post(semaphore_ptr sem) {
     semaphore_post(sem);
 }
 
-void syscall_semaphore_post_wrapper(argumentsStruct args) {
+int64_t syscall_semaphore_post_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_semaphore_post(sem);
 }
 
-int pid(argumentsStruct args){
+
+// rdi, rsi, rdx, rcx, r8 and r9 in that order
+int64_t execve(argumentsStruct args){
+    return process_create(args->rsi, args->rdx, args->rcx, args->r8,1);
+}
+
+int64_t pid(argumentsStruct args){
     return get_pid();
 }
 
-int pid_parent(argumentsStruct args){
+int64_t exit_syscall(argumentsStruct args){
+    exit_process( args->rsi );
+    return 0;
+}
+
+int64_t pid_parent(argumentsStruct args){
     return get_pid_parent();
 }
 
-int set_status_syscall(argumentsStruct args){
-    return set_status(args->rsi,args->rdx);
+int64_t set_status_syscall(argumentsStruct args){
+    int result = set_status(args->rsi,args->rdx);
+    if ( result == -1 )
+        return (int64_t) -1;
+
+    _sti();
+    yield();
+
+    return 0; 
 }
 
-int change_priority_syscall(argumentsStruct args){
+int64_t change_priority_syscall(argumentsStruct args){
     return change_priority(args->rsi, args->rdx);
 }
 
-int kill_process_syscall(argumentsStruct args){
+int64_t kill_process_syscall(argumentsStruct args){
     return kill_process(args->rsi);
 }
 
-void show_all_processes(argumentsStruct args){
+int64_t show_all_processes(argumentsStruct args){
     show_processes();
+    return 0;
 }
 
-void yield_syscall(argumentsStruct args){
+int64_t yield_syscall(argumentsStruct args){
     yield();
+    return 0;
 }
 
 // Array of syscall function pointers
-void* (* syscalls[]) (argumentsStruct args) = {
+int64_t (* syscalls[]) (argumentsStruct args) = {
         write,
         read,
         clean,
@@ -270,12 +304,13 @@ void* (* syscalls[]) (argumentsStruct args) = {
         set_status_syscall,
         change_priority_syscall,
         kill_process_syscall,
-        yield_syscall
+        yield_syscall,
+        exit_syscall
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
-void* syscallDispatcher(argumentsStruct args) {
+int64_t syscallDispatcher(argumentsStruct args) {
     if (args->rdi >= sizeofArr(syscalls)) {
         return NULL;
     }

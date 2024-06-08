@@ -73,7 +73,7 @@ uint8_t* schedule( uint8_t* actual_pointer){
         }
     }
 
-    arrange_priorities();
+    //arrange_priorities();
     
     p_list toRun = getReadyToRun();
     if ( toRun == NULL ){
@@ -244,7 +244,7 @@ p_list remove_in_scheduling_by_level( int _pid, int lvl ){
             }
             aux->next = priority[lvl].first;
         }else{
-            while(current->next != NULL || current->next->pid == _pid){
+            while(current->next != NULL && current->next->pid != _pid){
                 current = current->next;
             }
             if ( current->next->pid == _pid ){
@@ -278,7 +278,7 @@ int add_to_priority_list( p_list process ){
     p_list current = priority[lvl].first;
     if ( current == NULL ){
         priority[lvl].first = process;
-        process->next == process;
+        process->next = process;
     }else {
         while( current->next != priority[lvl].first ){
             current = current->next;
@@ -307,7 +307,9 @@ int change_priority( int _pid, int new_priority ){
 int delete_process_scheduling( int _pid ){
     
     p_list toReturn = find_with_remove(_pid);
-    return toReturn==NULL?ERROR:SUCCESS;
+    running = NULL;
+    free(toReturn);
+    return toReturn==NULL?-1:SUCCESS;
 
 }
 
@@ -318,12 +320,15 @@ int scheduling_to_blocked(int _pid){
     // add blocked programs
     if ( blocked.first == NULL ){
         blocked.first = process;
+        process->next = NULL;
     }else{
         p_list current_blocked = blocked.first;
         while( current_blocked->next != NULL ){
             current_blocked = current_blocked->next;
         }
         current_blocked->next = process;
+        process->next = NULL;
+
     }
     return SUCCESS;
 }
@@ -338,10 +343,10 @@ int blocked_to_scheduling( int _pid){
     if ( current->pid == _pid ){
         blocked.first = NULL;
     }else {
-        while ( current->next != NULL || current->next->pid != _pid ){
+        while ( current->next != NULL && current->next->pid != _pid ){
             current = current->next;
         }
-        aux = current;
+        aux = current->next;
         if ( current ->next == NULL )
             return ERROR;
         current->next = current->next->next;

@@ -7,6 +7,4 @@
 #define MAX_PROCESS_AMOUNT 10
 #define MAX_SEMAPHORES 100
 
-void* syscallDispatcher();
-
 #endif

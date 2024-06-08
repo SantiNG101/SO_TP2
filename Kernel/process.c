@@ -138,12 +138,8 @@ int set_status( int _pid, int newState){
             if ( result )
                 return -1;
         }
-
-        _sti();
         return newState;
     }
-
-    _sti();
 
     return-1;
 
@@ -166,18 +162,20 @@ void show_processes(){
     for( int i=0; i < pid-1; i++ ){
         pcb_pointer process = processes[i];
 
-        // futuramente imprimir stdin y stdout
-        enter();
-        printDec(process->pid);
-        tab();
-        print(process->name);
-        tab();
-        printHex(process->stack_current);
-        tab();
-        printHex(process->stack_start);
-        tab();
-        printDec(process->foreground);
-        enter();
+        if ( process->alive ){
+                // futuramente imprimir stdin y stdout
+            enter();
+            printDec(process->pid);
+            tab();
+            print(process->name);
+            tab();
+            printHex(process->stack_current);
+            tab();
+            printHex(process->stack_start);
+            tab();
+            printDec(process->foreground);
+            enter();
+        }
     }
 
     _sti();
@@ -201,10 +199,11 @@ int get_pid_parent(){
 // returns 0 if eliminated correctly, 1 if error and -1 if not found
 int kill_process(int _pid){
     if ( _pid < 1 || _pid > pid )
-        return 1;
+        return -1;
+    processes[_pid-1]->alive = 0;
+    delete_process_scheduling(_pid);
     free(processes[_pid]->stack_end);
-    processes[_pid]->alive = 0;
-    return delete_process_scheduling(_pid);
+    return 0;
 }
 
 void ending_free(){
@@ -216,4 +215,16 @@ void ending_free(){
             // liberar childs
         }
     }
+}
+
+void exit_process( int process_result ){
+
+    kill_process( get_pid() );
+    if ( process_result == 0 )
+        print("Process exited succesfully");
+    else
+        printErrorStr("The process exited with error!");
+
+    forceTimerTick();
+
 }

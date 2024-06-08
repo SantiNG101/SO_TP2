@@ -11,13 +11,14 @@ GLOBAL showRegisters
 GLOBAL setPrintAnywhere
 GLOBAL setFontSize
 GLOBAL execve
-GLOBAL get_pid
+GLOBAL getpid
 GLOBAL get_pid_parent
 GLOBAL set_status
 GLOBAL kill_process
 GLOBAL show_processes
 GLOBAL change_priorityt
 GLOBAL yield
+GLOBAL exit_process
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -178,7 +179,18 @@ execve:
     leave
     ret
 
-get_pid:
+exit_process:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi
+    mov rdi, 30  ; exit
+    int 80h
+
+    leave
+    ret
+
+getpid:
     push rbp
     mov rbp, rsp
 
@@ -193,9 +205,8 @@ get_pid_parent:
     mov rbp, rsp
 
     mov rdi, 25  ; get_pid_parent
-    int 80h
+    int 80h     
     
-
     leave
     ret
 

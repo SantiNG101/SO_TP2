@@ -70,6 +70,23 @@ section .text
 	push r15
 %endmacro
 
+%macro pushStateNoRax 0
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
+
 %macro popState 0
 	pop r15
 	pop r14
@@ -86,6 +103,23 @@ section .text
 	pop rcx
 	pop rbx
 	pop rax
+%endmacro
+
+%macro popStateNoRax 0
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rsi
+	pop rdi
+	pop rbp
+	pop rdx
+	pop rcx
+	pop rbx
 %endmacro
 
 %macro irqHandlerMaster 1
@@ -179,21 +213,21 @@ prepare_process:
     push qword 0x202    ;RFLAGS
     push dword 0x8      ;CS
     push rsi            ;RIP
-    push qword 0x14     ;R15
-    push qword 0x13     ;R14
-    push qword 0x12     ;R13
-    push qword 0x11     ;R12
-    push qword 0x10     ;R11
-    push qword 0x9      ;R10
-    push qword 0x8      ;R9
-    push qword 0x7      ;R8
-    push rcx            ;RSI
-    push rdx            ;RDI
-    push rdi            ;RBP
-    push qword 0x3      ;RDX
-    push qword 0x2      ;RCX
-    push qword 0x1      ;RBX
     push qword 0x0      ;RAX
+    push qword 0x1      ;RBX
+    push qword 0x2      ;RCX
+    push qword 0x3      ;RDX
+    push rdi            ;RBP
+    push rdx            ;RDI
+    push rcx            ;RSI
+    push qword 0x7      ;R8
+    push qword 0x8      ;R9
+    push qword 0x9      ;R10
+    push qword 0x10     ;R11
+    push qword 0x11     ;R12
+    push qword 0x12     ;R13
+    push qword 0x13     ;R14
+    push qword 0x14     ;R15
 
     mov rax, rsp
 
@@ -225,24 +259,11 @@ _irq01Handler:
     irqHandlerMaster 1          ; KEYBOARD
 
 _irq02Handler:                  ; SYSCALL
-    push rbp
-    mov rbp, rsp
-
-    pushf
-    ;sti                          Not proud of this, pero necesario si quiero que las syscall funcionen con interrupción de Hardware
     
-    pushState                   ; Mejorar para que siga el estándar de C
+    pushStateNoRax                   ; Mejorar para que siga el estándar de C
     mov rdi, rsp
     call syscallDispatcher
-    popState
-
-    popf
-
-    mov al, 20h                 ; Signal PIC EOI (End of Interrupt)
-    out 20h, al
-
-    mov rsp, rbp
-    pop rbp
+    popStateNoRax
 
     iretq
 

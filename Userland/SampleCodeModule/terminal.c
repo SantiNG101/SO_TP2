@@ -25,6 +25,8 @@ void setDefault(){
     setForegroundColour(WHITE);
 }
 
+
+
 // struct para definir la lista de comandos a utilizar en la terminal
 typedef struct {
     char name[20];
@@ -62,7 +64,8 @@ const commandT commands[] = {
                             {"ps", "show all processes active in the system", show_processes},
                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
                             {"pong", "Opens de menu to play pong", menuPong},
-                            {"snake", "Opens de menu to play snake", menuSnake}
+                            {"snake", "Opens de menu to play snake", menuSnake},
+                            {"test", "Test the processes", test_processes_wrapper}
                             };
 /*
 const commandArgs commands_args[] = {
