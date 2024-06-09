@@ -19,6 +19,11 @@ GLOBAL show_processes
 GLOBAL change_priorityt
 GLOBAL yield
 GLOBAL exit_process
+GLOBAL create_semaphore
+GLOBAL destroy_semaphore
+GLOBAL semaphore_wait
+GLOBAL semaphore_post
+
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -260,6 +265,67 @@ yield:
     mov rbp, rsp
 
     mov rdi, 29 ; yield
+    int 80h
+
+    leave
+    ret
+
+; crea un nuevo semáforo
+syscall_create_semaphore:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi  ; nombre del semáforo
+    mov r9,  rsi  ; valor inicial del semáforo
+    mov rdi, 18   ; syscall create_semaphore
+    int 80h
+
+    leave
+    ret
+
+; abre un semáforo existente
+syscall_open_semaphore:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi  ; nombre del semáforo
+    mov rdi, 19   ; syscall open_semaphore
+    int 80h
+
+    leave
+    ret
+
+; cierra un semáforo
+syscall_close_semaphore:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi  ; puntero al semáforo
+    mov rdi, 20   ; syscall close_semaphore
+    int 80h
+
+    leave
+    ret
+
+; espera en un semáforo
+syscall_semaphore_wait:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi  ; puntero al semáforo
+    mov rdi, 21   ; syscall semaphore_wait
+    int 80h
+
+    leave
+    ret
+
+; libera (post) un semáforo
+syscall_semaphore_post:
+    push rbp
+    mov rbp, rsp
+
+    mov r10, rdi  ; puntero al semáforo
+    mov rdi, 22   ; syscall semaphore_post
     int 80h
 
     leave

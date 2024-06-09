@@ -25,6 +25,9 @@ void setDefault(){
     setForegroundColour(WHITE);
 }
 
+void ps(int argc, char* argv[]);
+void echo(int argc, char* argv[]);
+void jaime();
 
 
 // struct para definir la lista de comandos a utilizar en la terminal
@@ -61,11 +64,13 @@ const commandT commands[] = {
                             {"div0","Shows how div 0 exception works",divZero},
                             {"opCode","Shows how opCode exception works",opCode},
                             {"font", "Sets the fontsize", setFont},
-                            {"ps", "show all processes active in the system", show_processes},
+                            {"ps", "show all processes active in the system", ps},
                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
                             {"pong", "Opens de menu to play pong", menuPong},
                             {"snake", "Opens de menu to play snake", menuSnake},
-                            {"test", "Test the processes", test_processes_wrapper}
+                            {"test", "Test the processes", test_processes_wrapper},
+                            {"echo", "Print in shell", echo},
+                            {"jaime", "Who you gonna call? Jaime!", jaime}
                             };
 /*
 const commandArgs commands_args[] = {
@@ -200,18 +205,27 @@ void runCommand(char * cmd){
                 return;
             }
 
-            char * aux = strtok(NULL, " ");
-            if(aux != NULL){
-                printf("This function does not accept arguments.\n");
-                return;
-            }
+            // Nuevo código para manejar argumentos
+            const int MAX_ARGS = 10; // Puedes ajustar esto según sea necesario
+            char *args[MAX_ARGS + 2]; // +2 para el comando y el NULL final
+            args[0] = commands[i].name; // El primer argumento es el nombre del comando
+            int arg_count = 1;
 
-            commands[i].function();
+            char *aux = strtok(NULL, " ");
+            while(aux != NULL && arg_count < MAX_ARGS + 1) {
+                args[arg_count++] = aux;
+                aux = strtok(NULL, " ");
+            }
+            args[arg_count] = NULL; // Terminar el arreglo con NULL
+
             putChar('\n');
+            int pid = execve(getpid(), commands[i].function, arg_count, args);
+            //waitForProcess(pid);
             return;
         }
 
     }
+
 /*
     for ( int i=0; i < SIZEOFARR(commands_args); i++ ){
         if ( !strcmp(cmd, commands_args[i].name) ){
@@ -372,4 +386,17 @@ void setFont(){
     setFontSize(size);
 
     return;    
+}
+
+void echo(int argc, char* argv[]) {
+    printf("\n%d Parameters", argc);
+    for(int i=0; i<argc; i++) {
+        printf("%s", argv[i]);
+    }
+    exit_process(0);
+}
+
+void ps(int argc, char* argv[]) {
+    show_processes();
+    exit_process(0);
 }

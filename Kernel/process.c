@@ -179,7 +179,6 @@ void show_processes(){
     }
 
     _sti();
-
 }
 
 uint8_t* getSchedulingInfo(int pid){
@@ -201,6 +200,7 @@ int kill_process(int _pid){
     if ( _pid < 1 || _pid > pid )
         return -1;
     processes[_pid-1]->alive = 0;
+    notify_parent(_pid);
     delete_process_scheduling(_pid);
     free(processes[_pid]->stack_end);
     return 0;
@@ -221,10 +221,50 @@ void exit_process( int process_result ){
 
     kill_process( get_pid() );
     if ( process_result == 0 )
-        print("Process exited succesfully");
+        print("Process exited succesfully\n");
     else
         printErrorStr("The process exited with error!");
 
     forceTimerTick();
 
 }
+
+void wait_children(int _pid) {
+    pcb_pointer process = processes[_pid];
+    while (process->childs.first != NULL) {
+        set_status(_pid, BLOCKED);
+        forceTimerTick();  // Yield the CPU
+    }
+}
+
+void notify_parent(int _pid) {
+    pcb_pointer process = processes[_pid];
+    int parent_pid = process->parent;
+    if (parent_pid > 0 && parent_pid < pid) {
+        pcb_pointer parent = processes[parent_pid];
+        p_children current = parent->childs.first;
+        p_children prev = NULL;
+        while (current != NULL) {
+            if (current->pid == _pid) {
+                if (prev == NULL) {
+                    parent->childs.first = current->next;
+                } else {
+                    prev->next = current->next;
+                }
+                if (current == parent->childs.last) {
+                    parent->childs.last = prev;
+                }
+                free(current);
+                break;
+            }
+            prev = current;
+            current = current->next;
+        }
+        set_status(parent_pid, READY); // Unblock the parent
+    }
+    // Kill the process itself
+    process->alive = 0;
+    delete_process_scheduling(_pid);
+    free(processes[_pid]->stack_end);
+}
+

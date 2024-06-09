@@ -35,6 +35,11 @@ extern int set_status( int pid, int newStatus );
 extern int kill_process( int pid, int dummy );
 extern void show_processes();
 extern void exit_process( int result );
+extern int64_t create_semaphore(char *name, int value);
+extern void semaphore_wait(int64_t sem);
+extern void semaphore_post(int64_t sem);
+extern void destroy_semaphore(int64_t sem);
+
 
 //
 // functionName: setBackgroundColour
