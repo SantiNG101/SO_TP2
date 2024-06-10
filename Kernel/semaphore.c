@@ -21,31 +21,31 @@ semaphore_ptr create_semaphore(char *name, int value) {
 
 // Function to wait (decrement) on a semaphore
 void semaphore_wait(semaphore_ptr sem) {
-    enterRegion(&sem->lock);
+    enter_region(&sem->lock);
     int pid = get_pid();
     while (1) { //Sugerencia: El enterRegion ya haría la parte del loop
         if (sem->value == 0) {
             sem->blocked_processes[sem->blocked_qty++]=pid;
-            leaveRegion(&sem->lock, MUTEX);
+            exit_region(&sem->lock);
             set_status(pid, BLOCKED);
             yield();
-            enterRegion(&sem->lock);
+            enter_region(&sem->lock);
         } else {
             break;
         }
     }
     sem->value--;
-    leaveRegion(&sem->lock, MUTEX);
+    exit_region(&sem->lock);
 }
 
 // Function to post (increment) on a semaphore
 void semaphore_post(semaphore_ptr sem) {
-    enterRegion(&sem->lock);
+    enter_region(&sem->lock);
     unblock_all_p(sem);
     if(sem->value==0) {
         sem->value++;
     }
-    leaveRegion(&sem->lock, MUTEX);
+    exit_region(&sem->lock);
 }
 
 void unblock_all_p(semaphore_ptr sem){
