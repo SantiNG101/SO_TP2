@@ -16,6 +16,8 @@
 #define isspace(c) (c == ' ')
 //#define NULL ((void *)0)
 
+typedef int64_t (*Function)(uint64_t,  char **);
+
 // calls to syscall Read/write.
 extern char getChar(void);
 extern char putChar(char c);
@@ -29,17 +31,24 @@ extern void setPrintAnywhere(uint32_t y, uint32_t x);
 
 extern void change_priority(int pid, int new_priority);
 extern int getpid();
-extern uint64_t execve( int parent_pid, uint64_t* rip, int argc, char* argv[] );
-extern int get_pid_parent( int pid,  int dummy  );
+extern uint64_t execve( int parent_pid, Function rip, int argc, char* argv[], int foreground );
+extern int get_pid_parent( int pid);
 extern int set_status( int pid, int newStatus );
-extern int kill_process( int pid, int dummy );
+extern int kill_process( int pid);
 extern void show_processes();
 extern void exit_process( int result );
 extern int64_t create_semaphore(char *name, int value);
 extern void semaphore_wait(int64_t sem);
 extern void semaphore_post(int64_t sem);
 extern void destroy_semaphore(int64_t sem);
+extern int64_t get_fd( uint32_t mode );
+extern int64_t pipe_open(int pid, uint32_t id, int mode );
+extern int64_t pipe_close(int pid, uint32_t id, int mode );
+extern int64_t set_fd(int pid, uint32_t new_fd, char pos);
+extern void yield();
+extern void lower_prio(int pid);
 
+int64_t test_pipes( int argc, char* argv[] );
 
 //
 // functionName: setBackgroundColour

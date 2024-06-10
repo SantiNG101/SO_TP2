@@ -17,7 +17,7 @@ typedef struct children{
 typedef struct pcb {
     char* name;
     int pid;                        // no tan necesario en el momento de hacer un array de procesos, si es necesario si se hace una lista
-    char fd[3];
+    uint32_t fd[3];
     struct sch_info * scheduling_info;    // cambiar a puntero
     struct children_info childs;        // cambiar a puntero para sacar el warning, implica asignar mem
     uint8_t* stack_current;
@@ -145,7 +145,7 @@ int set_status( int _pid, int newState){
 
 }
 
-int set_fd( int _pid, int new_fd, char pos ){
+uint32_t set_fd( int _pid, uint32_t new_fd, char pos ){
     
     if ( pos < 0 || pos > 2 || _pid > pid || _pid < 2)
         return ERROR;
@@ -158,7 +158,7 @@ void show_processes(){
 
     _cli();
 
-    print("PID    NAME    STACK    BASEPR    FOREGROUND");
+    print("PID    NAME    STACK    BASEPR    FOREGROUND    STDIN    STDOUT    STDERR");
     for( int i=0; i < pid-1; i++ ){
         pcb_pointer process = processes[i];
 
@@ -174,6 +174,12 @@ void show_processes(){
             printHex(process->stack_start);
             tab();
             printDec(process->foreground);
+            tab();
+            printDec(process->fd[0]);
+            tab();
+            printDec(process->fd[1]);
+            tab();
+            printDec(process->fd[2]);
             enter();
         }
     }
@@ -200,7 +206,7 @@ int kill_process(int _pid){
     if ( _pid < 1 || _pid > pid )
         return -1;
     processes[_pid-1]->alive = 0;
-    notify_parent(_pid);
+    //notify_parent(_pid);
     delete_process_scheduling(_pid);
     free(processes[_pid]->stack_end);
     return 0;
@@ -230,7 +236,7 @@ void exit_process( int process_result ){
 }
 
 void wait_children(int _pid) {
-    pcb_pointer process = processes[_pid];
+    pcb_pointer process = processes[_pid-1];
     while (process->childs.first != NULL) {
         set_status(_pid, BLOCKED);
         forceTimerTick();  // Yield the CPU
@@ -238,10 +244,10 @@ void wait_children(int _pid) {
 }
 
 void notify_parent(int _pid) {
-    pcb_pointer process = processes[_pid];
+    pcb_pointer process = processes[_pid-1];
     int parent_pid = process->parent;
     if (parent_pid > 0 && parent_pid < pid) {
-        pcb_pointer parent = processes[parent_pid];
+        pcb_pointer parent = processes[parent_pid-1];
         p_children current = parent->childs.first;
         p_children prev = NULL;
         while (current != NULL) {
@@ -268,3 +274,29 @@ void notify_parent(int _pid) {
     free(processes[_pid]->stack_end);
 }
 
+
+uint32_t get_fd( uint32_t mode ){
+    int64_t _pid = get_pid();
+    if ( _pid < 0 )
+        return NULL;
+    pcb_pointer process = processes[_pid-1];
+    if ( !process->alive ){
+        return NULL;
+    }
+    switch(mode){
+        case STDIN:
+            return process->fd[STDIN];
+        case STDOUT:
+            return process->fd[STDOUT];
+        case STDERR:
+            return process->fd[STDERR];
+        default:
+            return NULL;
+
+    }
+}
+
+int get_priority(int _pid){
+    pcb_pointer process = processes[_pid-1];
+    return process->scheduling_info->p_state;    
+}

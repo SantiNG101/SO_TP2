@@ -16,13 +16,18 @@ GLOBAL get_pid_parent
 GLOBAL set_status
 GLOBAL kill_process
 GLOBAL show_processes
-GLOBAL change_priorityt
+GLOBAL change_priority
 GLOBAL yield
 GLOBAL exit_process
 GLOBAL create_semaphore
 GLOBAL destroy_semaphore
 GLOBAL semaphore_wait
 GLOBAL semaphore_post
+GLOBAL get_fd
+GLOBAL pipe_open
+GLOBAL pipe_close
+GLOBAL set_fd
+GLOBAL lower_prio
 
 
 section .text
@@ -174,11 +179,12 @@ execve:
     push rbp
     mov rbp, rsp
 
-    mov r8, rcx
-    mov rcx, rdx
-    mov rdx, rsi
-    mov rsi, rdi
-    mov rdi, 17  ; execve
+    mov r9, r8      ; foreGround
+    mov r8, rcx     ; argv
+    mov rcx, rdx    ; argc
+    mov rdx, rsi    ; rip
+    mov rsi, rdi    ; parent
+    mov rdi, 17     ; execve
     int 80h
 
     leave
@@ -312,8 +318,8 @@ syscall_semaphore_wait:
     push rbp
     mov rbp, rsp
 
-    mov r10, rdi  ; puntero al semáforo
-    mov rdi, 21   ; syscall semaphore_wait
+    mov r10, rdi    ; puntero al semáforo
+    mov rdi, 21     ; syscall semaphore_wait
     int 80h
 
     leave
@@ -324,12 +330,75 @@ syscall_semaphore_post:
     push rbp
     mov rbp, rsp
 
-    mov r10, rdi  ; puntero al semáforo
-    mov rdi, 22   ; syscall semaphore_post
+    mov r10, rdi    ; puntero al semáforo
+    mov rdi, 22     ; syscall semaphore_post
     int 80h
 
     leave
     ret
 
+get_fd:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi    ; mode
+    mov rdi, 31     ; syscall get_fd
+    int 80h
+
+    leave
+    ret
+
+pipe_open:
+    push rbp
+    mov rbp, rsp
+
+    mov rcx, rdx    ; mode
+    mov rdx, rsi    ; id
+    mov rsi, rdi    ; pid
+    mov rdi, 32     ; syscall open pipe
+    int 80h
+
+    leave
+    ret
+
+pipe_close:
+    push rbp
+    mov rbp, rsp
+
+    mov rcx, rdx    ; mode
+    mov rdx, rsi    ; id
+    mov rsi, rdi    ; pid
+    mov rdi, 33     ; syscall close pipe
+    int 80h
+
+    leave
+    ret
+
+set_fd:
+    push rbp
+    mov rbp, rsp
+
+    mov rcx, rdx    ; pos
+    mov rdx, rsi    ; new fd
+    mov rsi, rdi    ; pid
+    mov rdi, 34     ; syscall set descriptor
+    int 80h
+
+    leave
+    ret
+
+lower_prio:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi    ; pid
+    mov rdi, 35     ; syscall lower priority
+    int 80h
+
+    leave
+    ret
+
+
 section .bss
 placeholder resb 1
+

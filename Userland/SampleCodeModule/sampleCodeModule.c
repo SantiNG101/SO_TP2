@@ -8,7 +8,7 @@
 
 int main() {
 
-    shell();
+    shell(NULL,NULL);
 
 	return 0;
 }

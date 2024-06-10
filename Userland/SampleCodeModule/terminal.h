@@ -18,6 +18,7 @@
 #include "snake.h"
 #include "libc/include/stdio.h"
 #include "tests.h"
+#include "libc/include/stdlib.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -31,7 +32,7 @@
 //Las unicas 2 funciones visibles
 
 //Arranca el bash
-int shell();
+int shell(int argc, char* argv[]);
 int64_t hashInRange(const char* str, uint64_t start, uint64_t end);
 /*
  * Formato de comandos aceptados por la terminal:

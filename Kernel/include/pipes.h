@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <mm.h>
 #include <process.h>
+#include <semaphores.h>
 
 #define MAX_PIPE_LENGTH 1024*2  // 2k
 #define MAX_PIPES 1000

@@ -8,16 +8,21 @@ extern void setBackgroundColour(uint32_t colour);
 extern void setForegroundColour(uint32_t colour);
 extern void showRegisters();
 
-void setBackground();
-void setForeground();
+
+int64_t setBackground(int argc, char* argv[]);
+int64_t setForeground(int argc, char* argv[]);
 void runCommand(char *);
-void showTime();
-void exit();
-void showDate();
-void help();
-void divZero();
-void beep();
-void setFont();
+int64_t showTime(int argc, char* argv[]);
+int64_t exit(int argc, char* argv[]);
+int64_t showDate(int argc, char* argv[]);
+int64_t help(int argc, char* argv[]);
+int64_t divZero(int argc, char* argv[]);
+int64_t beep(int argc, char* argv[]);
+int64_t setFont(int argc, char* argv[]);
+int64_t kill(int argc, char* argv[]);
+int64_t nice(int argc, char* argv[]);
+int64_t yield_shell(int argc, char* argv[]);
+int64_t philos(int argc, char* argv[]);
 
 void setDefault(){
     clearScreen(0);
@@ -25,16 +30,16 @@ void setDefault(){
     setForegroundColour(WHITE);
 }
 
-void ps(int argc, char* argv[]);
-void echo(int argc, char* argv[]);
-void jaime();
+int64_t ps(int argc, char* argv[]);
+int64_t echo(int argc, char* argv[]);
+//int64_t jaime();
 
 
 // struct para definir la lista de comandos a utilizar en la terminal
 typedef struct {
     char name[20];
     char description[150];
-    void (*function)(void);
+    int64_t (*function)(int argc, char* argv[]);
 } commandT;
 
 typedef struct {
@@ -68,9 +73,14 @@ const commandT commands[] = {
                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
                             {"pong", "Opens de menu to play pong", menuPong},
                             {"snake", "Opens de menu to play snake", menuSnake},
-                            {"test", "Test the processes", test_processes_wrapper},
+                            {"testprocess", "Test the processes", test_processes_wrapper},
+                            {"kill", "kill selected processes", kill},
                             {"echo", "Print in shell", echo},
-                            {"jaime", "Who you gonna call? Jaime!", jaime}
+                            {"nice", "Print in shell", nice},
+                            {"philos", "Print in shell", philos},
+                            {"testpipes", "Print in shell", test_pipes},
+                            {"yield", "Set to rest the shell", yield_shell}
+                            //{"jaime", "Who you gonna call? Jaime!", jaime}
                             };
 /*
 const commandArgs commands_args[] = {
@@ -168,7 +178,7 @@ char * getInstruction(char * ptr){
 }
 
 
-int shell(){
+int shell(int argc, char* argv[]){
     static char ptr[INSTRUCTION_SIZE] = { 0 };
     setDefault();
     keepGoing = TRUE;
@@ -199,8 +209,9 @@ int shell(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            if(i == 0 || (i > 9 && i < 15) ){
-                commands[i].function();
+            // TODO: solo debe quedar la 4 y 25 aca
+            if(i == 0 || i == 4 || (i > 9 && i < 15) || i==19 || i == 25 ){
+                commands[i].function(NULL,NULL);
                 putChar('\n');
                 return;
             }
@@ -219,7 +230,7 @@ void runCommand(char * cmd){
             args[arg_count] = NULL; // Terminar el arreglo con NULL
 
             putChar('\n');
-            int pid = execve(getpid(), commands[i].function, arg_count, args);
+            int pid = execve(getpid(), commands[i].function, arg_count, args, 1);
             //waitForProcess(pid);
             return;
         }
@@ -239,13 +250,13 @@ void runCommand(char * cmd){
 
 // imprime todas las opciones posibles si se lo llama solo
 // imprime la funcionalidad si se lo acompaña con una funcion existente
-void help(/*char * token*/){
+int64_t help(int argc, char* argv[]){
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("help requires only one argument.\n");
-        return;
+        return 0;
     }
 
     if(token == NULL){
@@ -253,41 +264,49 @@ void help(/*char * token*/){
         for(int i = 0; i < SIZEOFARR(commands); i++){
             printf("%s - %s\n", commands[i].name, commands[i].description);
         }
-        return;
+        return 0;
     }
 
     if(!strcmp(token,"help")){
         printf("Provides a list of functions or\nif an argument is passed\na brief description of the function passed as arg.\n");
-        return;
+        return 0;
     }
 
     for( int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(token, commands[i].name)){
             printf("%s\n",commands[i].description);
-            return;
+            return 0;
         }
     }
 
     printf("Desired function does not exist.\n");
+
+    return -1;
 }
 
 // muestra el tiempo actual
-void showTime(){
+int64_t showTime(int argc, char* argv[]){
     int hour,min,sec;
     getTime(&hour,&min,&sec);
     printf("%2d:%2d:%2d\n",hour,min,sec);
+    exit_process(0);
+    return 0;
 }
 
 // muestra la fecha actual
-void showDate(){
+int64_t showDate(int argc, char* argv[]){
     int year,month,day;
     getDate(&day,&month,&year);
     printf("%2d/%2d/%d\n",day,month,year);
+    return 0;
 }
 
 //funcion para salir del modo terminal
-void exit(){
+// unica funcion que no se deberia llamar como processo y debe correr exit_process()
+int64_t exit(int argc, char* argv[]){
     keepGoing = FALSE;
+    exit_process(0);
+    return 0;
 }
 
 // funcion para dividir 
@@ -296,13 +315,15 @@ int divide(int x, int y){
 }
 
 // funcion que fuerza la division por 0 para la excepcion
-void divZero(){
+int64_t divZero(int argc, char* argv[]){
     divide(0,0);
+    return 0;
 }
 
 //realiza el ruido
-void beep(){
+int64_t beep(int argc, char* argv[]){
     putChar('\a');
+    return 0;
 }
 
 // array de colores que los relacionan con una descripcion
@@ -325,78 +346,107 @@ void nonExistentColor(){
 
 
 // funcion para setear el background
-void setBackground(){
+int64_t setBackground(int argc, char* argv[]){
 
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("Background requires only one argument.\n");
-        return;
+        return -1 ;
     }
 
     for(int i = 0; i < SIZEOFARR(colors); i++){
         if(!strcmp(colors[i].color,token)){
             setBackgroundColour(colors[i].hex);
-            return;
+            return 0;
         }
     }
 
     nonExistentColor();
-    return;
+    return 0;
 }
 
 // funcion para setear el color de las letras
-void setForeground(){
+int64_t setForeground(int argc, char* argv[]){
 
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("Foreground requires only one argument.\n");
-        return;
+        return -1;
     }
 
     for(int i = 0; i < SIZEOFARR(colors); i++){
         if(!strcmp(colors[i].color,token)){
             setForegroundColour(colors[i].hex);
-            return;
+            return 0;
         }
     }
 
     nonExistentColor();
-    return;
+    return -1;
 }
 
-void setFont(){
+int64_t setFont(int argc, char* argv[]){
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("Foreground requires only one argument.\n");
-        return;
+        return -1;
     }
     int size = atoi(token);
 
     if(size < 0 || size > 100){
         printf("Font size must be between 0 and 100.\n");
-        return;
+        return -1;
     }
     printf("Font size set to %d.\n", size);
     setFontSize(size);
 
-    return;    
+    return 0;    
 }
 
-void echo(int argc, char* argv[]) {
+int64_t echo(int argc, char* argv[]) {
     printf("\n%d Parameters", argc);
     for(int i=0; i<argc; i++) {
         printf("%s", argv[i]);
     }
     exit_process(0);
+    return 0;
 }
 
-void ps(int argc, char* argv[]) {
+int64_t ps(int argc, char* argv[]) {
     show_processes();
     exit_process(0);
+    return 0;
+}
+
+int64_t kill(int argc, char* argv[]){
+    if ( argc < 2 )
+        exit_process(-1);
+    int pid = atoi(argv[1]);
+    kill_process(pid);
+    exit_process(0);
+    return 0;
+}
+
+int64_t yield_shell(int argc, char* argv[]){
+    yield();
+    return 0;
+}
+
+int64_t philos(int argc, char* argv[]){
+
+    exit_process(0);
+    return 0;
+}
+
+int64_t nice(int argc, char* argv[]){
+    if ( argc < 2 )
+        exit_process(-1);
+    int pid = atoi(argv[1]);
+    lower_prio(pid);
 }

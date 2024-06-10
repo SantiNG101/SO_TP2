@@ -18,6 +18,7 @@
 #include "include/idt/irq.h"
 #include "include/sync.h"
 #include <syscall.h>
+#include <pipes.h>
 
 #define MAX_SEMAPHORES 100
 
@@ -48,31 +49,37 @@ int64_t read(argumentsStruct args){
 
 int64_t write(argumentsStruct args){
     char * c = (char *) args->r10;
-    for(int i = 0; i < args->r9; i++){
-        switch(*c){
-            case '\n':
-                enter();
-                break;
-            case '\a':
-                beep();
-                break;
-            case '\b':
-                backspace();
-                break;
-            case '\t':
-                tab();
-                break;
-            case '\0':
-                break;
-            case 27:            //caso del esc retorna su numero ascii
-                break;
-            default:
-                putCharScreen(*c);
-                break;
-        }
+    int fd = get_fd(1);
 
-        c++;
+    if ( fd == 1 ){
+        for(int i = 0; i < args->r9; i++){
+            switch(*c){
+                case '\n':
+                    enter();
+                    break;
+                case '\a':
+                    beep();
+                    break;
+                case '\b':
+                    backspace();
+                    break;
+                case '\t':
+                    tab();
+                    break;
+                case '\0':
+                    break;
+                case 27:            //caso del esc retorna su numero ascii
+                    break;
+                default:
+                    putCharScreen(*c);
+                    break;
+            }
+            c++;
+        }
+    }else {
+            write_pipe(fd,c,args->r9);
     }
+
     return 0;
 }
 
@@ -185,6 +192,7 @@ semaphore_ptr syscall_open_semaphore(char *name) {
 int64_t syscall_open_semaphore_wrapper(argumentsStruct args) {
     char *name = (char *) args->r10;
     args->r10 = (uint64_t) syscall_open_semaphore(name);
+    return 0;
 }
 
 int64_t syscall_close_semaphore(semaphore_ptr sem) {
@@ -205,30 +213,43 @@ int64_t syscall_close_semaphore(semaphore_ptr sem) {
 int64_t syscall_close_semaphore_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_close_semaphore(sem);
+    return 0;
 }
 
 int64_t syscall_semaphore_wait(semaphore_ptr sem) {
     semaphore_wait(sem);
+    return 0;
 }
 
 int64_t syscall_semaphore_wait_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_semaphore_wait(sem);
+    return 0;
 }
 
 int64_t syscall_semaphore_post(semaphore_ptr sem) {
     semaphore_post(sem);
+    return 0;
 }
 
 int64_t syscall_semaphore_post_wrapper(argumentsStruct args) {
     semaphore_ptr sem = (semaphore_ptr) args->r10;
     syscall_semaphore_post(sem);
+    return 0;
 }
 
 
 // rdi, rsi, rdx, rcx, r8 and r9 in that order
 int64_t execve(argumentsStruct args){
-    return process_create(args->rsi, args->rdx, args->rcx, args->r8,1);
+    return process_create(args->rsi, args->rdx, args->rcx, args->r8,args->r9);
+}
+
+int64_t get_fd_sys(argumentsStruct args){
+    return get_fd(args->rsi);
+}
+
+int64_t set_fd_sys(argumentsStruct args){
+    return set_fd(args->rsi, args->rdx, args->rcx);
 }
 
 int64_t pid(argumentsStruct args){
@@ -273,6 +294,20 @@ int64_t yield_syscall(argumentsStruct args){
     return 0;
 }
 
+int64_t open_pipe_sys(argumentsStruct args){
+    return open_pipe_for_pid(args->rsi, args->rdx, args->rcx);
+}
+
+int64_t close_pipe_sys(argumentsStruct args){
+    close_pipe_for_pid(args->rsi, args->rdx, args->rcx);
+    return 0; 
+}
+
+int64_t nice_sys(argumentsStruct args){
+    return change_priority(args->rsi,get_priority(args->rsi)+1);
+}
+
+
 // Array of syscall function pointers
 int64_t (* syscalls[]) (argumentsStruct args) = {
         write,
@@ -305,7 +340,12 @@ int64_t (* syscalls[]) (argumentsStruct args) = {
         change_priority_syscall,
         kill_process_syscall,
         yield_syscall,
-        exit_syscall
+        exit_syscall,
+        get_fd_sys,
+        open_pipe_sys,
+        close_pipe_sys,
+        set_fd_sys,
+        nice_sys
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

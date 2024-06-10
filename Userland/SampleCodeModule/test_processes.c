@@ -42,7 +42,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
-      p_rqs[rq].pid = execve(getpid(),endless_loop, 1, argvAux);
+      p_rqs[rq].pid = execve(getpid(),(Function)endless_loop, 1, argvAux, 1);
 
       if (p_rqs[rq].pid == -1) {
         printf("test_processes: ERROR creating process\n");
@@ -63,7 +63,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
         switch (action) {
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
-              if (kill_process(p_rqs[rq].pid, 0) == -1) {
+              if (kill_process(p_rqs[rq].pid) == -1) {
                 printf("test_processes: ERROR killing process\n");
                 exit_process(-1);
                 return -1;
@@ -103,7 +103,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 }
 
 
-void test_processes_wrapper(){
-    char * argv[] = {"test_processes", "3"};
-    execve(getpid(),test_processes, 2, argv);
+void test_processes_wrapper(int argc, char* argv[]){
+    char * newargv[] = {"test_processes", "3"};
+    execve(getpid(),test_processes, 2, newargv, 1);
 }
