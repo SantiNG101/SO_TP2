@@ -28,7 +28,7 @@ GLOBAL pipe_open
 GLOBAL pipe_close
 GLOBAL set_fd
 GLOBAL lower_prio
-
+GLOBAL wait_children
 
 section .text
 ; realiza la llamada a la syscall de read
@@ -398,6 +398,17 @@ lower_prio:
     leave
     ret
 
+
+wait_children:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi    ; pid
+    mov rdi, 37     ; syscall lower priority
+    int 80h
+
+    leave
+    ret
 
 section .bss
 placeholder resb 1

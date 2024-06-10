@@ -47,6 +47,7 @@ extern int64_t pipe_close(int pid, uint32_t id, int mode );
 extern int64_t set_fd(int pid, uint32_t new_fd, char pos);
 extern void yield();
 extern void lower_prio(int pid);
+extern void wait_children(int pid);
 
 int64_t test_pipes( int argc, char* argv[] );
 

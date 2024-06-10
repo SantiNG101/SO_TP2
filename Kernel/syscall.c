@@ -33,17 +33,20 @@ int64_t read(argumentsStruct args){
     char*   data = (char *) args->r10;
     uint64_t len = (uint64_t) args->r9;
     char    c;
-
-    while(len){
-
-        while ((c = getC()) == 0){
-            
-            set_status( get_pid(), BLOCKED );
-            yield();
+    if ( get_fd(0) != 0 )
+        return read_pipe(get_fd(0),data,len);
+    else{
+        while(len){
+            while ((c = getC()) == 0){
+                
+                set_status( get_pid(), BLOCKED );
+                yield();
+            }
+            *data++ = c;
+            len--;
         }
-        *data++ = c;
-        len--;
     }
+    
     return 0;
 }
 
@@ -307,6 +310,16 @@ int64_t nice_sys(argumentsStruct args){
     return change_priority(args->rsi,get_priority(args->rsi)+1);
 }
 
+int64_t notify_parent_sys(argumentsStruct args){
+    notify_parent(args->rsi);
+    return 0;
+}
+
+int64_t wait_children_sys(argumentsStruct args){
+    wait_children(args->rsi);
+    return 0;
+}
+
 
 // Array of syscall function pointers
 int64_t (* syscalls[]) (argumentsStruct args) = {
@@ -345,7 +358,9 @@ int64_t (* syscalls[]) (argumentsStruct args) = {
         open_pipe_sys,
         close_pipe_sys,
         set_fd_sys,
-        nice_sys
+        nice_sys,
+        notify_parent_sys,
+        wait_children_sys
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

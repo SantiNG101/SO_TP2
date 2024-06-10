@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "libc/include/stdio.h"
+#include "libc/include/stdlib.h"
 
 
 int process_one( int argc, char* argv[] ){
@@ -9,7 +10,7 @@ int process_one( int argc, char* argv[] ){
         fd = get_fd(1);
     }
 
-    printf( "hola mundo" );
+    printf( "hol" );
 
     pipe_close(getpid(), fd, 1);
     exit_process(0);
@@ -25,12 +26,21 @@ int process_two( int argc, char* argv[] ){
     }
 
     char buff[200] = {0};
+    char c;
+    int end=0;
 
-    sscanf(buff, "%s");
+    for( int i=0; i < 200 && !end; i++ ){
+        c = getChar();
+        if ( c == '\n' ){
+            end = 1;
+            break;
+        }
+        buff[i] = c;
+    }
 
     printf(buff);
-
     pipe_close(getpid(), fd, 0);
+
     exit_process(0);
     return 0;
 
@@ -38,16 +48,22 @@ int process_two( int argc, char* argv[] ){
 
 int64_t test_pipes( int argv, char* argc[] ) {
     
+    int pid = getpid();
 
     char* argv1[] = {"./process_one"};
-    int pid_1 = execve(getpid(), process_one, 1, argv1, 0);
+    int pid_1 = execve(pid, process_one, 1, argv1, 0);
 
 
     char* argv2[] = {"./process_two"};
-    int pid_2 = execve(getpid(), process_two, 1, argv2, 1);
+    int pid_2 = execve(pid, process_two, 1, argv2, 1);
 
     uint32_t pipe = pipe_open(pid_1, 0, 1);
+    set_fd(pid_1, pipe, 1);
+
     pipe = pipe_open(pid_2, pipe, 0);
+    set_fd(pid_2, pipe, 0);
+
+    wait_children(pid);
 
     exit_process(0);
 

@@ -71,7 +71,7 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
 
     
     if (pid != 1){
-        pcb_pointer parent = processes[pidParent];
+        pcb_pointer parent = processes[pidParent-1];
         p_children child = memalloc( sizeof(struct children) );
         child->pid = pid;
         child->next = NULL;
@@ -109,7 +109,7 @@ int process_create( int pidParent, uint8_t* rip, int argc, char* argv[], int for
 }
 
 void change_rsp_process( int pid, uint8_t* rsp ){
-    processes[pid]->stack_current = rsp;
+    processes[pid-1]->stack_current = rsp;
 }
 
 
@@ -149,7 +149,7 @@ uint32_t set_fd( int _pid, uint32_t new_fd, char pos ){
     
     if ( pos < 0 || pos > 2 || _pid > pid || _pid < 2)
         return ERROR;
-    processes[_pid]->fd[pos] = new_fd;
+    processes[_pid-1]->fd[pos] = new_fd;
     return SUCCESS;
 }
 
@@ -191,10 +191,41 @@ uint8_t* getSchedulingInfo(int pid){
     return processes[pid]->scheduling_info;
 }
 
+void notify_parent(int _pid) {
+    pcb_pointer process = processes[_pid-1];
+    int parent_pid = process->parent;
+    if (parent_pid > 0 && parent_pid < pid) {
+        pcb_pointer parent = processes[parent_pid-1];
+        p_children current = parent->childs.first;
+        p_children prev = NULL;
+        while (current != NULL) {
+            if (current->pid == _pid) {
+                if (prev == NULL) {
+                    parent->childs.first = current->next;
+                } else {
+                    prev->next = current->next;
+                }
+                if (current == parent->childs.last) {
+                    parent->childs.last = prev;
+                }
+                free(current);
+                break;
+            }
+            prev = current;
+            current = current->next;
+        }
+        set_status(parent_pid, READY); // Unblock the parent
+    } /*
+    // Kill the process itself
+    process->alive = 0;
+    delete_process_scheduling(_pid);
+    free(processes[_pid]->stack_end);
+    */
+}
 
 int get_pid_parent(){
     int _pid = get_pid();
-    pcb_pointer process = processes[_pid];
+    pcb_pointer process = processes[_pid-1];
     if ( process->alive ){
         return process->parent;
     }
@@ -206,7 +237,7 @@ int kill_process(int _pid){
     if ( _pid < 1 || _pid > pid )
         return -1;
     processes[_pid-1]->alive = 0;
-    //notify_parent(_pid);
+    notify_parent(_pid);
     delete_process_scheduling(_pid);
     free(processes[_pid]->stack_end);
     return 0;
@@ -237,41 +268,25 @@ void exit_process( int process_result ){
 
 void wait_children(int _pid) {
     pcb_pointer process = processes[_pid-1];
-    while (process->childs.first != NULL) {
-        set_status(_pid, BLOCKED);
-        forceTimerTick();  // Yield the CPU
-    }
-}
-
-void notify_parent(int _pid) {
-    pcb_pointer process = processes[_pid-1];
-    int parent_pid = process->parent;
-    if (parent_pid > 0 && parent_pid < pid) {
-        pcb_pointer parent = processes[parent_pid-1];
-        p_children current = parent->childs.first;
-        p_children prev = NULL;
-        while (current != NULL) {
-            if (current->pid == _pid) {
-                if (prev == NULL) {
-                    parent->childs.first = current->next;
-                } else {
-                    prev->next = current->next;
-                }
-                if (current == parent->childs.last) {
-                    parent->childs.last = prev;
-                }
-                free(current);
-                break;
+    int all_childs_killed = 0;
+    
+    while (all_childs_killed == 0) {
+        int count = 0;
+        p_children current = process->childs.first;
+        while( current != NULL ){
+            if (processes[current->pid-1]->alive == 1) {
+                count++;
             }
-            prev = current;
             current = current->next;
         }
-        set_status(parent_pid, READY); // Unblock the parent
+
+        if ( count == 0 ) {
+            all_childs_killed = 1;
+        } else {
+            set_status(_pid, BLOCKED);
+            forceTimerTick();  // Yield the CPU 
+        }
     }
-    // Kill the process itself
-    process->alive = 0;
-    delete_process_scheduling(_pid);
-    free(processes[_pid]->stack_end);
 }
 
 

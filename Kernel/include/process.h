@@ -69,5 +69,7 @@ uint32_t get_fd( uint32_t mode );
 void exit_process( int process_result );
 void wait_children(int _pid);
 void notify_parent(int _pid);
+void ending_free();
+
 
 #endif
