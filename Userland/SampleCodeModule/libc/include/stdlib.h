@@ -11,4 +11,5 @@ void myFree(void* address);
 uint16_t atoi(char * str);
 unsigned int mi_rand();
 void srand(unsigned int seed);
+int64_t initPhyloReunion(int argc, char* argv[]);
 #endif

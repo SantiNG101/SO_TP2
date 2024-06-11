@@ -5,6 +5,7 @@
 #include <time.h>
 #include <lib.h>
 #include <naiveConsole.h>
+#include <scheduler.h>
 
 #define SECONDS 0X00
 #define MINUTES 0X02
@@ -117,10 +118,13 @@ int getEllapsedSeconds(){
     return getEllapsedMilliseconds() / 1000;
 }
 
-int wait(uint64_t ms){
-    const int start = getEllapsedMilliseconds();
-    int end;
-    while((end = getEllapsedMilliseconds()) - start <= ms);
+int wait(uint64_t quantums ){
 
-    return 1;
+    uint64_t remaining = quantums;
+    while( remaining > 0 ){
+        yield();
+        remaining--;
+    }
+
+    return 0;
 }

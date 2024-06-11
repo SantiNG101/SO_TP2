@@ -2,6 +2,7 @@
 #include "libc/include/stdio.h"
 #include "libc/include/stdlib.h"
 
+
 #define MAX_PHILOSOPHERS 7
 #define MIN_PHILOSOPHERS 3
 #define INIT_PHILOSOPHERS 5
@@ -15,7 +16,6 @@
 #define MUTEX "phyloMutex"
 
 int64_t initPhyloReunion(int argc, char* argv[]);
-
 
 char philosophersName [MAX_PHILOSOPHERS][24]={"Aristoteles","Platon","Socrates","Descartes","Kant","Nietzsche","Sartre","Russell","Machiavelli"};
 
@@ -42,10 +42,10 @@ static int64_t sem = 0;
 
 
 void philosopherActivity(int argc, char* argv[]) {
-    semaphore_wait(MUTEX);
+    semaphore_wait(sem);
     int philoNumber=philoAmount;
     philoAmount++;
-    semaphore_post(MUTEX);
+    semaphore_post(sem);
     while(1) {
         think(philoNumber);
         takeForks(philoNumber);
@@ -58,32 +58,32 @@ int64_t initPhyloReunion(int argc, char* argv[]) {
     sem = create_semaphore(MUTEX, 1);
     philoAmount=0;
 
-    semaphore_wait(MUTEX);
+    semaphore_wait(sem);
     for(int i=0;i<INIT_PHILOSOPHERS;i++) {
         addPhilo(i);
     }
-    semaphore_post(MUTEX);
+    semaphore_post(sem);
     while(1) {
         getInput();
-        wait(500);
-        semaphore_wait(MUTEX);
+        //wait(500);
+        semaphore_wait(sem);
         for(int i=0;i<philoAmount;i++) {
             if(philosophers[i]->state == EATING) {
-                printFormat("E");
+                printf("E");
             }
             else {
-                printFormat(".");
+                printf(".");
             }
         }
-        printFormat("\n");
-        postSem(MUTEX);
+        printf("\n");
+        semaphore_post(sem);
     }
 }
 
 void addPhilo(int i) {
-    philosophers[i] = memalloc(sizeof(Philosopher));
+    //philosophers[i] = memalloc(sizeof(Philosopher));
     if(philosophers[i]==NULL) {
-        printFormat("Error creating Philosopher %s\n",philosophersName[i]);
+        printf("Error creating Philosopher %s\n",philosophersName[i]);
         return -1;
     }
     strcpy(philosophers[i]->name,philosophersName[i]);
@@ -92,7 +92,7 @@ void addPhilo(int i) {
     char* argv[] = {philosophersName[i]};
     int pid= execve( getpid(),philosopherActivity,1,argv,FORE);
     if(pid==-1) {
-        printFormat("Error creating Philosopher %s\n",philosophersName[i]);
+        printf("Error creating Philosopher %s\n",philosophersName[i]);
     }
     else {
         philosophers[i]->pid=pid;
@@ -100,49 +100,49 @@ void addPhilo(int i) {
 }
 
 void getInput() {
-    semaphore_wait(MUTEX);
+    semaphore_wait(sem);
     if(getKeyState('r')) {
         if(philoAmount > MIN_PHILOSOPHERS) {
         int pid = philosophers[philoAmount - 1]->pid;
         philoAmount--;
-        killProcess(pid);
+        kill_process(pid);
         }
         else {
-            printFormat("Minimum philosophers reached\n");
+            printf("Minimum philosophers reached\n");
         }
     } else if(getKeyState('a')) {
         if(philoAmount < MAX_PHILOSOPHERS) {
             addPhilo(philoAmount);
         }
         else {
-            printFormat("Max philosophers reached\n");
+            printf("Max philosophers reached\n");
         }
     }
-    semaphore_post(MUTEX);
+    semaphore_post(sem);
 }
 
 void eat(int philoNumber) {
-    wait(55 * (1+ philoNumber));
+    //wait(55 * (1+ philoNumber));
 }
 
 void think(int philoNumber) {
-    wait(110 * (1+ philoNumber));
+    //wait(110 * (1+ philoNumber));
 }
 
 void takeForks(int philoNum) {
-    semaphore_wait(MUTEX);
+    semaphore_wait(sem);
     philosophers[philoNum]->state = HUNGRY;
     test(philoNum);
-    semaphore_post(MUTEX);
+    semaphore_post(sem);
     semaphore_wait(philosophers[philoNum]->sem);
 }
 
 void putForks(int philoNum) {
-    semaphore_wait(MUTEX);
+    semaphore_wait(sem);
     philosophers[philoNum]->state = THINKING;
     test((philoNum + philoAmount - 1) % philoAmount);
     test((philoNum + 1) % philoAmount);
-    semaphore_post(MUTEX);
+    semaphore_post(sem);
 }
 
 void test(int philoNum){

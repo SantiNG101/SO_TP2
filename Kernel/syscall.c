@@ -96,7 +96,7 @@ int64_t setFontSize(argumentsStruct args){
 }
 
 int64_t timer_wait(argumentsStruct args){
-    wait(args->r10);
+    //wait(args->r10);
     return 0;
 }
 
@@ -320,6 +320,20 @@ int64_t wait_children_sys(argumentsStruct args){
     return 0;
 }
 
+int64_t malloc_sys(argumentsStruct args){
+    return memalloc(args->rsi);
+}
+
+int64_t wait_sys(argumentsStruct args){
+    return wait(args->rsi);
+}
+
+
+int64_t free_sys(argumentsStruct args){
+    free(args->rsi);
+    return 0;
+}
+
 
 // Array of syscall function pointers
 int64_t (* syscalls[]) (argumentsStruct args) = {
@@ -360,7 +374,10 @@ int64_t (* syscalls[]) (argumentsStruct args) = {
         set_fd_sys,
         nice_sys,
         notify_parent_sys,
-        wait_children_sys
+        wait_children_sys,
+        malloc_sys,
+        free_sys,
+        wait_sys
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

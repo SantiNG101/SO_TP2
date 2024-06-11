@@ -23,6 +23,8 @@ int64_t kill(int argc, char* argv[]);
 int64_t nice(int argc, char* argv[]);
 int64_t yield_shell(int argc, char* argv[]);
 int64_t philos(int argc, char* argv[]);
+int64_t filter(int argc, char* argv[]);
+int is_vowel(char c);
 
 void setDefault(){
     clearScreen(0);
@@ -71,14 +73,13 @@ const commandT commands[] = {
                             {"font", "Sets the fontsize", setFont},
                             {"ps", "show all processes active in the system", ps},
                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
-                            {"pong", "Opens de menu to play pong", menuPong},
-                            {"snake", "Opens de menu to play snake", menuSnake},
                             {"testprocess", "Test the processes", test_processes_wrapper},
                             {"kill", "kill selected processes", kill},
                             {"echo", "Print in shell", echo},
                             {"nice", "Print in shell", nice},
                             {"philos", "Print in shell", philos},
                             {"testpipes", "Print in shell", test_pipes},
+                            {"filter", "Filter vowels", filter},
                             {"yield", "Set to rest the shell", yield_shell}
                             //{"jaime", "Who you gonna call? Jaime!", jaime}
                             };
@@ -210,7 +211,7 @@ void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
             // TODO: solo debe quedar la 4 y 25 aca
-            if(i == 0 || i == 4 || (i > 9 && i < 15) || i==19 || i == 25 ){
+            if(i == 4 || i == 24 ){
                 commands[i].function(NULL,NULL);
                 putChar('\n');
                 return;
@@ -230,7 +231,13 @@ void runCommand(char * cmd){
             args[arg_count] = NULL; // Terminar el arreglo con NULL
 
             putChar('\n');
-            int pid = execve(getpid(), commands[i].function, arg_count, args, 1);
+            if(args[arg_count-1]=='&'){
+                execve(getpid(), commands[i].function, arg_count, args, 0);
+            }
+            else {
+                int pid = execve(getpid(), commands[i].function, arg_count, args, 1);
+                wait_children(getpid());
+            }
             //waitForProcess(pid);
             return;
         }
@@ -256,6 +263,7 @@ int64_t help(int argc, char* argv[]){
 
     if(aux != NULL){
         printf("help requires only one argument.\n");
+        exit_process(0);
         return 0;
     }
 
@@ -264,23 +272,26 @@ int64_t help(int argc, char* argv[]){
         for(int i = 0; i < SIZEOFARR(commands); i++){
             printf("%s - %s\n", commands[i].name, commands[i].description);
         }
+        exit_process(0);
         return 0;
     }
 
     if(!strcmp(token,"help")){
         printf("Provides a list of functions or\nif an argument is passed\na brief description of the function passed as arg.\n");
+        exit_process(0);
         return 0;
     }
 
     for( int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(token, commands[i].name)){
             printf("%s\n",commands[i].description);
+            exit_process(0);
             return 0;
         }
     }
 
     printf("Desired function does not exist.\n");
-
+    exit_process(-1);
     return -1;
 }
 
@@ -428,8 +439,13 @@ int64_t kill(int argc, char* argv[]){
     if ( argc < 2 )
         exit_process(-1);
     int pid = atoi(argv[1]);
-    kill_process(pid);
-    exit_process(0);
+    int result = kill_process(pid);
+    if(result == -1){
+        exit_process(-1);
+    }
+    else {
+        exit_process(0);
+    }
     return 0;
 }
 
@@ -439,7 +455,7 @@ int64_t yield_shell(int argc, char* argv[]){
 }
 
 int64_t philos(int argc, char* argv[]){
-
+    initPhyloReunion(argc, argv);
     exit_process(0);
     return 0;
 }
@@ -450,3 +466,42 @@ int64_t nice(int argc, char* argv[]){
     int pid = atoi(argv[1]);
     lower_prio(pid);
 }
+
+int is_vowel(char c) {
+    switch (c) {
+        case 'a': case 'e': case 'i': case 'o': case 'u':
+        case 'A': case 'E': case 'I': case 'O': case 'U':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int64_t filter(int argc, char* argv[]) {
+    if (argc < 2) {
+        printf("Usage: filter <string1> <string2> ...\n");
+        exit_process(1);
+        return 1;
+    }
+
+    for (int i = 1; i < argc; i++) {
+        char *inputString = argv[i];
+
+        char *ptr = inputString;
+        while (*ptr != '\0') {
+            if (!is_vowel(*ptr)) {
+                putChar(*ptr);
+            }
+            ptr++;
+        }
+
+        if (i < argc - 1) {
+            putChar(' '); // Separar los argumentos con un espacio
+        }
+    }
+
+    putChar('\n');
+    exit_process(0);
+    return 0;
+}
+

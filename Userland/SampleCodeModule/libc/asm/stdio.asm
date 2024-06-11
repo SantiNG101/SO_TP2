@@ -29,8 +29,45 @@ GLOBAL pipe_close
 GLOBAL set_fd
 GLOBAL lower_prio
 GLOBAL wait_children
+GLOBAL alloc
+GLOBAL free_alloc
+GLOBAL wait_time
 
 section .text
+
+wait_time:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi    ; quantums
+    mov rdi, 40     ; syscall wait
+    int 80h
+
+    leave
+    ret
+
+alloc:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi    ; size
+    mov rdi, 38     ; syscall memalloc
+    int 80h
+
+    leave
+    ret
+
+free_alloc:
+    push rbp
+    mov rbp, rsp
+
+    mov rsi, rdi    ; mem
+    mov rdi, 39     ; syscall free
+    int 80h
+
+    leave
+    ret
+
 ; realiza la llamada a la syscall de read
 getChar:
     push rbp
@@ -277,7 +314,7 @@ yield:
     ret
 
 ; crea un nuevo semáforo
-syscall_create_semaphore:
+create_semaphore:
     push rbp
     mov rbp, rsp
 
@@ -290,7 +327,7 @@ syscall_create_semaphore:
     ret
 
 ; abre un semáforo existente
-syscall_open_semaphore:
+open_semaphore:
     push rbp
     mov rbp, rsp
 
@@ -302,7 +339,7 @@ syscall_open_semaphore:
     ret
 
 ; cierra un semáforo
-syscall_close_semaphore:
+close_semaphore:
     push rbp
     mov rbp, rsp
 
@@ -314,7 +351,7 @@ syscall_close_semaphore:
     ret
 
 ; espera en un semáforo
-syscall_semaphore_wait:
+semaphore_wait:
     push rbp
     mov rbp, rsp
 
@@ -326,7 +363,7 @@ syscall_semaphore_wait:
     ret
 
 ; libera (post) un semáforo
-syscall_semaphore_post:
+semaphore_post:
     push rbp
     mov rbp, rsp
 

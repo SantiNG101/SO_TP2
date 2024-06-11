@@ -55,7 +55,7 @@ int64_t test_pipes( int argv, char* argc[] ) {
 
 
     char* argv2[] = {"./process_two"};
-    int pid_2 = execve(pid, process_two, 1, argv2, 1);
+    int pid_2 = execve(pid, process_two, 1, argv2, 0);
 
     uint32_t pipe = pipe_open(pid_1, 0, 1);
     set_fd(pid_1, pipe, 1);

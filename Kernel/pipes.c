@@ -198,7 +198,7 @@ long read_pipe( uint32_t id, char* destination_buffer, uint32_t length ){
             yield();
         }
         // wait sem
-        //semaphore_wait(pipe->sem);
+        semaphore_wait(pipe->sem);
 
         while ( (pipe->current_size > 0 || pipe->buffer[read_bytes] == EOF) && read_bytes < length){
             destination_buffer[read_bytes] = pipe->buffer[read_bytes];
@@ -212,7 +212,7 @@ long read_pipe( uint32_t id, char* destination_buffer, uint32_t length ){
             move_data(read_bytes, pipe);
 
         //
-        //semaphore_post(pipe->sem);
+        semaphore_post(pipe->sem);
         
         // unblock if it was full
         if ( pipe->is_blocking ){
@@ -246,7 +246,7 @@ int write_pipe( uint32_t id, char* source_buffer, uint32_t length ){
             yield();
         }
         //wait sem
-        //semaphore_wait(pipe->sem);
+        semaphore_wait(pipe->sem);
 
         while( pipe->current_size < MAX_PIPE_LENGTH && write_bytes < length ){
             pipe->buffer[pipe->current_size] = source_buffer[write_bytes++];
@@ -256,7 +256,7 @@ int write_pipe( uint32_t id, char* source_buffer, uint32_t length ){
             }
         }
         // post sem
-        //semaphore_post(pipe->sem);
+        semaphore_post(pipe->sem);
 
         if ( pipe->is_blocking){
             set_status(pipe->outpid, READY);

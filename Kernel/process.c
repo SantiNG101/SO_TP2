@@ -236,6 +236,9 @@ int get_pid_parent(){
 int kill_process(int _pid){
     if ( _pid < 1 || _pid > pid )
         return -1;
+    if(processes[_pid-1]->alive==0){
+        return -1;
+    }
     processes[_pid-1]->alive = 0;
     notify_parent(_pid);
     delete_process_scheduling(_pid);
