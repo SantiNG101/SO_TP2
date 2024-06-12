@@ -53,6 +53,8 @@ extern void free_alloc(unsigned int alloc_mem);
 extern int64_t wait_time( uint64_t quantums );
 
 int64_t test_pipes( int argc, char* argv[] );
+int64_t test_processes(uint64_t argc, char *argv[]);
+int64_t test_processes2(uint64_t argc, char *argv[]);
 
 //
 // functionName: setBackgroundColour

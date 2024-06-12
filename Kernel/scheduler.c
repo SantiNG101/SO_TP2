@@ -295,7 +295,16 @@ int add_to_priority_list( p_list process ){
 int change_priority( int _pid, int new_priority ){
     p_list process = find_with_remove(_pid);
     if ( process == NULL ){
-        return ERROR;
+        // look in blocked
+        p_list current = blocked.first;
+        while( current != NULL && current->pid != _pid ){
+            current = current->next;
+        }
+        if ( current == NULL )
+            return ERROR;
+        process = current;
+        process->process_info->priority = new_priority;
+        return 0;
     }
     process->process_info->priority = new_priority;
 

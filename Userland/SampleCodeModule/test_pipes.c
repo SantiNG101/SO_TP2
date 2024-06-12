@@ -31,7 +31,7 @@ int process_two( int argc, char* argv[] ){
 
     for( int i=0; i < 200 && !end; i++ ){
         c = getChar();
-        if ( c == '\n' ){
+        if ( c == -1 ){
             end = 1;
             break;
         }

@@ -70,6 +70,6 @@ void exit_process( int process_result );
 void wait_children(int _pid);
 void notify_parent(int _pid);
 void ending_free();
-
+void kill_foreground();
 
 #endif

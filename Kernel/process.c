@@ -242,7 +242,7 @@ int kill_process(int _pid){
     processes[_pid-1]->alive = 0;
     notify_parent(_pid);
     delete_process_scheduling(_pid);
-    free(processes[_pid]->stack_end);
+    free(processes[_pid-1]->stack_end);
     return 0;
 }
 
@@ -317,4 +317,13 @@ uint32_t get_fd( uint32_t mode ){
 int get_priority(int _pid){
     pcb_pointer process = processes[_pid-1];
     return process->scheduling_info->p_state;    
+}
+
+void kill_foreground(){
+    int _pid = get_pid();
+    pcb_pointer process = processes[_pid-1];
+    if ( process->foreground ){
+        kill_process(_pid);
+    }
+    forceTimerTick();
 }

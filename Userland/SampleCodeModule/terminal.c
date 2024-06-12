@@ -24,6 +24,8 @@ int64_t nice(int argc, char* argv[]);
 int64_t yield_shell(int argc, char* argv[]);
 int64_t philos(int argc, char* argv[]);
 int64_t filter(int argc, char* argv[]);
+int64_t idle(int argc, char* argv[]);
+int64_t finish_with_ctrlD(int argc, char* argv[]);
 int is_vowel(char c);
 
 void setDefault(){
@@ -73,14 +75,16 @@ const commandT commands[] = {
                             {"font", "Sets the fontsize", setFont},
                             {"ps", "show all processes active in the system", ps},
                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
-                            {"testprocess", "Test the processes", test_processes_wrapper},
+                            {"testprocess", "Test the processes", test_processes2},
                             {"kill", "kill selected processes", kill},
                             {"echo", "Print in shell", echo},
                             {"nice", "Print in shell", nice},
                             {"philos", "Print in shell", philos},
                             {"testpipes", "Print in shell", test_pipes},
                             {"filter", "Filter vowels", filter},
-                            {"yield", "Set to rest the shell", yield_shell}
+                            {"yield", "Set to rest the shell", yield_shell},
+                            {"idle","busy wating to test ctrl+D", idle},
+                            {"ctrlD","finish with ctrl+D", finish_with_ctrlD}
                             //{"jaime", "Who you gonna call? Jaime!", jaime}
                             };
 /*
@@ -225,6 +229,9 @@ void runCommand(char * cmd){
 
             char *aux = strtok(NULL, " ");
             while(aux != NULL && arg_count < MAX_ARGS + 1) {
+                if ( aux == "&" ){
+                    break;
+                }
                 args[arg_count++] = aux;
                 aux = strtok(NULL, " ");
             }
@@ -505,3 +512,22 @@ int64_t filter(int argc, char* argv[]) {
     return 0;
 }
 
+int64_t idle(int argc, char* argv[]){
+    while(1){
+        // busy waiting
+        printf(argv[0]);
+        printf(getpid());
+        wait_time(2);        
+    }
+    return 0;
+}
+
+int64_t finish_with_ctrlD(int argc, char* argv[]){
+    char c;
+    while(c = getChar() != '\377'){
+        // busy waiting
+        putChar(c);       
+    }
+    exit_process(0);
+    return 0;
+}

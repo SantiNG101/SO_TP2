@@ -148,7 +148,7 @@ void close_pipe_for_pid( uint32_t pid, uint32_t id, uint8_t mode ){
             set_status(pid, BLOCKED);
             yield();
         }
-		pipe->buffer[pipe->current_size++] = '\n';
+		pipe->buffer[pipe->current_size++] = -1;
 
         if ( pipe->is_blocking){
             set_status(pipe->outpid, READY);

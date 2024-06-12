@@ -101,7 +101,10 @@ uint32_t remove_blocked(){
 
 }
 
-
+void end_of_file(){
+    currentBuff = -1;
+    return;
+}
 
 
 void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
@@ -132,12 +135,14 @@ void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
     if(getState(CTR)){
-        if ( keyCode == keyboard[2][0] )
-        return;
-            //end_of_file();
-        if ( keyCode == keyboard[2][14] )
-        return;
-            //kill_foreground();
+        if ( keyCode == keyboard[2][0] ){
+            end_of_file();
+            return;
+        }
+        if ( keyCode == keyboard[2][14] ){
+            kill_foreground();
+            return;
+        }
 
     }
     if((keyStates[keyCode] = (!isReleased(data))))
