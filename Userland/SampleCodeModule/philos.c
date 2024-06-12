@@ -81,7 +81,7 @@ int64_t initPhyloReunion(int argc, char* argv[]) {
 }
 
 void addPhilo(int i) {
-    //philosophers[i] = memalloc(sizeof(Philosopher));
+    philosophers[i] = alloc(sizeof(Philosopher));
     if(philosophers[i]==NULL) {
         printf("Error creating Philosopher %s\n",philosophersName[i]);
         return -1;
@@ -122,11 +122,11 @@ void getInput() {
 }
 
 void eat(int philoNumber) {
-    //wait(55 * (1+ philoNumber));
+    wait_time(55 * (1+ philoNumber));
 }
 
 void think(int philoNumber) {
-    //wait(110 * (1+ philoNumber));
+    wait_time(110 * (1+ philoNumber));
 }
 
 void takeForks(int philoNum) {
