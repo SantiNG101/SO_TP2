@@ -25,6 +25,7 @@ int64_t yield_shell(int argc, char* argv[]);
 int64_t philos(int argc, char* argv[]);
 int64_t filter(int argc, char* argv[]);
 int is_vowel(char c);
+int64_t test_mem_manager(int argc, char* argv[]);
 
 void setDefault(){
     clearScreen(0);
@@ -80,7 +81,8 @@ const commandT commands[] = {
                             {"philos", "Print in shell", philos},
                             {"testpipes", "Print in shell", test_pipes},
                             {"filter", "Filter vowels", filter},
-                            {"yield", "Set to rest the shell", yield_shell}
+                            {"yield", "Set to rest the shell", yield_shell},
+                            {"testMM", "Test memory manager", test_mem_manager}
                             //{"jaime", "Who you gonna call? Jaime!", jaime}
                             };
 /*
@@ -505,3 +507,8 @@ int64_t filter(int argc, char* argv[]) {
     return 0;
 }
 
+int64_t test_mem_manager(int argc, char* argv[]) {
+    test_mm(argc, argv);
+    exit_process(0);
+    return 0;
+}
