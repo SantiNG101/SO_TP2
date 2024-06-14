@@ -8,6 +8,9 @@
 #include <scheduler.h>
 #include <process.h>
 
+
+extern void enter_region( int * lock );
+
 // Function to create a semaphore
 semaphore_ptr create_semaphore(char *name, int value) {
     semaphore_ptr sem = memalloc(sizeof(semaphore_t));
@@ -21,31 +24,35 @@ semaphore_ptr create_semaphore(char *name, int value) {
 
 // Function to wait (decrement) on a semaphore
 void semaphore_wait(semaphore_ptr sem) {
-    enter_region(&sem->lock);
+    _sti();
+    enter_region(&(sem->lock));
     int pid = get_pid();
     while (1) { //Sugerencia: El enterRegion ya haría la parte del loop
         if (sem->value == 0) {
             sem->blocked_processes[sem->blocked_qty++]=pid;
-            exit_region(&sem->lock);
+            exit_region(&(sem->lock));
             set_status(pid, BLOCKED);
             yield();
-            enter_region(&sem->lock);
+            enter_region(&(sem->lock));
         } else {
             break;
         }
     }
     sem->value--;
-    exit_region(&sem->lock);
+    exit_region(&(sem->lock));
+    _cli();
 }
 
 // Function to post (increment) on a semaphore
 void semaphore_post(semaphore_ptr sem) {
-    enter_region(&sem->lock);
+    _sti();
+    enter_region(&(sem->lock));
     unblock_all_p(sem);
     if(sem->value==0) {
         sem->value++;
     }
-    exit_region(&sem->lock);
+    exit_region(&(sem->lock));
+    _cli();
 }
 
 void unblock_all_p(semaphore_ptr sem){

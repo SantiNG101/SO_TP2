@@ -10,7 +10,7 @@ int process_one( int argc, char* argv[] ){
         fd = get_fd(1);
     }
 
-    printf( "hol" );
+    printf( "hola mundo" );
 
     pipe_close(getpid(), fd, 1);
     exit_process(0);

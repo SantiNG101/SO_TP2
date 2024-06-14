@@ -6,7 +6,7 @@
 #include <process.h>
 #include <semaphores.h>
 
-#define MAX_PIPE_LENGTH 1024*2  // 2k
+#define MAX_PIPE_LENGTH 512  
 #define MAX_PIPES 1000
 #define READ 0
 #define WRITE 1

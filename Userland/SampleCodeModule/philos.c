@@ -38,7 +38,7 @@ static int philoAmount = 0;
 typedef struct Philosopher* philo;
 
 static philo philosophers[MAX_PHILOSOPHERS];
-static int64_t sem = 0;
+int64_t sem = 0;
 
 
 void philosopherActivity(int argc, char* argv[]) {
@@ -65,7 +65,7 @@ int64_t initPhyloReunion(int argc, char* argv[]) {
     semaphore_post(sem);
     while(1) {
         getInput();
-        //wait(500);
+        wait_time(2);
         semaphore_wait(sem);
         for(int i=0;i<philoAmount;i++) {
             if(philosophers[i]->state == EATING) {
@@ -122,11 +122,11 @@ void getInput() {
 }
 
 void eat(int philoNumber) {
-    wait_time(55 * (1+ philoNumber));
+    wait_time(2 * (1+ philoNumber));
 }
 
 void think(int philoNumber) {
-    wait_time(110 * (1+ philoNumber));
+    wait_time(2 * (1+ philoNumber));
 }
 
 void takeForks(int philoNum) {

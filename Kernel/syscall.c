@@ -179,8 +179,8 @@ int64_t syscall_create_semaphore(char *name, int value) {
 int64_t syscall_create_semaphore_wrapper(argumentsStruct args) {
     char *name = (char *) args->r10;
     int value = (int) args->r9;
-    args->r10 = syscall_create_semaphore(name, value);
-    return 0;
+    syscall_create_semaphore(name, value);
+    return (int64_t) semaphores[sem_count-1];
 }
 
 semaphore_ptr syscall_open_semaphore(char *name) {
@@ -194,8 +194,7 @@ semaphore_ptr syscall_open_semaphore(char *name) {
 
 int64_t syscall_open_semaphore_wrapper(argumentsStruct args) {
     char *name = (char *) args->r10;
-    args->r10 = (uint64_t) syscall_open_semaphore(name);
-    return 0;
+    return (uint64_t) syscall_open_semaphore(name);
 }
 
 int64_t syscall_close_semaphore(semaphore_ptr sem) {

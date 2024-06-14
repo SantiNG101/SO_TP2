@@ -79,7 +79,7 @@ void intToString(int64_t number, char *buffer) {
 
 
 long create_pipe(){
-    p_pipe pipe = memalloc(sizeof(pipe));
+    p_pipe pipe = memalloc(sizeof(struct pipe));
     if ( pipe == NULL )
         return -1;
 
