@@ -11,6 +11,9 @@ GLOBAL getCurrentRSP
 GLOBAL getCurrentRDI
 GLOBAL getCurrentRSI
 GLOBAL cleanActualRegisters
+GLOBAL forceTimerTick
+GLOBAL enter_region
+GLOBAL exit_region
 
 section .text
 ;Hay que pasar a parte de ah y al para escribir los bytes con x color
@@ -97,6 +100,10 @@ read_port:
 	pop rbp
 	ret
 
+forceTimerTick:
+    int 0x20
+    ret
+
 cleanActualRegisters:		; limpiamos todos los registros
 	mov rax, 0
 	mov rbx, 0
@@ -113,4 +120,17 @@ cleanActualRegisters:		; limpiamos todos los registros
 	mov r14, 0
 	mov r15, 0
 	ret
+
+enter_region:
+    mov edx,1
+    xchg edx,dword [rdi]
+    cmp edx,0
+    je isfree
+    jmp enter_region
+    isfree:
+    ret
+
+exit_region:
+    mov dword [rdi],0
+    ret
 

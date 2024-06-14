@@ -8,23 +8,47 @@ extern void setBackgroundColour(uint32_t colour);
 extern void setForegroundColour(uint32_t colour);
 extern void showRegisters();
 
-void setBackground();
-void setForeground();
+
+int64_t setBackground(int argc, char* argv[]);
+int64_t setForeground(int argc, char* argv[]);
 void runCommand(char *);
-void showTime();
-void exit();
-void showDate();
-void help();
-void divZero();
-void beep();
-void setFont();
+int64_t showTime(int argc, char* argv[]);
+int64_t exit(int argc, char* argv[]);
+int64_t showDate(int argc, char* argv[]);
+int64_t help(int argc, char* argv[]);
+int64_t divZero(int argc, char* argv[]);
+int64_t beep(int argc, char* argv[]);
+int64_t setFont(int argc, char* argv[]);
+int64_t kill(int argc, char* argv[]);
+int64_t nice(int argc, char* argv[]);
+int64_t yield_shell(int argc, char* argv[]);
+int64_t philos(int argc, char* argv[]);
+int64_t filter(int argc, char* argv[]);
+int is_vowel(char c);
+
+void setDefault(){
+    clearScreen(0);
+    setBackgroundColour(BLACK);
+    setForegroundColour(WHITE);
+}
+
+int64_t ps(int argc, char* argv[]);
+int64_t echo(int argc, char* argv[]);
+//int64_t jaime();
+
 
 // struct para definir la lista de comandos a utilizar en la terminal
 typedef struct {
     char name[20];
     char description[150];
-    void (*function)(void);
+    int64_t (*function)(int argc, char* argv[]);
 } commandT;
+
+typedef struct {
+    char name[20];
+    char description[150];
+    void* (*function)(int, int);
+} commandArgs;
 
 typedef struct{
     char color[15];
@@ -32,22 +56,41 @@ typedef struct{
 }colour;
 
 const commandT commands[] = {
-                             {"help", "Provides a command list.", help},
-                             {"time","Shows the current time in GMT-3",showTime},
-                             {"clear","clears screen and resets position",terminalSetter},
-                             {"date","Displays current date.",showDate},
-                             {"exit","Exits the bash",exit},
-                             {"bell","Outputs a Beep", beep},
-                             {"66","Displays imperial march for starwars fans", imperialMarch},
-                             {"mario","Displays mario bros theme song",marioTheme},
-                             {"tetris","Displays tetris song",tetris},
-                             {"storm","Displays song of storms zelda",songOfStorms},
-                             {"background","Changes background to hexColour: ",setBackground},
-                             {"foreground","Changes foreground to hexColour: ",setForeground},
-                             {"div0","Shows how div 0 exception works",divZero},
-                             {"opCode","Shows how opCode exception works",opCode},
-{"font", "Sets the fontsize", setFont},
-                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters}};
+                            {"help", "Provides a command list.", help},
+                            {"time","Shows the current time in GMT-3",showTime},
+                            {"clear","clears screen and resets position",terminalSetter},
+                            {"date","Displays current date.",showDate},
+                            {"exit","Exits the bash",exit},
+                            {"bell","Outputs a Beep", beep},
+                            {"66","Displays imperial march for starwars fans", imperialMarch},
+                            {"mario","Displays mario bros theme song",marioTheme},
+                            {"tetris","Displays tetris song",tetris},
+                            {"storm","Displays song of storms zelda",songOfStorms},
+                            {"background","Changes background to hexColour: ",setBackground},
+                            {"foreground","Changes foreground to hexColour: ",setForeground},
+                            {"div0","Shows how div 0 exception works",divZero},
+                            {"opCode","Shows how opCode exception works",opCode},
+                            {"font", "Sets the fontsize", setFont},
+                            {"ps", "show all processes active in the system", ps},
+                            {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
+                            {"testprocess", "Test the processes", test_processes_wrapper},
+                            {"kill", "kill selected processes", kill},
+                            {"echo", "Print in shell", echo},
+                            {"nice", "Print in shell", nice},
+                            {"philos", "Print in shell", philos},
+                            {"testpipes", "Print in shell", test_pipes},
+                            {"filter", "Filter vowels", filter},
+                            {"yield", "Set to rest the shell", yield_shell}
+                            //{"jaime", "Who you gonna call? Jaime!", jaime}
+                            };
+/*
+const commandArgs commands_args[] = {
+                            {"pid", "Obtain the actual process pid", get_pid},
+                            {"parentPid", "Obtain partents pid", get_pid_parent},
+                            {"setStatus", "Change a process status ( BLOCKED=0 / READY=1 )", set_status},
+                            {"kill", "kill an active process in the system", kill_process},
+                            {"changePriority","change the priority of a process in the scheduling schema", change_priority}
+                            };*/
 
 #define BUFFER_SIZE 50
 #define INSTRUCTION_SIZE 240    
@@ -136,8 +179,9 @@ char * getInstruction(char * ptr){
 }
 
 
-int terminalStart(){
+int shell(int argc, char* argv[]){
     static char ptr[INSTRUCTION_SIZE] = { 0 };
+    setDefault();
     keepGoing = TRUE;
     // llamado de syscall para setear al modo terminal pasandole el 0 que indica este modo
     terminalSetter();
@@ -154,11 +198,10 @@ int terminalStart(){
         ptr[0] = 0; // Pongo en 0 el primer char para indicar que no hay ninguna instrucción.
 
         printf("\n");
-        
     }
 
-    setBackgroundColour(BLACK);
-    setForegroundColour(WHITE);
+    setDefault();
+
     return 0;
 }
 
@@ -167,39 +210,61 @@ int terminalStart(){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            if(i == 0 || i == 10 || i == 11 || i == 14){
-                commands[i].function();
+            // TODO: solo debe quedar la 4 y 25 aca
+            if(i == 4 || i == 24 ){
+                commands[i].function(NULL,NULL);
                 putChar('\n');
                 return;
             }
 
-            char * aux = strtok(NULL, " ");
-            if(aux != NULL){
-                printf("This function does not accept arguments.\n");
-                return;
-            }
+            // Nuevo código para manejar argumentos
+            const int MAX_ARGS = 10; // Puedes ajustar esto según sea necesario
+            char *args[MAX_ARGS + 2]; // +2 para el comando y el NULL final
+            args[0] = commands[i].name; // El primer argumento es el nombre del comando
+            int arg_count = 1;
 
-            commands[i].function();
+            char *aux = strtok(NULL, " ");
+            while(aux != NULL && arg_count < MAX_ARGS + 1) {
+                args[arg_count++] = aux;
+                aux = strtok(NULL, " ");
+            }
+            args[arg_count] = NULL; // Terminar el arreglo con NULL
+
             putChar('\n');
+            if(args[arg_count-1]=='&'){
+                execve(getpid(), commands[i].function, arg_count, args, 0);
+            }
+            else {
+                int pid = execve(getpid(), commands[i].function, arg_count, args, 1);
+                wait_children(getpid());
+            }
+            //waitForProcess(pid);
             return;
         }
 
     }
+
+/*
+    for ( int i=0; i < SIZEOFARR(commands_args); i++ ){
+        if ( !strcmp(cmd, commands_args[i].name) ){
+            
+        }
+    }*/
+
         printf("Command not found.\n");
-
-
     return;
 }
 
 // imprime todas las opciones posibles si se lo llama solo
 // imprime la funcionalidad si se lo acompaña con una funcion existente
-void help(/*char * token*/){
+int64_t help(int argc, char* argv[]){
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("help requires only one argument.\n");
-        return;
+        exit_process(0);
+        return 0;
     }
 
     if(token == NULL){
@@ -207,41 +272,52 @@ void help(/*char * token*/){
         for(int i = 0; i < SIZEOFARR(commands); i++){
             printf("%s - %s\n", commands[i].name, commands[i].description);
         }
-        return;
+        exit_process(0);
+        return 0;
     }
 
     if(!strcmp(token,"help")){
         printf("Provides a list of functions or\nif an argument is passed\na brief description of the function passed as arg.\n");
-        return;
+        exit_process(0);
+        return 0;
     }
 
     for( int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(token, commands[i].name)){
             printf("%s\n",commands[i].description);
-            return;
+            exit_process(0);
+            return 0;
         }
     }
 
     printf("Desired function does not exist.\n");
+    exit_process(-1);
+    return -1;
 }
 
 // muestra el tiempo actual
-void showTime(){
+int64_t showTime(int argc, char* argv[]){
     int hour,min,sec;
     getTime(&hour,&min,&sec);
     printf("%2d:%2d:%2d\n",hour,min,sec);
+    exit_process(0);
+    return 0;
 }
 
 // muestra la fecha actual
-void showDate(){
+int64_t showDate(int argc, char* argv[]){
     int year,month,day;
     getDate(&day,&month,&year);
     printf("%2d/%2d/%d\n",day,month,year);
+    return 0;
 }
 
 //funcion para salir del modo terminal
-void exit(){
+// unica funcion que no se deberia llamar como processo y debe correr exit_process()
+int64_t exit(int argc, char* argv[]){
     keepGoing = FALSE;
+    exit_process(0);
+    return 0;
 }
 
 // funcion para dividir 
@@ -250,13 +326,15 @@ int divide(int x, int y){
 }
 
 // funcion que fuerza la division por 0 para la excepcion
-void divZero(){
+int64_t divZero(int argc, char* argv[]){
     divide(0,0);
+    return 0;
 }
 
 //realiza el ruido
-void beep(){
+int64_t beep(int argc, char* argv[]){
     putChar('\a');
+    return 0;
 }
 
 // array de colores que los relacionan con una descripcion
@@ -279,65 +357,151 @@ void nonExistentColor(){
 
 
 // funcion para setear el background
-void setBackground(){
+int64_t setBackground(int argc, char* argv[]){
 
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("Background requires only one argument.\n");
-        return;
+        return -1 ;
     }
 
     for(int i = 0; i < SIZEOFARR(colors); i++){
         if(!strcmp(colors[i].color,token)){
             setBackgroundColour(colors[i].hex);
-            return;
+            return 0;
         }
     }
 
     nonExistentColor();
-    return;
+    return 0;
 }
 
 // funcion para setear el color de las letras
-void setForeground(){
+int64_t setForeground(int argc, char* argv[]){
 
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("Foreground requires only one argument.\n");
-        return;
+        return -1;
     }
 
     for(int i = 0; i < SIZEOFARR(colors); i++){
         if(!strcmp(colors[i].color,token)){
             setForegroundColour(colors[i].hex);
-            return;
+            return 0;
         }
     }
 
     nonExistentColor();
-    return;
+    return -1;
 }
 
-void setFont(){
+int64_t setFont(int argc, char* argv[]){
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
 
     if(aux != NULL){
         printf("Foreground requires only one argument.\n");
-        return;
+        return -1;
     }
     int size = atoi(token);
 
     if(size < 0 || size > 100){
         printf("Font size must be between 0 and 100.\n");
-        return;
+        return -1;
     }
     printf("Font size set to %d.\n", size);
     setFontSize(size);
 
-    return;    
+    return 0;    
 }
+
+int64_t echo(int argc, char* argv[]) {
+    printf("\n%d Parameters", argc);
+    for(int i=0; i<argc; i++) {
+        printf("%s", argv[i]);
+    }
+    exit_process(0);
+    return 0;
+}
+
+int64_t ps(int argc, char* argv[]) {
+    show_processes();
+    exit_process(0);
+    return 0;
+}
+
+int64_t kill(int argc, char* argv[]){
+    if ( argc < 2 )
+        exit_process(-1);
+    int pid = atoi(argv[1]);
+    int result = kill_process(pid);
+    if(result == -1){
+        exit_process(-1);
+    }
+    else {
+        exit_process(0);
+    }
+    return 0;
+}
+
+int64_t yield_shell(int argc, char* argv[]){
+    yield();
+    return 0;
+}
+
+int64_t philos(int argc, char* argv[]){
+    initPhyloReunion(argc, argv);
+    exit_process(0);
+    return 0;
+}
+
+int64_t nice(int argc, char* argv[]){
+    if ( argc < 2 )
+        exit_process(-1);
+    int pid = atoi(argv[1]);
+    lower_prio(pid);
+}
+
+int is_vowel(char c) {
+    switch (c) {
+        case 'a': case 'e': case 'i': case 'o': case 'u':
+        case 'A': case 'E': case 'I': case 'O': case 'U':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+int64_t filter(int argc, char* argv[]) {
+    if (argc < 2) {
+        printf("Usage: filter <string1> <string2> ...\n");
+        exit_process(1);
+        return 1;
+    }
+
+    for (int i = 1; i < argc; i++) {
+        char *inputString = argv[i];
+
+        char *ptr = inputString;
+        while (*ptr != '\0') {
+            if (!is_vowel(*ptr)) {
+                putChar(*ptr);
+            }
+            ptr++;
+        }
+
+        if (i < argc - 1) {
+            putChar(' '); // Separar los argumentos con un espacio
+        }
+    }
+
+    putChar('\n');
+    exit_process(0);
+    return 0;
+}
+

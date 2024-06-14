@@ -2,7 +2,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idt/loader.h>
-//#include <screen.h>
+#include <process.h>
 #include <speaker.h>
 #include <stdio.h>
 
@@ -18,9 +18,15 @@ static const uint64_t PageSize = 0x1000;
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
-typedef int (*EntryPoint)();
+typedef uint8_t (*Function)();
 
 extern void kernelASM(uint64_t addr);
+int init_process();
+extern void _cli(void);
+
+extern void _sti(void);
+
+extern void _hlt(void);
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -81,8 +87,10 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 
-	load_idt();
-
+	// to change
+	mem_initialize();
+	screen_Initialize();
+	initialize_scheduler();
 	return getStackBase();
 }
 
@@ -94,7 +102,20 @@ int divisionBy(int x, int y){
 
 int main()
 {
-    screen_Initialize();
-	((EntryPoint) sampleCodeModuleAddress)();
+	
+	load_idt();
+	 // Activate interruptions
+	char* argInit[2] = {"./init", NULL};
+	process_create(0,&init_process,1,argInit,0);
+	return 0;
+}
+
+int init_process(){
+
+	char* argShell[2] = {"./shell", NULL};
+	process_create(1,(Function) sampleCodeModuleAddress,1,argShell,1);
+	_sti();
+	while(1)
+		_hlt();
 	return 0;
 }

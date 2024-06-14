@@ -28,6 +28,27 @@ void saveRegisterStatus(argumentsStruct args, uint64_t oldRSP){
     regs[14] = args->r8;
 }
 
+uint64_t* getRegisters(){
+    regs[0] = getCurrentRAX();
+    regs[1] = getCurrentRBX();
+    regs[2] = getCurrentRCX();
+    regs[3] = getCurrentRDX();
+    regs[4] = getCurrentRBP();
+    regs[5] = getCurrentRDI();
+    regs[6] = getCurrentRSI();
+    regs[7] = getCurrentR8();
+    regs[8] = getCurrentR9();
+    regs[9] = getCurrentR10();
+    regs[10] = getCurrentR11();
+    regs[11] = getCurrentR12();
+    regs[12] = getCurrentR13();
+    regs[13] = getCurrentR14();
+    regs[14] = getCurrentR15();
+    regs[15] = getCurrentRSP();
+
+    return regs;
+}
+
 // void printRegister(char * str, uint64_t regValue){
 //     print(str);
 //     printHex(regValue);

@@ -6,8 +6,8 @@ char * getString(void){
     char *str = buff;
 
     while((c = getChar()) != '\n'){
-        if(c != '\b' || buff!= str)
-            putChar(c);
+        //if(c != '\b' || buff!= str)
+        //    putChar(c);
         switch(c){
             case '\b':
                 if(str != buff)
@@ -19,7 +19,7 @@ char * getString(void){
                 break;
         }
     }
-    putChar(c);
+    //putChar(c);
 
     *str = 0;
     return buff;

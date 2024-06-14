@@ -1,5 +1,5 @@
-#ifndef _DEFS_H_
-#define _DEFS_H_
+#ifndef _MEM_H_
+#define _MEM_H_
 
 #include <stdint.h>
 #include <stdarg.h>

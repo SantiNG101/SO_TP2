@@ -51,4 +51,5 @@ void saveRegisterStatus(argumentsStruct args, uint64_t oldRSP);
 // imprime los registros guardados en pantalla en el momentos que se quiera
 void printRegisterStatus();
 void printRegister(char* str, uint64_t regs);
+uint64_t* getRegisters();
 #endif

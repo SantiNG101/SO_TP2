@@ -26,6 +26,13 @@
 static uint8_t specialKeys = 0x0;
 static char keyStates[256] = { 0 };
 
+typedef struct blocked {
+    uint32_t pid;
+    struct blocked * next;
+} * p_blocked;
+
+static p_blocked first_blocked = NULL;
+
 /* NOTAR QUE TIENEN EL MISMO NUMERO CORRESPONDIENTE AL BIT DE LA VARIABLE */
 enum { CTR = 1, ALT, SHF, SCR, NUM, CAP };
 
@@ -58,8 +65,44 @@ const unsigned char shftKeyBoard[6][16] = {{ '\0', '\0', '!', '@', '#', '$', '%'
 #define isSpecial(key) (!(((uint8_t) keyboard[(key >> 4) & 0x07][key & 0x0F]) & 0xF8))
 #define isReleased(key) (key & 0x80)
 
-
 static char currentBuff = 0;
+
+void add_to_blocked(){
+    p_blocked process = memalloc( sizeof(struct blocked) );
+    process->pid = get_pid();
+    process->next = NULL;
+
+    if ( first_blocked == NULL ){
+        first_blocked = process;
+        return;
+    }
+
+    p_blocked aux = first_blocked;
+    while( aux->next != NULL ){
+        aux = aux->next;
+    }
+
+    aux->next = process;
+    return;
+}
+
+
+uint32_t remove_blocked(){
+    p_blocked aux = first_blocked;
+
+    if ( aux == NULL )
+        return 0;
+    
+    while( aux->next != NULL ){
+        aux = aux->next;
+    }
+
+    return aux->pid;
+
+}
+
+
+
 
 void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
     if((read_port(KEYBOARD_STATUS_PORT) & 0x01) == 0) return;   // Me aseguro que haya dato para leer.
@@ -88,8 +131,22 @@ void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
         keyCode = toMayus(keyCode);
     if(getState(SHF))
         keyCode = shftKeyBoard[data >> 4 & 0x07][data & 0x0F];
+    if(getState(CTR)){
+        if ( keyCode == keyboard[2][0] )
+        return;
+            //end_of_file();
+        if ( keyCode == keyboard[2][14] )
+        return;
+            //kill_foreground();
+
+    }
     if((keyStates[keyCode] = (!isReleased(data))))
         currentBuff = keyCode;
+
+    uint32_t pid = remove_blocked();
+    if ( pid != 0 )
+        set_status( pid, READY );
+    
 
     return;
 }
@@ -100,7 +157,12 @@ int getKeyState(int keyCode){
 
 int getC(){
     int c = currentBuff;
+    if ( c == 0 ){
+        add_to_blocked();
+    }
     currentBuff = 0;
 
     return c;
 }
+
+
