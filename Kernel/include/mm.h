@@ -18,4 +18,8 @@
 #define FREE 1
 #define USED 0
 
+void mem_initialize();
+void* memalloc(uint64_t size);
+void free(void* mem);
+
 #endif

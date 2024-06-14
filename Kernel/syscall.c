@@ -9,6 +9,8 @@
 #include <time.h>
 #include <videoDriver.h>
 #include <registers.h>
+#include <mm.h>
+
 /*
  *  Arguementos de una función de SYSCALL
  */
@@ -119,9 +121,22 @@ void stopS(argumentsStruct args){
     stopSound();
 }
 
+void initialize_mm(argumentsStruct args){
+    mem_initialize();
+}
+
+void malloc(argumentsStruct args){
+    args->r10 = (uint64_t) memalloc(args->r10);
+}
+
+void free(argumentsStruct args){
+    free((void*) args->r10);
+}
+
+
 void (* syscalls[]) (argumentsStruct args) = { write, read, clean, setterBuffer, setFontSize,
  timer_wait, speaker_playSound, timeNow, putPix, updtScreen, foreGround, backGround, keyState,showRegisters,
- setPrintAnywhere, startS, stopS };
+ setPrintAnywhere, startS, stopS, initialize_mm, malloc, free};
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
 
