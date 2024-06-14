@@ -27,6 +27,8 @@ int64_t filter(int argc, char* argv[]);
 int64_t idle(int argc, char* argv[]);
 int64_t finish_with_ctrlD(int argc, char* argv[]);
 int is_vowel(char c);
+int64_t idle2(int argc, char* argv[]);
+int64_t cat(int argc, char* argv[]);
 
 void setDefault(){
     clearScreen(0);
@@ -84,6 +86,8 @@ const commandT commands[] = {
                             {"filter", "Filter vowels", filter},
                             {"yield", "Set to rest the shell", yield_shell},
                             {"idle","busy wating to test ctrl+D", idle},
+                            {"idle2","busy wating to test ctrl+D", idle2},
+                            {"cat","prints input", cat},
                             {"ctrlD","finish with ctrl+D", finish_with_ctrlD}
                             //{"jaime", "Who you gonna call? Jaime!", jaime}
                             };
@@ -97,7 +101,9 @@ const commandArgs commands_args[] = {
                             };*/
 
 #define BUFFER_SIZE 50
-#define INSTRUCTION_SIZE 240    
+#define INSTRUCTION_SIZE 240
+#define MAX_ARGS  10
+#define COMMANDS 28
 
 typedef struct{
     char command[INSTRUCTION_SIZE];
@@ -222,14 +228,13 @@ void runCommand(char * cmd){
             }
 
             // Nuevo código para manejar argumentos
-            const int MAX_ARGS = 10; // Puedes ajustar esto según sea necesario
             char *args[MAX_ARGS + 2]; // +2 para el comando y el NULL final
             args[0] = commands[i].name; // El primer argumento es el nombre del comando
             int arg_count = 1;
 
             char *aux = strtok(NULL, " ");
             while(aux != NULL && arg_count < MAX_ARGS + 1) {
-                if ( aux == "&" ){
+                if (strcmp(aux, "&") == 0){
                     break;
                 }
                 args[arg_count++] = aux;
@@ -238,7 +243,7 @@ void runCommand(char * cmd){
             args[arg_count] = NULL; // Terminar el arreglo con NULL
 
             putChar('\n');
-            if(args[arg_count-1]=='&'){
+            if(strcmp(args[arg_count-1], "&") == 0){
                 execve(getpid(), commands[i].function, arg_count, args, 0);
             }
             else {
@@ -529,5 +534,51 @@ int64_t finish_with_ctrlD(int argc, char* argv[]){
         putChar(c);       
     }
     exit_process(0);
+    return 0;
+}
+
+
+int64_t cat_process(int argc, char* argv[]) {
+    int size = BUFFER_SIZE;
+    char* buff = alloc(size);
+    free_alloc(buff);
+    exit_process(0);
+    return 0;
+}
+
+int64_t cat(int argc, char* argv[]) {
+    if(argc >= 2 && argc <= MAX_ARGS) {
+        for(int i=0; i<COMMANDS; i++) {
+            if (strcmp(commands[i].name, argv[1]) == 0) {
+                char* argvproc[1];
+                argvproc[0]=argv[0];
+                int j=0;
+                char* argvfunc[MAX_ARGS];
+                while(argv[j+1]){
+                    argvfunc[j]=argv[j+1];
+                    j++;
+                }
+                int cat_pid = execve(getpid(), cat_process, 1, argvproc, 1);
+                int pid = execve(getpid(), commands[i].function, argc-1, argvfunc, 0);
+                uint32_t pipe = pipe_open(cat_pid, 0, 1);
+                set_fd(cat_pid, pipe, 1);
+
+                pipe = pipe_open(pid, pipe, 0);
+                set_fd(pid, pipe, 0);
+                wait_children(getpid());
+                exit_process(0);
+                return cat_pid;
+            }
+        }
+    }
+    exit_process(-1);
+    return -1;
+}
+
+int64_t idle2(int argc, char* argv[]){
+    while(1){
+        // busy waiting
+        wait_time(2);
+    }
     return 0;
 }
