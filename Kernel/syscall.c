@@ -24,8 +24,6 @@
 
 static semaphore_ptr semaphores[MAX_SEMAPHORES];
 static int sem_count = 0;
-#include <mm.h>
-
 /*
  *  Argumentos de una función de SYSCALL
  */
@@ -165,19 +163,6 @@ int64_t stopS(argumentsStruct args){
     stopSound();
     return 0;
 }
-
-void initialize_mm(argumentsStruct args){
-    mem_initialize();
-}
-
-void malloc(argumentsStruct args){
-    args->r10 = (uint64_t) memalloc(args->r10);
-}
-
-void free(argumentsStruct args){
-    free((void*) args->r10);
-}
-
 
 
 int64_t syscall_create_semaphore(char *name, int value) {
