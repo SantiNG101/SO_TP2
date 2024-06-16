@@ -30,5 +30,11 @@ int scheduling_to_blocked(int _pid);
 int change_priority( int _pid, int new_priority );
 void yield();
 void arrange_priorities();
+int add_to_priority_list( p_list process );
+p_list find_with_remove( int _pid );
+p_list remove_in_scheduling_by_level( int _pid, int lvl );
+p_list getReadyToRun();
+p_list search_from_top();
+p_list look_in_list ( int lvl , p_list from );
 
 #endif

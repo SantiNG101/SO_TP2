@@ -73,7 +73,7 @@ uint8_t* schedule( uint8_t* actual_pointer){
         }
     }
 
-    //arrange_priorities();
+    arrange_priorities();
     
     p_list toRun = getReadyToRun();
     if ( toRun == NULL ){
@@ -112,118 +112,6 @@ p_list look_in_list ( int lvl , p_list from ){
     return NULL;
 }
 
-void arrange_priorities(){
-
-    if ( running == NULL || running->process_info->priority == 3)
-        return;
-
-    p_list current = running;
-    int lvl = current->process_info->priority;
-    if ( current->process_info->CPU_time >= 5 ){
-        current->process_info->CPU_time = 0;
-        current->process_info->priority++;
-        // if the process is already in the lowest priority
-        if ( current->process_info->priority > 2 ){
-            current->process_info->priority = 2;
-        }
-        p_list aux = priority[lvl].first;
-        // if there is only one process in the list
-        if ( aux->next == aux ){
-            priority[lvl].first = NULL;
-        }else{
-            // checks if it is in the middle
-            while( aux->next != current ){
-                aux = aux->next;
-            }
-            aux->next = current->next;
-        }
-        add_to_priority_list(current);
-    }
-
-}
-
-p_list search_from_0(){
-
-    p_list toReturn = NULL;
-
-    toReturn = look_in_list(MOSTIMP, running);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    return priority[ALWAYSACTIVE].first;
-
-}
-
-p_list search_from_1(){
-    p_list toReturn = NULL;
-
-    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(MEDIUMIMP, running);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    return priority[ALWAYSACTIVE].first;
-}
-
-p_list search_from_2(){
-    p_list toReturn = NULL;
-
-    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(LESSIMP, running);
-    if ( toReturn != NULL )
-        return toReturn;
-    return priority[ALWAYSACTIVE].first;
-}
-
-p_list search_from_top(){
-    p_list toReturn = NULL;
-
-    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
-    if ( toReturn != NULL )
-        return toReturn;
-    return priority[ALWAYSACTIVE].first;
-}
-
-p_list getReadyToRun(){
-    
-    if ( running == NULL ){
-        return priority[3].first;
-    }
-
-    int prio_lvl = running->process_info->priority;
-
-    switch (prio_lvl){
-        case 0:
-        return search_from_0();
-        case 1:
-        return search_from_1();
-        case 2: 
-        return search_from_2();
-        default:
-        return search_from_top();
-    }
-}
-
 p_list remove_in_scheduling_by_level( int _pid, int lvl ){
     p_list toReturn = NULL;
     if ( lvl > 2 || lvl < 0 )
@@ -244,7 +132,10 @@ p_list remove_in_scheduling_by_level( int _pid, int lvl ){
             }
             aux->next = priority[lvl].first;
         }else{
-            while(current->next != NULL && current->next->pid != _pid){
+            int around = 0;
+            while(current->next != NULL && current->next->pid != _pid && !around){
+                if ( current == priority[lvl].first )
+                    around = 1;
                 current = current->next;
             }
             if ( current->next->pid == _pid ){
@@ -256,19 +147,7 @@ p_list remove_in_scheduling_by_level( int _pid, int lvl ){
     return toReturn;
 }
 
-p_list find_with_remove( int _pid ){
-    p_list result = remove_in_scheduling_by_level( _pid, MOSTIMP );
-    if ( result != NULL ){
-        return result;
-    }
-    result = remove_in_scheduling_by_level( _pid, MEDIUMIMP );
-    if ( result != NULL ){
-        return result;
-    }
-    result = remove_in_scheduling_by_level( _pid, LESSIMP );
-    return result;
-}
-
+// correcto
 int add_to_priority_list( p_list process ){
 
     if ( process == NULL )
@@ -288,6 +167,128 @@ int add_to_priority_list( p_list process ){
     }
     return SUCCESS;
 
+}
+
+// correcto
+
+void arrange_priorities(){
+
+    if ( running == NULL || running->process_info->priority == 3)
+        return;
+
+    p_list current = running;
+    if ( current->process_info->CPU_time >= 5 ){
+
+        current = remove_in_scheduling_by_level(running->pid, running->process_info->priority);
+        if ( current == NULL )
+            return;
+        current->process_info->CPU_time = 0;
+        current->process_info->priority++;
+        add_to_priority_list(current);
+    }
+
+}
+
+
+// correcto
+p_list search_from_0(){
+
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, running);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+
+}
+
+// correcto
+p_list search_from_1(){
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, running);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+}
+
+// correcto
+p_list search_from_2(){
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, running);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+}
+
+// correcto
+p_list search_from_top(){
+    p_list toReturn = NULL;
+
+    toReturn = look_in_list(MOSTIMP, priority[MOSTIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(MEDIUMIMP, priority[MEDIUMIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    toReturn = look_in_list(LESSIMP, priority[LESSIMP].first);
+    if ( toReturn != NULL )
+        return toReturn;
+    return priority[ALWAYSACTIVE].first;
+}
+
+// correcto
+p_list getReadyToRun(){
+    
+    if ( running == NULL ){
+        return priority[3].first;
+    }
+
+    int prio_lvl = running->process_info->priority;
+
+    switch (prio_lvl){
+        case 0:
+        return search_from_0();
+        case 1:
+        return search_from_1();
+        case 2: 
+        return search_from_2();
+        default:
+        return search_from_top();
+    }
+}
+
+// correcto
+p_list find_with_remove( int _pid ){
+    p_list result = remove_in_scheduling_by_level( _pid, MOSTIMP );
+    if ( result != NULL ){
+        return result;
+    }
+    result = remove_in_scheduling_by_level( _pid, MEDIUMIMP );
+    if ( result != NULL ){
+        return result;
+    }
+    result = remove_in_scheduling_by_level( _pid, LESSIMP );
+    return result;
 }
 
 
@@ -313,6 +314,7 @@ int change_priority( int _pid, int new_priority ){
 
 }
 
+// correcto
 int delete_process_scheduling( int _pid ){
     
     p_list toReturn = find_with_remove(_pid);
@@ -323,6 +325,7 @@ int delete_process_scheduling( int _pid ){
 
 }
 
+// correcto
 // returns 1 in error and 0 in success
 int scheduling_to_blocked(int _pid){
     p_list process = find_with_remove(_pid);
@@ -343,6 +346,7 @@ int scheduling_to_blocked(int _pid){
     return SUCCESS;
 }
 
+// correcto
 // returns 1 in error and 0 in success
 int blocked_to_scheduling( int _pid){
     if ( blocked.first == NULL ){
@@ -382,7 +386,7 @@ int blocked_to_scheduling( int _pid){
     return SUCCESS;
 }
 
-
+// correcto
 int get_pid(){
     if ( running == NULL )
         return NOTFOUND;
@@ -390,6 +394,7 @@ int get_pid(){
         return running->pid;
 }
 
+// correcto
 void yield(){
     forceTimerTick();
 }
