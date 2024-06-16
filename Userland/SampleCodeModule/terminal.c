@@ -27,6 +27,7 @@ int64_t filter(int argc, char* argv[]);
 int64_t idle(int argc, char* argv[]);
 int64_t finish_with_ctrlD(int argc, char* argv[]);
 int is_vowel(char c);
+int64_t test_mem_manager(int argc, char* argv[]);
 int64_t idle2(int argc, char* argv[]);
 int64_t cat(int argc, char* argv[]);
 
@@ -85,6 +86,7 @@ const commandT commands[] = {
                             {"testpipes", "Print in shell", test_pipes},
                             {"filter", "Filter vowels", filter},
                             {"yield", "Set to rest the shell", yield_shell},
+                            {"testMM", "Test memory manager", test_mem_manager},
                             {"idle","busy wating to test ctrl+D", idle},
                             {"idle2","busy wating to test ctrl+D", idle2},
                             {"cat","prints input", cat},
@@ -517,7 +519,11 @@ int64_t filter(int argc, char* argv[]) {
     return 0;
 }
 
-int64_t idle(int argc, char* argv[]){
+int64_t test_mem_manager(int argc, char* argv[]) {
+    test_mm(argc, argv);
+    exit_process(0);
+    return 0;
+}int64_t idle(int argc, char* argv[]){
     while(1){
         // busy waiting
         printf(argv[0]);

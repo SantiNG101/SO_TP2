@@ -1,3 +1,4 @@
+#ifdef MM
 #include <mm.h>
 
 /*
@@ -35,3 +36,4 @@ void free(void* mem){
     //not implemented yet
     return;
 }
+#endif
