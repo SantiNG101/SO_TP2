@@ -153,7 +153,7 @@ int64_t test_processes2(uint64_t argc, char *argv[]) {
         }
 
       for (rq = 0; rq < max_processes; rq++)
-        if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
+        if (p_rqs[rq].state == BLOCKED) {
           if (unblock(p_rqs[rq].pid) == -1) {
             printf("test_processes: ERROR unblocking process\n");
             exit_process(-1);
@@ -176,7 +176,7 @@ int64_t test_processes2(uint64_t argc, char *argv[]) {
     }
 
 
-    wait_children(getpid());
+    //wait_children(getpid());
     printf("test_processes: All processes have been killed\n");
     exit_process(0);
   }

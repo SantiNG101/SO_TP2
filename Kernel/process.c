@@ -243,6 +243,7 @@ int kill_process(int _pid){
     notify_parent(_pid);
     delete_process_scheduling(_pid);
     free(processes[_pid-1]->stack_end);
+    forceTimerTick();
     return 0;
 }
 

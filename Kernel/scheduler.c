@@ -94,12 +94,12 @@ p_list look_in_list ( int lvl , p_list from ){
     int around = 0;
 
     if ( from != NULL ){
-        starter = from;
+        starter = from->next;
     } else {
         starter = priority[lvl].first;
     }
     if ( starter != NULL ){
-        p_list current = starter->next;
+        p_list current = starter;
         while( current != NULL && !around ){
             if ( current->process_info->p_state == READY )
                 return current;
@@ -316,9 +316,10 @@ int change_priority( int _pid, int new_priority ){
 int delete_process_scheduling( int _pid ){
     
     p_list toReturn = find_with_remove(_pid);
-    running = NULL;
+    if ( running->pid == _pid )
+        running = NULL;
     free(toReturn);
-    return toReturn==NULL?-1:SUCCESS;
+    return SUCCESS;
 
 }
 

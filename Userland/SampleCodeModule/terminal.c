@@ -77,7 +77,7 @@ const commandT commands[] = {
                             {"font", "Sets the fontsize", setFont},
                             {"ps", "show all processes active in the system", ps},
                             {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
-                            {"testprocess", "Test the processes", test_processes2},
+                            {"testprocess", "Test the processes", test_processes},
                             {"kill", "kill selected processes", kill},
                             {"echo", "Print in shell", echo},
                             {"nice", "Print in shell", nice},
@@ -243,7 +243,7 @@ void runCommand(char * cmd){
             args[arg_count] = NULL; // Terminar el arreglo con NULL
 
             putChar('\n');
-            if(strcmp(args[arg_count-1], "&") == 0){
+            if(strcmp(aux, "&") == 0){
                 execve(getpid(), commands[i].function, arg_count, args, 0);
             }
             else {
@@ -578,7 +578,6 @@ int64_t cat(int argc, char* argv[]) {
 int64_t idle2(int argc, char* argv[]){
     while(1){
         // busy waiting
-        wait_time(2);
     }
     return 0;
 }
