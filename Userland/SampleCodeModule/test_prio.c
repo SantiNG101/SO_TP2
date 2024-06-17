@@ -4,49 +4,52 @@
 #include "test_util.h"
 #include "libc/include/stdio.h"
 
-#define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
-#define WAIT 10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+#define MINOR_WAIT 10 
+#define WAIT 20      
 
 #define TOTAL_PROCESSES 3
-#define LOWEST 2  // TODO: Change as required
-#define MEDIUM 1  // TODO: Change as required
-#define HIGHEST 0 // TODO: Change as required
+#define LOWEST 2  
+#define MEDIUM 1  
+#define HIGHEST 0 
 
 int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
-void test_prio() {
+int64_t test_prio(uint64_t argc, char *argv[]) {
   int64_t pids[TOTAL_PROCESSES];
-  char *argv[] = {0};
+  int pid = getpid();
+  char *args[] = {"endless_loop_print"};
   uint64_t i;
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    pids[i] = my_create_process("endless_loop_print", 0, argv);
+    pids[i] = execve(pid,endless_loop_print,1, args,1);
 
   bussy_wait(WAIT);
   printf("\nCHANGING PRIORITIES...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_nice(pids[i], prio[i]);
+    lower_prio(pids[i]);
 
   bussy_wait(WAIT);
   printf("\nBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_block(pids[i]);
+    block(pids[i]);
 
   printf("CHANGING PRIORITIES WHILE BLOCKED...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_nice(pids[i], MEDIUM);
+    lower_prio(pids[i]);
 
   printf("UNBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_unblock(pids[i]);
+    unblock(pids[i]);
 
   bussy_wait(WAIT);
   printf("\nKILLING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_kill(pids[i]);
+    kill_process(pids[i]);
+
+  exit_process(0);
 }

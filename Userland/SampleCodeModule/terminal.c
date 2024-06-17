@@ -88,8 +88,8 @@ const commandT commands[] = {
                             {"idle","busy wating to test ctrl+D", idle},
                             {"idle2","busy wating to test ctrl+D", idle2},
                             {"cat","prints input", cat},
-                            {"ctrlD","finish with ctrl+D", finish_with_ctrlD}
-                            //{"jaime", "Who you gonna call? Jaime!", jaime}
+                            {"ctrlD","finish with ctrl+D", finish_with_ctrlD},
+                            {"testprio", "Test priority", test_prio}
                             };
 /*
 const commandArgs commands_args[] = {
@@ -521,7 +521,9 @@ int64_t idle(int argc, char* argv[]){
     while(1){
         // busy waiting
         printf(argv[0]);
-        printf(getpid());
+        printf("\t");
+        printf("%d", getpid());
+        printf("\n");
         wait_time(2);        
     }
     return 0;

@@ -55,6 +55,7 @@ extern int64_t wait_time( uint64_t quantums );
 int64_t test_pipes( int argc, char* argv[] );
 int64_t test_processes(uint64_t argc, char *argv[]);
 int64_t test_processes2(uint64_t argc, char *argv[]);
+int64_t test_prio(uint64_t argc, char *argv[]);
 
 //
 // functionName: setBackgroundColour
@@ -80,10 +81,5 @@ int scanf(const char * fmt, ...);
 //Screen painting functions
 int puts(const char * str);
 int printf(const char * fmt, ...);
-
-
-
-void test_prio();
-
 
 #endif

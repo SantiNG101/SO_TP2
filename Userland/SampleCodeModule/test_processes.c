@@ -12,16 +12,6 @@ typedef struct P_rq {
   enum State state;
 } p_rq;
 
-int unblock( int pid){
-    return set_status(pid, 1);
-}
-
-int block( int pid){
-    return set_status(pid, 0);
-}
-
-
-
 int64_t test_processes(uint64_t argc, char *argv[]) {
   uint8_t rq;
   uint8_t alive = 0;
