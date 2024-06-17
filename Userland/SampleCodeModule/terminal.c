@@ -580,6 +580,45 @@ int64_t cat(int argc, char* argv[]) {
     return -1;
 }
 
+int64_t filter_process(int argc, char* argv[]) {
+    int size = BUFFER_SIZE;
+    char* buff = alloc(size);
+    free_alloc(buff);
+    exit_process(0);
+    return 0;
+}
+/*
+int64_t filter(int argc, char* argv[]) {
+    if(argc >= 2 && argc <= MAX_ARGS) {
+        for(int i=0; i<COMMANDS; i++) {
+            if (strcmp(commands[i].name, argv[1]) == 0) {
+                char* argvproc[1];
+                argvproc[0]=argv[0];
+                int j=0;
+                char* argvfunc[MAX_ARGS];
+                while(argv[j+1]){
+                    argvfunc[j]=argv[j+1];
+                    j++;
+                }
+                int filter_pid = execve(getpid(), filter_process, 1, argvproc, 1);
+                int pid = execve(getpid(), commands[i].function, argc-1, argvfunc, 0);
+                uint32_t pipe = pipe_open(filter_pid, 0, 1);
+                set_fd(filter_pid, pipe, 1);
+
+                pipe = pipe_open(pid, pipe, 0);
+                set_fd(pid, pipe, 0);
+                wait_children(getpid());
+                exit_process(0);
+                return filter_pid;
+            }
+        }
+    }
+    exit_process(-1);
+    return -1;
+}
+
+*/
+
 int64_t idle2(int argc, char* argv[]){
     while(1){
         // busy waiting

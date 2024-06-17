@@ -1,6 +1,6 @@
 #include "test_util.h"
 #include "stdio.h"
-#include <string.h>
+#include <strings.h>
 #include "tests.h"
 
 #define MAX_BLOCKS 128

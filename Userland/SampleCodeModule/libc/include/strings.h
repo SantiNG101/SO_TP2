@@ -38,12 +38,12 @@ char * strtok(char * str, const char * delim);
  * retorna un puntero a dest si logra copiarlo
  * retorna NULL si src o dest es nulo
  */
-char *strcpy(char *restrict dest, const char *restrict src);
+char * strcpy(const char * src, char * dest);
 /*
  * retorna NULL si dest o src son NULL
  * retorna un puntero a dest si se copia exitosamente
  */
-char *strcat(char *restrict dest, const char *restrict src);
+char * strcat(const char * src, char * dest);
 
 
 #endif //KERNEL_STRINGS_H

@@ -26,7 +26,7 @@ char * strcpy(const char * src, char * dest){
     return dest;
 }
 
-char * strcat(const char *src, char * dest){
+char * strcat(const char * src, char * dest){
     size_t dest_len = strlen(dest);
     int i = 0;
     while(src[i] != '\0'){

@@ -34,7 +34,7 @@ typedef struct Philosopher {
     int64_t sem;
 }Philosopher;
 
-static int philoAmount = 0;
+int philoAmount = 0;
 typedef struct Philosopher* philo;
 
 static philo philosophers[MAX_PHILOSOPHERS];
