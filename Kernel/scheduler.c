@@ -62,8 +62,6 @@ void add_process_to_scheduling( int pid, struct sch_info * process_info, uint8_t
 
 uint8_t* schedule( uint8_t* actual_pointer){
 
-    _cli();
-
     if ( running != NULL ){
         running->stack_pointer = actual_pointer;
         change_rsp_process(running->pid,actual_pointer);
@@ -83,7 +81,6 @@ uint8_t* schedule( uint8_t* actual_pointer){
     toRun->process_info->p_state=RUNNING;
     running = toRun;
 
-    _sti();
 
     return toRun->stack_pointer;
     
@@ -179,14 +176,15 @@ void arrange_priorities(){
     p_list current = running;
     if ( current->process_info->CPU_time >= 5 ){
 
-        current = remove_in_scheduling_by_level(running->pid, running->process_info->priority);
-        if ( current == NULL )
-            return;
-        current->process_info->CPU_time = 0;
-        current->process_info->priority++;
-        add_to_priority_list(current);
+        if ( current->process_info->priority < 2 ){
+            current = remove_in_scheduling_by_level(running->pid, running->process_info->priority);
+            if ( current == NULL )
+                return;
+            current->process_info->CPU_time = 0;
+            current->process_info->priority++;
+            add_to_priority_list(current);
+        }
     }
-
 }
 
 
