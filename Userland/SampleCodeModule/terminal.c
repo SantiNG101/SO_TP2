@@ -520,8 +520,7 @@ int64_t filter(int argc, char* argv[]) {
 }
 
 int64_t test_mem_manager(int argc, char* argv[]) {
-    test_mm(argc, argv);
-    exit_process(0);
+    exit_process(test_mm(argc, argv));
     return 0;
 }int64_t idle(int argc, char* argv[]){
     while(1){

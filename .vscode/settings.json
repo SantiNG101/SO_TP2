@@ -6,6 +6,8 @@
         "stdlib.h": "c",
         "tests.h": "c",
         "test_util.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "snake.h": "c",
+        "terminal.h": "c"
     }
 }
