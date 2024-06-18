@@ -156,6 +156,10 @@ void keyboardHandler(argumentsStruct args, uint64_t oldRSP){
     return;
 }
 
+int buff_is_empty(){
+    return currentBuff? 1:0;
+}
+
 int getKeyState(int keyCode){
     return keyStates[keyCode];
 }

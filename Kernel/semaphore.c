@@ -32,7 +32,9 @@ void semaphore_wait(semaphore_ptr sem) {
             sem->blocked_processes[sem->blocked_qty++]=pid;
             exit_region(&(sem->lock));
             set_status(pid, BLOCKED);
+            _cli();
             yield();
+            _sti();
             enter_region(&(sem->lock));
         } else {
             break;
@@ -47,10 +49,8 @@ void semaphore_wait(semaphore_ptr sem) {
 void semaphore_post(semaphore_ptr sem) {
     _sti();
     enter_region(&(sem->lock));
+    sem->value++;
     unblock_all_p(sem);
-    if(sem->value==0) {
-        sem->value++;
-    }
     exit_region(&(sem->lock));
     _cli();
 }
@@ -58,7 +58,6 @@ void semaphore_post(semaphore_ptr sem) {
 void unblock_all_p(semaphore_ptr sem){
     for (int i=0; i<sem->blocked_qty; i++){
         set_status(sem->blocked_processes[i], READY);
-        yield();
     }
     sem->blocked_qty = 0;
 }

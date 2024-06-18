@@ -72,3 +72,11 @@ void endless_loop_print(uint64_t wait) {
     bussy_wait(wait);
   }
 }
+
+int unblock( int pid){
+    return set_status(pid, 1);
+}
+
+int block( int pid){
+    return set_status(pid, 0);
+}
