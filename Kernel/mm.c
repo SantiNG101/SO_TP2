@@ -1,3 +1,5 @@
+#ifdef MM
+
 #include <mm.h>
 
 uint8_t* start_mem = MEM_START;
@@ -22,3 +24,12 @@ void free(void* mem){
     //not implemented yet
     return;
 }
+
+unsigned int heap_free_bytes() {
+    return 0;
+}
+
+unsigned int heap_used_bytes() {
+    return 0;
+}
+#endif

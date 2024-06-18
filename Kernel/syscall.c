@@ -335,11 +335,11 @@ int64_t free_sys(argumentsStruct args){
 }
 
 int64_t mem_free_bytes(argumentsStruct args){
-    return 0;
+    return heap_free_bytes();
 }
 
 int64_t mem_used_bytes(argumentsStruct args){
-    return 0;
+    return heap_used_bytes();
 }
 
 int64_t keyboard_buffer_check_sys(argumentsStruct args){
