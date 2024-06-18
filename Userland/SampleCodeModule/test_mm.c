@@ -5,32 +5,36 @@
 
 #define MAX_BLOCKS 128
 
-typedef struct MM_rq {
+typedef struct MM_rq
+{
   void *address;
   uint32_t size;
 } mm_rq;
 
-uint64_t test_mm(uint64_t argc, char *argv[]) {
+uint64_t test_mm(uint64_t argc, char *argv[])
+{
 
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;
   uint64_t max_memory;
 
-  if (argc != 2) {
+  if (argc != 2)
+  {
     return -1;
   }
 
-
-  if ((max_memory = satoi(argv[1])) <= 0) {
+  if ((max_memory = satoi(argv[1])) <= 0)
+  {
     return -1;
   }
 
   max_memory = max_memory << 20;
 
   int i = 0;
-  
-  while (1) {
+
+  while (1)
+  {
     rq = 0;
     total = 0;
 
@@ -41,23 +45,27 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     printf("--------------------\n");
 
     // Request as many blocks as we can
-    while (rq < MAX_BLOCKS && total < max_memory) {
+    while (rq < MAX_BLOCKS && total < max_memory)
+    {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
       mm_rqs[rq].address = alloc(mm_rqs[rq].size);
-      
-      printf("Address %d: %p\n", rq, mm_rqs[rq].address);
-      if (mm_rqs[rq].address) {
+
+      if (mm_rqs[rq].address)
+      {
         total += mm_rqs[rq].size;
         rq++;
+        printf("--------------------\n");
+        printf("Allocated blocks: %d\n", rq);
+        printf("Total memory: %d\n", total);
+        printf("Max memory: %d\n", max_memory);
+        printf("--------------------\n");
       }
-
-      printf("--------------------\n");
-      printf("Allocated blocks: %d\n", rq);
-      printf("Total memory: %d\n", total);
-      printf("Max memory: %d\n", max_memory);
-      printf("--------------------\n");
     }
-
+    // printf("--------------------\n");
+    //     printf("Allocated blocks: %d\n", rq);
+    //     printf("Total memory: %d\n", total);
+    //     printf("Max memory: %d\n", max_memory);
+    // printf("--------------------\n");
     printf("Finished allocating\n");
 
     // Set
@@ -70,7 +78,8 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     // Check
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
-        if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
+        if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
+        {
           printf("test_mm ERROR\n");
           return -1;
         }
