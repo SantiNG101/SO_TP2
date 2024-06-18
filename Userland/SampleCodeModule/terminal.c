@@ -29,6 +29,7 @@ int64_t finish_with_ctrlD(int argc, char* argv[]);
 int is_vowel(char c);
 int64_t idle2(int argc, char* argv[]);
 int64_t cat(int argc, char* argv[]);
+int64_t test_mem_manager(int argc, char* argv[]);
 
 void setDefault(){
     clearScreen(0);
@@ -89,7 +90,8 @@ const commandT commands[] = {
                             {"idle2","busy wating to test ctrl+D", idle2},
                             {"cat","prints input", cat},
                             {"ctrlD","finish with ctrl+D", finish_with_ctrlD},
-                            {"testprio", "Test priority", test_prio}
+                            {"testprio", "Test priority", test_prio},
+                            {"testMM", "Test memory manager", test_mem_manager}
                             };
 /*
 const commandArgs commands_args[] = {
@@ -620,5 +622,10 @@ int64_t idle2(int argc, char* argv[]){
     while(1){
         // busy waiting
     }
+    return 0;
+}
+
+int64_t test_mem_manager(int argc, char* argv[]){
+    test_mm(argc, argv);
     return 0;
 }

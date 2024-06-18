@@ -22,7 +22,7 @@ void mem_initialize(){
 }
 
 
-void* memalloc(int size){
+void* memalloc(uint64_t size){
     if ( current_mem == stop_mem || current_mem + size > stop_mem )
         return NULL; // return cant assign
     uint8_t* aux = current_mem;
