@@ -32,6 +32,7 @@ GLOBAL wait_children
 GLOBAL alloc
 GLOBAL free_alloc
 GLOBAL wait_time
+GLOBAL get_buffer_status
 
 section .text
 
@@ -442,6 +443,16 @@ wait_children:
 
     mov rsi, rdi    ; pid
     mov rdi, 37     ; syscall lower priority
+    int 80h
+
+    leave
+    ret
+
+get_buffer_status:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 41     ; buffer status
     int 80h
 
     leave
