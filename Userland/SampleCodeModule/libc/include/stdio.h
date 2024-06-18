@@ -48,9 +48,10 @@ extern int64_t set_fd(int pid, uint32_t new_fd, char pos);
 extern void yield();
 extern void lower_prio(int pid);
 extern void wait_children(int pid);
-extern void * alloc(unsigned int size);
+extern int64_t alloc(unsigned int size);
 extern void free_alloc(unsigned int alloc_mem);
 extern int64_t wait_time( uint64_t quantums );
+extern int64_t get_buffer_status();
 
 int64_t test_pipes( int argc, char* argv[] );
 int64_t test_processes(uint64_t argc, char *argv[]);
