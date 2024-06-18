@@ -353,7 +353,7 @@ int blocked_to_scheduling( int _pid){
     p_list current = blocked.first;
     p_list aux = current;
     if ( current->pid == _pid ){
-        blocked.first = NULL;
+        blocked.first = current->next;
     }else {
         while ( current->next != NULL && current->next->pid != _pid ){
             current = current->next;

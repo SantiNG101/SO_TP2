@@ -26,13 +26,13 @@ semaphore_ptr create_semaphore(char *name, int value) {
 void semaphore_wait(semaphore_ptr sem) {
     _sti();
     enter_region(&(sem->lock));
+    _cli();
     int pid = get_pid();
     while (1) { //Sugerencia: El enterRegion ya haría la parte del loop
         if (sem->value == 0) {
             sem->blocked_processes[sem->blocked_qty++]=pid;
             exit_region(&(sem->lock));
             set_status(pid, BLOCKED);
-            _cli();
             yield();
             _sti();
             enter_region(&(sem->lock));
@@ -41,6 +41,7 @@ void semaphore_wait(semaphore_ptr sem) {
         }
     }
     sem->value--;
+    _sti();
     exit_region(&(sem->lock));
     _cli();
 }
@@ -50,9 +51,24 @@ void semaphore_post(semaphore_ptr sem) {
     _sti();
     enter_region(&(sem->lock));
     sem->value++;
-    unblock_all_p(sem);
+    unblock(sem);
     exit_region(&(sem->lock));
     _cli();
+}
+
+void unblock(semaphore_ptr sem){
+
+    if ( sem->blocked_qty < 0 )
+        return;
+    
+    if(sem->blocked_qty > 0){
+        int pid = sem->blocked_processes[0];
+        for(int i=1; i<sem->blocked_qty; i++) {
+            sem->blocked_processes[i-1] = sem->blocked_processes[i];
+        }
+        sem->blocked_qty--;
+        set_status(pid, READY);
+    }
 }
 
 void unblock_all_p(semaphore_ptr sem){
@@ -71,3 +87,4 @@ void destroy_semaphore(semaphore_ptr sem) {
 char *get_semaphore_name(semaphore_ptr sem) {
     return sem->name;
 }
+

@@ -33,6 +33,9 @@ GLOBAL alloc
 GLOBAL free_alloc
 GLOBAL wait_time
 GLOBAL get_buffer_status
+GLOBAL heap_used_b
+GLOBAL heap_free_b
+
 
 section .text
 
@@ -453,6 +456,26 @@ get_buffer_status:
     mov rbp, rsp
 
     mov rdi, 41     ; buffer status
+    int 80h
+
+    leave
+    ret
+
+heap_used_b:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 42     ; mem used
+    int 80h
+
+    leave
+    ret
+
+heap_free_b:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 43     ; mem free
     int 80h
 
     leave

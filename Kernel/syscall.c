@@ -19,7 +19,7 @@
 #include "include/sync.h"
 #include <syscall.h>
 #include <pipes.h>
-#include <mm.h>
+#include "include/mm.h"
 
 #define MAX_SEMAPHORES 100
 
@@ -334,13 +334,17 @@ int64_t free_sys(argumentsStruct args){
     return 0;
 }
 
-// int64_t mem_free_bytes(argumentsStruct args){
-//     return heap_free_bytes();
-// }
+int64_t mem_free_bytes(argumentsStruct args){
+    return 0;
+}
 
-// int64_t mem_used_bytes(argumentsStruct args){
-//     return heap_used_bytes();
-// }
+int64_t mem_used_bytes(argumentsStruct args){
+    return 0;
+}
+
+int64_t keyboard_buffer_check_sys(argumentsStruct args){
+    return buff_is_empty();
+}
 
 
 // Array of syscall function pointers
@@ -386,8 +390,9 @@ int64_t (* syscalls[]) (argumentsStruct args) = {
         malloc_sys,
         free_sys,
         wait_sys,
-        // mem_free_bytes,
-        // mem_used_bytes
+        keyboard_buffer_check_sys,
+        mem_free_bytes,
+        mem_used_bytes
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))

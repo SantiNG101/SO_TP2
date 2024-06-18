@@ -80,25 +80,20 @@ const commandT commands[] = {
                             {"testprocess", "Test the processes", test_processes},
                             {"kill", "kill selected processes", kill},
                             {"echo", "Print in shell", echo},
-                            {"nice", "Print in shell", nice},
-                            {"philos", "Print in shell", philos},
-                            {"testpipes", "Print in shell", test_pipes},
+                            {"nice", "Lowers priority", nice},
+                            {"philos", "eating philosofers", philos},
+                            {"testpipes", "test pipes", test_pipes},
                             {"filter", "Filter vowels", filter},
                             {"yield", "Set to rest the shell", yield_shell},
+                            {"memFree", "memory free", heap_free_b},
+                            {"memUsed", "memory used", heap_used_b},
                             {"idle","busy wating to test ctrl+D", idle},
                             {"idle2","busy wating to test ctrl+D", idle2},
                             {"cat","prints input", cat},
                             {"ctrlD","finish with ctrl+D", finish_with_ctrlD},
-                            {"testprio", "Test priority", test_prio}
+                            {"testprio", "Test priority", test_prio},
+                            {"testMM", "Test memory manager", test_mm}
                             };
-/*
-const commandArgs commands_args[] = {
-                            {"pid", "Obtain the actual process pid", get_pid},
-                            {"parentPid", "Obtain partents pid", get_pid_parent},
-                            {"setStatus", "Change a process status ( BLOCKED=0 / READY=1 )", set_status},
-                            {"kill", "kill an active process in the system", kill_process},
-                            {"changePriority","change the priority of a process in the scheduling schema", change_priority}
-                            };*/
 
 #define BUFFER_SIZE 50
 #define INSTRUCTION_SIZE 240
@@ -221,7 +216,7 @@ void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
             // TODO: solo debe quedar la 4 y 25 aca
-            if(i == 4 || i == 24 ){
+            if(i == 4 || i == 24 || i == 25 || i == 26 ){
                 commands[i].function(NULL,NULL);
                 putChar('\n');
                 return;
@@ -255,13 +250,6 @@ void runCommand(char * cmd){
         }
 
     }
-
-/*
-    for ( int i=0; i < SIZEOFARR(commands_args); i++ ){
-        if ( !strcmp(cmd, commands_args[i].name) ){
-            
-        }
-    }*/
 
         printf("Command not found.\n");
     return;
@@ -584,37 +572,6 @@ int64_t filter_process(int argc, char* argv[]) {
     exit_process(0);
     return 0;
 }
-/*
-int64_t filter(int argc, char* argv[]) {
-    if(argc >= 2 && argc <= MAX_ARGS) {
-        for(int i=0; i<COMMANDS; i++) {
-            if (strcmp(commands[i].name, argv[1]) == 0) {
-                char* argvproc[1];
-                argvproc[0]=argv[0];
-                int j=0;
-                char* argvfunc[MAX_ARGS];
-                while(argv[j+1]){
-                    argvfunc[j]=argv[j+1];
-                    j++;
-                }
-                int filter_pid = execve(getpid(), filter_process, 1, argvproc, 1);
-                int pid = execve(getpid(), commands[i].function, argc-1, argvfunc, 0);
-                uint32_t pipe = pipe_open(filter_pid, 0, 1);
-                set_fd(filter_pid, pipe, 1);
-
-                pipe = pipe_open(pid, pipe, 0);
-                set_fd(pid, pipe, 0);
-                wait_children(getpid());
-                exit_process(0);
-                return filter_pid;
-            }
-        }
-    }
-    exit_process(-1);
-    return -1;
-}
-
-*/
 
 int64_t idle2(int argc, char* argv[]){
     while(1){

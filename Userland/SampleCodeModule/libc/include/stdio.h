@@ -52,11 +52,14 @@ extern int64_t alloc(unsigned int size);
 extern void free_alloc(unsigned int alloc_mem);
 extern int64_t wait_time( uint64_t quantums );
 extern int64_t get_buffer_status();
+extern int64_t heap_used_b();
+extern int64_t heap_free_b();
 
 int64_t test_pipes( int argc, char* argv[] );
 int64_t test_processes(uint64_t argc, char *argv[]);
 int64_t test_processes2(uint64_t argc, char *argv[]);
 int64_t test_prio(uint64_t argc, char *argv[]);
+uint64_t test_mm(uint64_t argc, char *argv[]);
 
 //
 // functionName: setBackgroundColour
