@@ -1,7 +1,6 @@
-#target remote localhost:1234
-target remote host.docker.internal:1234
-add-symbol-file ~/Documents/SO/SO_TP2/Kernel/kernel.elf 0x100000
-add-symbol-file ~/Documents/SO/SO_TP2/Userland/0000-sampleCodeModule.elf 0x400000
+target remote 172.17.0.1:1234
+add-symbol-file ~/Kernel/kernel.elf 0x100000
+add-symbol-file ~/Userland/0000-sampleCodeModule.elf 0x400000
 
 python
 
@@ -41,6 +40,7 @@ import os
 import re
 import struct
 import traceback
+
 
 # Common attributes ------------------------------------------------------------
 

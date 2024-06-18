@@ -22,3 +22,12 @@ Kernel/include/.idea/modules.xml
 Kernel/include/.idea/workspace.xml
 Kernel/.DS_Store
 .DS_Store
+
+.bash_history
+.gdb_history
+.gdbinit
+.tgdbinit
+tgdb
+.gdbinit
+tmux.conf
+Kernel/kernel.elf

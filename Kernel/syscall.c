@@ -333,6 +333,13 @@ int64_t free_sys(argumentsStruct args){
     return 0;
 }
 
+int64_t mem_free_bytes(argumentsStruct args){
+    return heap_free_bytes();
+}
+
+int64_t mem_used_bytes(argumentsStruct args){
+    return heap_used_bytes();
+}
 
 // Array of syscall function pointers
 int64_t (* syscalls[]) (argumentsStruct args) = {
@@ -376,7 +383,9 @@ int64_t (* syscalls[]) (argumentsStruct args) = {
         wait_children_sys,
         malloc_sys,
         free_sys,
-        wait_sys
+        wait_sys,
+        mem_free_bytes,
+        mem_used_bytes
 };
 
 #define sizeofArr(arr) (sizeof(arr) / sizeof(arr[0]))
