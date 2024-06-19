@@ -91,7 +91,9 @@ const commandT commands[] = {
                             {"testMM", "Test memory manager", test_mm},
                             {"wc", "Counts enters in input", wc},
                             {"block", "Counts enters in input", blocked_warp},
-                            {"unblock", "Counts enters in input", unblocked_warp}
+                            {"unblock", "Counts enters in input", unblocked_warp},
+                            {"freeMem", "Displays free memory", mem_free},
+                            {"usedMem", "Displays used memory", mem_used}
                             };
 
 #define BUFFER_SIZE 50

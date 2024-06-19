@@ -5,6 +5,7 @@
 #include <process.h>
 #include <speaker.h>
 #include <stdio.h>
+#include "mm.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -15,8 +16,8 @@ extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
 
-static void * const sampleCodeModuleAddress = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x500000;
+static void *const sampleCodeModuleAddress = (void *)0x400000;
+static void *const sampleDataModuleAddress = (void *)0x500000;
 
 typedef uint8_t (*Function)();
 
@@ -28,21 +29,19 @@ extern void _sti(void);
 
 extern void _hlt(void);
 
-void clearBSS(void * bssAddress, uint64_t bssSize)
+void clearBSS(void *bssAddress, uint64_t bssSize)
 {
 	memset(bssAddress, 0, bssSize);
 }
 
-void * getStackBase()
+void *getStackBase()
 {
-	return (void*)(
-		(uint64_t)&endOfKernel
-		+ PageSize * 8				//The size of the stack itself, 32KiB
-		- sizeof(uint64_t)			//Begin at the top of the stack
+	return (void *)((uint64_t)&endOfKernel + PageSize * 8 // The size of the stack itself, 32KiB
+					- sizeof(uint64_t)					  // Begin at the top of the stack
 	);
 }
 
-void * initializeKernelBinary()
+void *initializeKernelBinary()
 {
 	char buffer[10];
 
@@ -55,10 +54,9 @@ void * initializeKernelBinary()
 
 	ncPrint("[Loading modules]");
 	ncNewline();
-	void * moduleAddresses[] = {
+	void *moduleAddresses[] = {
 		sampleCodeModuleAddress,
-		sampleDataModuleAddress
-	};
+		sampleDataModuleAddress};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
 	ncPrint("[Done]");
@@ -88,34 +86,36 @@ void * initializeKernelBinary()
 	ncNewline();
 
 	// to change
-	mem_initialize();
+
 	screen_Initialize();
 	initialize_scheduler();
 	return getStackBase();
 }
 
-int divisionBy(int x, int y){
-	x = x/y;
+int divisionBy(int x, int y)
+{
+	x = x / y;
 	return x;
 }
 
-
 int main()
 {
-	
+	mem_initialize();
 	load_idt();
-	 // Activate interruptions
-	char* argInit[2] = {"./init", NULL};
-	process_create(0,&init_process,1,argInit,0);
+
+	// Activate interruptions
+	char *argInit[2] = {"./init", NULL};
+	process_create(0, &init_process, 1, argInit, 0);
 	return 0;
 }
 
-int init_process(){
+int init_process()
+{
 
-	char* argShell[2] = {"./shell", NULL};
-	process_create(1,(Function) sampleCodeModuleAddress,1,argShell,1);
+	char *argShell[2] = {"./shell", NULL};
+	process_create(1, (Function)sampleCodeModuleAddress, 1, argShell, 1);
 	_sti();
-	while(1)
+	while (1)
 		_hlt();
 	return 0;
 }
