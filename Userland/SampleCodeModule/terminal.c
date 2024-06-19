@@ -270,7 +270,7 @@ void runCommand(char * cmd){
             if(strcmp(aux, "&") == 0){
                 execve(getpid(), commands[i].function, arg_count, args, 0);
             }
-            else if( strcmp(args[1], "|") == 0 && strcmp(args[2], "filter") == 0 ){
+            else if( strcmp(args[1], "|") == 0 && (strcmp(args[2], "filter") == 0 || strcmp(args[2], "wc") == 0)){
                 args[0] = args[2];
                 args[2] = commands[i].name;
                 int j=0;
@@ -631,9 +631,9 @@ int64_t wc_process(int argc, char* argv[]){
 }
 
 int64_t wc(int argc, char* argv[]) {
-    if (argc >= 2 && argc <= MAX_ARGS) {
+    if (argc >= 2 && argc <= MAX_ARGS && strcmp("|", argv[1]) == 0) {
         for (int i = 0; i < COMMANDS; i++) {
-            if (strcmp(commands[i].name, argv[1]) == 0) {
+            if (strcmp(commands[i].name, argv[2]) == 0) {
                 char *argvproc[1];
                 argvproc[0] = argv[0];
                 int j = 0;
