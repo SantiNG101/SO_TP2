@@ -19,6 +19,7 @@
 #include "libc/include/stdio.h"
 #include "tests.h"
 #include "libc/include/stdlib.h"
+#include "test_util.h"
 
 #define TRUE 1
 #define FALSE 0

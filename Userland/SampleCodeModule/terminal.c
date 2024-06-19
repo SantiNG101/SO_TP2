@@ -24,14 +24,18 @@ int64_t nice(int argc, char* argv[]);
 int64_t yield_shell(int argc, char* argv[]);
 int64_t philos(int argc, char* argv[]);
 int64_t filter(int argc, char* argv[]);
-int64_t idle(int argc, char* argv[]);
+int64_t loop(int argc, char* argv[]);
 int64_t finish_with_ctrlD(int argc, char* argv[]);
 int is_vowel(char c) ;
-int64_t idle2(int argc, char* argv[]);
+int64_t loop2(int argc, char* argv[]);
 int64_t cat(int argc, char* argv[]);
 int64_t wc(int argc, char* argv[]);
 int64_t wc_process(int argc, char* argv[]);
 int64_t filter_process(int argc, char* argv[]);
+int64_t mem_free(int argc, char* argv[]);
+int64_t mem_used(int argc, char* argv[]);
+int64_t unblocked_warp(int argc, char* argv[]);
+int64_t blocked_warp(int argc, char* argv[]);
 
 void setDefault(){
     clearScreen(0);
@@ -79,13 +83,15 @@ const commandT commands[] = {
                             {"yield", "Set to rest the shell", yield_shell}, //
                             {"memFree", "memory free", heap_free_b},
                             {"memUsed", "memory used", heap_used_b},
-                            {"idle","busy wating to test ctrl+D", idle},
-                            {"idle2","busy wating to test ctrl+D", idle2},
+                            {"loop","busy wating to test ctrl+C", loop},
+                            {"loop2","busy wating to test ctrl+D", loop2},
                             {"cat","prints input", cat},
                             {"ctrlD","finish with ctrl+D", finish_with_ctrlD},
                             {"testprio", "Test priority", test_prio},
                             {"testMM", "Test memory manager", test_mm},
-                            {"wc", "Counts enters in input", wc}
+                            {"wc", "Counts enters in input", wc},
+                            {"block", "Counts enters in input", blocked_warp},
+                            {"unblock", "Counts enters in input", unblocked_warp}
                             };
 
 #define BUFFER_SIZE 50
@@ -123,6 +129,36 @@ int changeCommand(int insNumber, char * current){
 
     return buffer.data[insNumber].size;
 }
+
+int64_t unblocked_warp(int argc, char* argv[]){
+
+    int pid = atoi(argv[1]);
+    set_status(pid, 1);
+    exit_process(0);
+    return 0;
+
+}
+int64_t blocked_warp(int argc, char* argv[]){
+    int pid = atoi(argv[1]);
+    set_status(pid, 0);
+    exit_process(0);
+    return 0;
+}
+
+int64_t mem_free(int argc, char* argv[]){
+    int64_t free = heap_free_b();
+    printf("Free space: %d ", free);
+    exit_process(0);
+    return 0;
+}
+
+int64_t mem_used(int argc, char* argv[]){
+    int64_t use = heap_used_b();
+    printf("Used space: %d ", use);
+    exit_process(0);
+    return 0;
+}
+
 
 /**
  * Guarda el comando en el buffer. (Si el readWriteIndex es mayor o igual al BUFFER_SIZE, entonces readWriteIndex se pone en 0),
@@ -504,7 +540,7 @@ int64_t filter(int argc, char* argv[]) {
     return -1;
 }
 
-int64_t idle(int argc, char* argv[]){
+int64_t loop(int argc, char* argv[]){
     while(1){
         // busy waiting
         printf(argv[0]);
@@ -629,7 +665,7 @@ int64_t filter_process(int argc, char* argv[]) {
     return 0;
 }
 
-int64_t idle2(int argc, char* argv[]){
+int64_t loop2(int argc, char* argv[]){
     while(1){
         // busy waiting
     }
