@@ -5,8 +5,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-#define MEM_START 0xA00000
-#define HEAP_START 0x1F000000
+#define MEM_START 0x00A00000
+#define HEAP_START 0x1A000000
 #define MEM_STOP 0x1F600000
 #define BLOCK_SIZE 4096 // 2^12
 #define MEM_SIZE (MEM_STOP - MEM_START)

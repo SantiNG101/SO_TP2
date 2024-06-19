@@ -187,4 +187,5 @@ unsigned int heap_free_bytes() {
 unsigned int heap_used_bytes() {
     return HEAP_SIZE - mem_manager->free_bytes;
 }
+
 #endif

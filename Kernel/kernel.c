@@ -5,6 +5,7 @@
 #include <process.h>
 #include <speaker.h>
 #include <stdio.h>
+#include <mm.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -104,6 +105,7 @@ int main()
 {
 	
 	load_idt();
+	mem_initialize();
 	 // Activate interruptions
 	char* argInit[2] = {"./init", NULL};
 	process_create(0,&init_process,1,argInit,0);
