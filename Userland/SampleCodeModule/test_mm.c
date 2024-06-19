@@ -47,26 +47,26 @@ uint64_t test_mm(uint64_t argc, char* argv[]) {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
       mm_rqs[rq].address = alloc(mm_rqs[rq].size);
 
-      printf("Address %d: %p\n", rq, mm_rqs[rq].address);
       if (mm_rqs[rq].address) {
         total += mm_rqs[rq].size;
         rq++;
-      }
+      } 
 
+    }
       printf("--------------------\n");
       printf("Allocated blocks: %d\n", rq);
       printf("Total memory: %d\n", total);
       printf("Max memory: %d\n", max_memory);
       printf("--------------------\n");
-    }
 
     printf("Finished allocating\n");
 
     // Set
     uint32_t i;
     for (i = 0; i < rq; i++)
+      {printf("Block %d: %p, size: %d\n", i, (char *) mm_rqs[i].address, mm_rqs[i].size);
       if (mm_rqs[i].address)
-        memset(mm_rqs[i].address, i, mm_rqs[i].size);
+        memset(mm_rqs[i].address, i, mm_rqs[i].size);}
     printf("Set OK\n");
 
     // Check
