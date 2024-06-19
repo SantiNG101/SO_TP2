@@ -130,7 +130,7 @@ uint32_t open_pipe_for_pid( uint32_t pid, uint32_t id, uint8_t mode ){
 
 void close_pipe_for_pid( uint32_t pid, uint32_t id, uint8_t mode ){
     
-    if ( (mode != READ && mode != WRITE) || id < 1 || id > MAX_PIPES )
+    if ( (mode != READ && mode != WRITE) || id < 3 || id > MAX_PIPES )
         return;
 
     long index = get_pipe_from_id(id);

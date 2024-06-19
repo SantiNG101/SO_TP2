@@ -256,7 +256,7 @@ void exit_process( int process_result ){
 
     kill_process( get_pid() );
     if ( process_result == 0 )
-        print("Process exited succesfully\n");
+        ;
     else
         printErrorStr("The process exited with error!");
 

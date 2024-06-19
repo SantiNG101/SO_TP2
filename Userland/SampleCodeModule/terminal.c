@@ -26,9 +26,12 @@ int64_t philos(int argc, char* argv[]);
 int64_t filter(int argc, char* argv[]);
 int64_t idle(int argc, char* argv[]);
 int64_t finish_with_ctrlD(int argc, char* argv[]);
-int is_vowel(char c);
+int is_vowel(char c) ;
 int64_t idle2(int argc, char* argv[]);
 int64_t cat(int argc, char* argv[]);
+int64_t wc(int argc, char* argv[]);
+int64_t wc_process(int argc, char* argv[]);
+int64_t filter_process(int argc, char* argv[]);
 
 void setDefault(){
     clearScreen(0);
@@ -64,33 +67,25 @@ const commandT commands[] = {
                             {"time","Shows the current time in GMT-3",showTime},
                             {"clear","clears screen and resets position",terminalSetter},
                             {"date","Displays current date.",showDate},
-                            {"exit","Exits the bash",exit},
-                            {"bell","Outputs a Beep", beep},
-                            {"66","Displays imperial march for starwars fans", imperialMarch},
-                            {"mario","Displays mario bros theme song",marioTheme},
-                            {"tetris","Displays tetris song",tetris},
-                            {"storm","Displays song of storms zelda",songOfStorms},
-                            {"background","Changes background to hexColour: ",setBackground},
-                            {"foreground","Changes foreground to hexColour: ",setForeground},
-                            {"div0","Shows how div 0 exception works",divZero},
-                            {"opCode","Shows how opCode exception works",opCode},
-                            {"font", "Sets the fontsize", setFont},
+                            {"exit","Exits the bash",exit}, // 
                             {"ps", "show all processes active in the system", ps},
-                            {"SSR","Shows current saved registers. # Save registers pressing F11 #",showRegisters},
                             {"testprocess", "Test the processes", test_processes},
                             {"kill", "kill selected processes", kill},
                             {"echo", "Print in shell", echo},
-                            {"nice", "Print in shell", nice},
-                            {"philos", "Print in shell", philos},
-                            {"testpipes", "Print in shell", test_pipes},
+                            {"nice", "Lowers priority", nice}, //
+                            {"philos", "eating philosofers", philos},
+                            {"testpipes", "test pipes", test_pipes},
                             {"filter", "Filter vowels", filter},
-                            {"yield", "Set to rest the shell", yield_shell},
+                            {"yield", "Set to rest the shell", yield_shell}, //
+                            {"memFree", "memory free", heap_free_b},
+                            {"memUsed", "memory used", heap_used_b},
                             {"idle","busy wating to test ctrl+D", idle},
                             {"idle2","busy wating to test ctrl+D", idle2},
                             {"cat","prints input", cat},
                             {"ctrlD","finish with ctrl+D", finish_with_ctrlD},
                             {"testprio", "Test priority", test_prio},
-                            {"testmm", "Test memory manager", test_mm}
+                            {"testMM", "Test memory manager", test_mm},
+                            {"wc", "Counts enters in input", wc}
                             };
 
 #define BUFFER_SIZE 50
@@ -213,8 +208,8 @@ int shell(int argc, char* argv[]){
 void runCommand(char * cmd){
     for(int i = 0; i < SIZEOFARR(commands); i++){
         if(!strcmp(cmd, commands[i].name)) {
-            // TODO: solo debe quedar la 4 y 25 aca
-            if(i == 4 || i == 24 ){
+
+            if(i == 4 || i == 9 || i == 13 ){
                 commands[i].function(NULL,NULL);
                 putChar('\n');
                 return;
@@ -224,7 +219,7 @@ void runCommand(char * cmd){
             char *args[MAX_ARGS + 2]; // +2 para el comando y el NULL final
             args[0] = commands[i].name; // El primer argumento es el nombre del comando
             int arg_count = 1;
-
+            int pipe=0;
             char *aux = strtok(NULL, " ");
             while(aux != NULL && arg_count < MAX_ARGS + 1) {
                 if (strcmp(aux, "&") == 0){
@@ -258,7 +253,7 @@ void runCommand(char * cmd){
 int64_t help(int argc, char* argv[]){
     char * token = strtok(NULL, " ");
     char * aux = strtok(NULL, " ");
-
+    wait_time(1);
     if(aux != NULL){
         printf("help requires only one argument.\n");
         exit_process(0);
@@ -270,6 +265,8 @@ int64_t help(int argc, char* argv[]){
         for(int i = 0; i < SIZEOFARR(commands); i++){
             printf("%s - %s\n", commands[i].name, commands[i].description);
         }
+        int fd = get_fd(1);
+        pipe_close( getpid(), fd, 1 );
         exit_process(0);
         return 0;
     }
@@ -419,9 +416,9 @@ int64_t setFont(int argc, char* argv[]){
 }
 
 int64_t echo(int argc, char* argv[]) {
-    printf("\n%d Parameters", argc);
-    for(int i=0; i<argc; i++) {
-        printf("%s", argv[i]);
+    printf("%d Parameters: ", argc -1 );
+    for(int i=1; i<argc; i++) {
+        printf("%s ", argv[i]);
     }
     exit_process(0);
     return 0;
@@ -476,31 +473,35 @@ int is_vowel(char c) {
 }
 
 int64_t filter(int argc, char* argv[]) {
-    if (argc < 2) {
-        printf("Usage: filter <string1> <string2> ...\n");
-        exit_process(1);
-        return 1;
-    }
+    if (argc >= 2 && argc <= MAX_ARGS) {
+        for (int i = 0; i < COMMANDS; i++) {
+            if (strcmp(commands[i].name, argv[1]) == 0) {
+                char *argvproc[1];
+                argvproc[0] = argv[0];
+                int j = 0;
+                char *argvfunc[MAX_ARGS];
+                while (argv[j + 1]) {
+                    argvfunc[j] = argv[j + 1];
+                    j++;
+                }
+                int pid = getpid();
+                
+                int filter_pid = execve(pid, filter_process, 1, argvproc, 1);
+                uint32_t pipe = pipe_open(filter_pid, 0, 0);
+                set_fd(filter_pid, pipe, 0);
 
-    for (int i = 1; i < argc; i++) {
-        char *inputString = argv[i];
+                int pid_execve = execve(pid, commands[i].function, argc - 1, argvfunc, 0);              
+                pipe = pipe_open(pid_execve, pipe, 1);
+                set_fd(pid_execve, pipe, 1);
 
-        char *ptr = inputString;
-        while (*ptr != '\0') {
-            if (!is_vowel(*ptr)) {
-                putChar(*ptr);
+                wait_children(pid);
+                exit_process(0);
+                return 0;
             }
-            ptr++;
-        }
-
-        if (i < argc - 1) {
-            putChar(' '); // Separar los argumentos con un espacio
         }
     }
-
-    putChar('\n');
-    exit_process(0);
-    return 0;
+    exit_process(-1);
+    return -1;
 }
 
 int64_t idle(int argc, char* argv[]){
@@ -535,9 +536,12 @@ int64_t cat_process(int argc, char* argv[]) {
 }
 
 int64_t cat(int argc, char* argv[]) {
-    if(argc >= 2 && argc <= MAX_ARGS) {
+    if(argc >= 3 && argc <= MAX_ARGS) {
         for(int i=0; i<COMMANDS; i++) {
-            if (strcmp(commands[i].name, argv[1]) == 0) {
+            if(!strcmp('|', argv[1] == 0)){
+                break;
+            }
+            if (strcmp(commands[i].name, argv[2]) == 0) {
                 char* argvproc[1];
                 argvproc[0]=argv[0];
                 int j=0;
@@ -563,10 +567,64 @@ int64_t cat(int argc, char* argv[]) {
     return -1;
 }
 
+int64_t wc_process(int argc, char* argv[]){
+    int count=0;
+    char c;
+    wait_time(1);
+    while( ( c=getChar() ) != -1 ){
+        if(c =='\n'){
+            count++;
+        }
+    }
+    printf("%d", count);
+    int fd = get_fd(0);
+
+    pipe_close(getpid(), fd, 0);
+    exit_process(0);
+    return 0;
+}
+
+int64_t wc(int argc, char* argv[]) {
+    if (argc >= 2 && argc <= MAX_ARGS) {
+        for (int i = 0; i < COMMANDS; i++) {
+            if (strcmp(commands[i].name, argv[1]) == 0) {
+                char *argvproc[1];
+                argvproc[0] = argv[0];
+                int j = 0;
+                char *argvfunc[MAX_ARGS];
+                while (argv[j + 1]) {
+                    argvfunc[j] = argv[j + 1];
+                    j++;
+                }
+
+                int pid = getpid();
+                int wc_pid = execve(pid, wc_process, 1, argvproc, 1);
+                uint32_t pipe = pipe_open(wc_pid, 0, 0);
+                set_fd(wc_pid, pipe, 0);
+
+                int pid_e = execve(pid, commands[i].function, argc - 1, argvfunc, 0);
+                pipe = pipe_open(pid_e, pipe, 1);
+                set_fd(pid_e, pipe, 1);
+                wait_children(getpid());
+                exit_process(0);
+                return 0;
+            }
+        }
+    }
+    exit_process(-1);
+    return -1;
+}
+
 int64_t filter_process(int argc, char* argv[]) {
-    int size = BUFFER_SIZE;
-    char* buff = alloc(size);
-    free_alloc(buff);
+    char c;
+    wait_time(1);
+    while( ( c=getChar() ) != -1 ){
+        if(!is_vowel(c)){
+            putChar(c);
+        }
+    }
+    int fd = get_fd(0);
+    pipe_close( getpid(), fd, 0 );
     exit_process(0);
     return 0;
 }
