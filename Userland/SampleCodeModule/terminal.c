@@ -81,8 +81,8 @@ const commandT commands[] = {
                             {"testpipes", "test pipes", test_pipes},
                             {"filter", "Filter vowels", filter},
                             {"yield", "Set to rest the shell", yield_shell}, //
-                            {"memFree", "memory free", heap_free_b},
-                            {"memUsed", "memory used", heap_used_b},
+                            {"memFree", "memory free", mem_free},
+                            {"memUsed", "memory used", mem_used},
                             {"loop","busy wating to test ctrl+C", loop},
                             {"loop2","busy wating to test ctrl+D", loop2},
                             {"cat","prints input", cat},
@@ -91,9 +91,7 @@ const commandT commands[] = {
                             {"testMM", "Test memory manager", test_mm},
                             {"wc", "Counts enters in input", wc},
                             {"block", "Counts enters in input", blocked_warp},
-                            {"unblock", "Counts enters in input", unblocked_warp},
-                            {"freeMem", "Displays free memory", mem_free},
-                            {"usedMem", "Displays used memory", mem_used}
+                            {"unblock", "Counts enters in input", unblocked_warp}
                             };
 
 #define BUFFER_SIZE 50
@@ -272,7 +270,7 @@ void runCommand(char * cmd){
             if(strcmp(aux, "&") == 0){
                 execve(getpid(), commands[i].function, arg_count, args, 0);
             }
-            else if( strcmp(args[1], "|") == 0 && strcmp(args[2], "filter") == 0 ){
+            else if(strcmp(args[1], "|") == 0 && (strcmp(args[2], "filter") == 0 || strcmp(args[2], "wc") == 0)){
                 args[0] = args[2];
                 args[2] = commands[i].name;
                 int j=0;
@@ -633,9 +631,9 @@ int64_t wc_process(int argc, char* argv[]){
 }
 
 int64_t wc(int argc, char* argv[]) {
-    if (argc >= 2 && argc <= MAX_ARGS) {
+    if (argc >= 2 && argc <= MAX_ARGS && strcmp("|", argv[1]) == 0) {
         for (int i = 0; i < COMMANDS; i++) {
-            if (strcmp(commands[i].name, argv[1]) == 0) {
+            if (strcmp(commands[i].name, argv[2]) == 0) {
                 char *argvproc[1];
                 argvproc[0] = argv[0];
                 int j = 0;
