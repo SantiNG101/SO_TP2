@@ -22,4 +22,6 @@ int getC();
 void keyboardHandler(argumentsStruct args, uint64_t oldRSP);
 int getKeyState(int keyCode);
 
+int buff_is_full();
+
 #endif KERNEL_KEYBOARD_HANDLER_H

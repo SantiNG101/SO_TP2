@@ -42,10 +42,8 @@ int64_t sem = 0;
 
 
 void philosopherActivity(int argc, char* argv[]) {
-    semaphore_wait(sem);
-    int philoNumber=philoAmount;
-    philoAmount++;
-    semaphore_post(sem);
+    
+    int philoNumber=argv[1];
     while(1) {
         think(philoNumber);
         takeForks(philoNumber);
@@ -61,6 +59,7 @@ int64_t initPhyloReunion(int argc, char* argv[]) {
     semaphore_wait(sem);
     for(int i=0;i<INIT_PHILOSOPHERS;i++) {
         addPhilo(i);
+        philoAmount++;
     }
     semaphore_post(sem);
     while(1) {
@@ -89,7 +88,7 @@ void addPhilo(int i) {
     strcpy(philosophers[i]->name,philosophersName[i]);
     philosophers[i]->state = THINKING;
     philosophers[i]->sem = create_semaphore(philosophersName[i], 1);
-    char* argv[] = {philosophersName[i]};
+    char* argv[] = {philosophersName[i], philoAmount};
     int pid= execve( getpid(),philosopherActivity,1,argv,FORE);
     if(pid==-1) {
         printf("Error creating Philosopher %s\n",philosophersName[i]);
@@ -113,6 +112,7 @@ void getInput() {
     } else if(getKeyState('a')) {
         if(philoAmount < MAX_PHILOSOPHERS) {
             addPhilo(philoAmount);
+            philoAmount++;
         }
         else {
             printf("Max philosophers reached\n");
@@ -122,11 +122,11 @@ void getInput() {
 }
 
 void eat(int philoNumber) {
-    wait_time(2 * (1+ philoNumber));
+    wait_time((1+ philoNumber));
 }
 
 void think(int philoNumber) {
-    wait_time(2 * (1+ philoNumber));
+    wait_time((1+ philoNumber));
 }
 
 void takeForks(int philoNum) {

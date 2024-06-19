@@ -174,4 +174,10 @@ int getC(){
     return c;
 }
 
+int buff_is_full(){
+
+    return currentBuff? 1:0;
+
+}
+
 

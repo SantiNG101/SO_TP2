@@ -32,6 +32,9 @@ GLOBAL wait_children
 GLOBAL alloc
 GLOBAL free_alloc
 GLOBAL wait_time
+GLOBAL get_buffer_status
+GLOBAL heap_used_b
+GLOBAL heap_free_b
 
 section .text
 
@@ -442,6 +445,36 @@ wait_children:
 
     mov rsi, rdi    ; pid
     mov rdi, 37     ; syscall lower priority
+    int 80h
+
+    leave
+    ret
+
+get_buffer_status:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 41     ; buffer status
+    int 80h
+
+    leave
+    ret
+
+heap_used_b:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 42     ; mem used
+    int 80h
+
+    leave
+    ret
+
+heap_free_b:
+    push rbp
+    mov rbp, rsp
+
+    mov rdi, 43     ; mem free
     int 80h
 
     leave

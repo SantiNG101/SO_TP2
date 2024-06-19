@@ -133,7 +133,7 @@ int set_status( int _pid, int newState){
             
         }else if ( process->scheduling_info->p_state == BLOCKED ){
             process->scheduling_info->p_state = newState;
-            process->scheduling_info->priority = MOSTIMP;
+            process->scheduling_info->priority = LESSIMP;
             int result = blocked_to_scheduling(_pid);
             if ( result )
                 return -1;
@@ -141,7 +141,7 @@ int set_status( int _pid, int newState){
         return newState;
     }
 
-    return-1;
+    return -1;
 
 }
 
@@ -215,12 +215,7 @@ void notify_parent(int _pid) {
             current = current->next;
         }
         set_status(parent_pid, READY); // Unblock the parent
-    } /*
-    // Kill the process itself
-    process->alive = 0;
-    delete_process_scheduling(_pid);
-    free(processes[_pid]->stack_end);
-    */
+    }
 }
 
 int get_pid_parent(){
